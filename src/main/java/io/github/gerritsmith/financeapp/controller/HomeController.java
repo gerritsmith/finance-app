@@ -38,6 +38,12 @@ public class HomeController {
         return "user/home";
     }
 
+    @GetMapping("/admin")
+    public String displayAdminPage(Model model) {
+        model.addAttribute("users", userService.findAllUsers());
+        return "user/admin";
+    }
+
     @GetMapping("/register")
     public String displayRegisterUserForm(Model model) {
         model.addAttribute("registerFormDTO", new RegisterFormDTO());

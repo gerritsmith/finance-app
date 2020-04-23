@@ -8,6 +8,11 @@
 
 <div class="container">
     <h1>Welcome <span sec:authentication="name">UserName</span></h1>
+
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <a class="btn btn-info" th:href="@{/admin}">Visit Admin Page</a>
+    </div>
+
 </div>
 
 <footer th:replace="fragments :: footer"></footer>
