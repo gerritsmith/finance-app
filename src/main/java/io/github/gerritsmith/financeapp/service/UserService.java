@@ -5,6 +5,7 @@ import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +14,14 @@ import java.util.Map;
 public class UserService {
 
     private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // Constructors
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,
+                       BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         initializeUserDatabase();
     }
 
@@ -32,10 +35,11 @@ public class UserService {
     }
 
     // Create
+    @Transactional
     public User saveUser(User user) throws UserExistsException {
         User userExists = findUserByUsername(user.getUsername());
         if (userExists != null) {
-            throw new UserExistsException("Username is already taken!");
+            throw new UserExistsException("The username " + user.getUsername() + " is already taken!");
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
