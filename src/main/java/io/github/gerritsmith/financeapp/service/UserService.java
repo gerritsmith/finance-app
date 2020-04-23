@@ -7,8 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -42,6 +41,7 @@ public class UserService {
             throw new UserExistsException("The username " + user.getUsername() + " is already taken!");
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.addRole("USER");
         return userRepository.save(user);
     }
 
@@ -49,9 +49,15 @@ public class UserService {
     public void initializeUserDatabase() {
         Map<String, String> users = new HashMap<>();
         users.put("user", "pass");
-        users.put("other", "123");
+        users.put("admin", "admin");
+        Map<String, Set<String>> userRoles = new HashMap<>();
+        userRoles.put("user", new HashSet<>(Arrays.asList("USER")));
+        userRoles.put("admin", new HashSet<>(Arrays.asList("USER", "ADMIN")));
         for (String username : users.keySet()) {
             User newUser = new User(username, users.get(username));
+            for (String role : userRoles.get(username)) {
+                newUser.addRole(role);
+            }
             try {
                 saveUser(newUser);
             } catch (UserExistsException e) {

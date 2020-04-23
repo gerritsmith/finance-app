@@ -27,10 +27,18 @@ public class UserDetailsBuilderService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("There is no user with the username: " + username);
         }
-        Set<GrantedAuthority> authorities = new HashSet<>(Arrays.asList(new SimpleGrantedAuthority("USER")));
+        Set<GrantedAuthority> authorities = getAuthorities(user);
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                                                                       user.getPassword(),
                                                                       authorities);
+    }
+
+    private Set<GrantedAuthority> getAuthorities(User user) {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (String role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(role));
+        }
+        return authorities;
     }
 
 }
