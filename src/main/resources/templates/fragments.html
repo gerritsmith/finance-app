@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -36,9 +37,13 @@
                 <a class="nav-item nav-link disabled" th:href="@{/expenses}">Expenses</a>
                 <a class="nav-item nav-link disabled" th:href="@{/reports}">Reports</a>
             </div>
-            <div class="navbar-nav">
-                <a class="nav-item nav-link" th:href="@{/login}">Login</a>
-                <a class="nav-item nav-link" th:href="@{/logout}">Logout</a>
+            <div class="navbar-nav" sec:authorize="isAnonymous()">
+                <a class="btn btn-info" th:href="@{/login}">Login</a>
+            </div>
+            <div class="navbar-nav" sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" class="form-inline">
+                    <input type="submit" value="Logout" class="btn btn-info">
+                </form>
             </div>
         </div>
     </nav>
