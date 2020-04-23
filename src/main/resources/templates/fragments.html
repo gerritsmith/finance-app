@@ -33,7 +33,11 @@
                     Home
                     <span th:if="${#request.requestURI.startsWith('/user')}" class="sr-only">(current)</span>
                 </a>
-                <a class="nav-item nav-link disabled" th:href="@{/deliveries}">Deliveries</a>
+                <a class="nav-item nav-link" th:href="@{/deliveries}"
+                   th:classappend="${#request.requestURI.startsWith('/deliveries') ? 'active' : ''}">
+                    Deliveries
+                    <span th:if="${#request.requestURI.startsWith('/deliveries')}" class="sr-only">(current)</span>
+                </a>
                 <a class="nav-item nav-link disabled" th:href="@{/shifts}">Shifts</a>
                 <a class="nav-item nav-link disabled" th:href="@{/expenses}">Expenses</a>
                 <a class="nav-item nav-link disabled" th:href="@{/reports}">Reports</a>
