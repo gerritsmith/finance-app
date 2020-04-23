@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org/"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments :: head"></head>
 <body>
 <header th:replace="fragments :: header"></header>
 
 <div class="container">
-    <h1>Welcome UserName</h1>
+    <h1>Welcome <span sec:authentication="name">UserName</span></h1>
 </div>
 
 <footer th:replace="fragments :: footer"></footer>
