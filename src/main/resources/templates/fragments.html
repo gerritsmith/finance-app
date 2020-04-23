@@ -11,11 +11,39 @@
     <!-- Custom CSS stylesheet -->
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 
-    <title th:text="'Finance App' + ${title == null ? '' : ' | ' + title}">Finance App</title>
+    <title th:text="${title == null ? 'Finance App' : title}">Finance App</title>
 </head>
 <body>
 
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" th:href="@{/}">Finance App</a>
+        <button class="navbar-toggler" type="button"
+                data-toggle="collapse" data-target="#expandableNavBarPart"
+                aria-controls="expandableNavBarPart" aria-expanded="false" aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
+        <div class="collapse navbar-collapse" id="expandableNavBarPart">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-item nav-link" th:href="@{/user}"
+                   th:classappend="${#request.requestURI.startsWith('/user') ? 'active' : ''}">
+                    Home
+                    <span th:if="${#request.requestURI.startsWith('/user')}" class="sr-only">(current)</span>
+                </a>
+                <a class="nav-item nav-link disabled" th:href="@{/deliveries}">Deliveries</a>
+                <a class="nav-item nav-link disabled" th:href="@{/shifts}">Shifts</a>
+                <a class="nav-item nav-link disabled" th:href="@{/expenses}">Expenses</a>
+                <a class="nav-item nav-link disabled" th:href="@{/reports}">Reports</a>
+            </div>
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" th:href="@{/login}">Login</a>
+                <a class="nav-item nav-link" th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <div class="spacer"></div>
+</header>
 
 
 <footer th:fragment="footer">
