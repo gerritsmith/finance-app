@@ -27,7 +27,11 @@ public class DeliveryController {
     UserService userService;
 
     @GetMapping("/deliveries")
-    public String displayDeliveriesHome() {
+    public String displayDeliveriesHome(Model model,
+                                        Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        Iterable<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
+        model.addAttribute("deliveries", deliveries);
         return "delivery/home";
     }
 
