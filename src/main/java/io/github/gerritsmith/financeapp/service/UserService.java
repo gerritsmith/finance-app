@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.data.UserRepository;
+import io.github.gerritsmith.financeapp.exception.UserExistsException;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

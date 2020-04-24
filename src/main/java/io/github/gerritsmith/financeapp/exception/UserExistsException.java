@@ -1,4 +1,4 @@
-package io.github.gerritsmith.financeapp.service;
+package io.github.gerritsmith.financeapp.exception;
 
 public class UserExistsException extends Exception {
 
