@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class DeliveryService {
@@ -33,7 +34,9 @@ public class DeliveryService {
     public Delivery saveDelivery(Delivery delivery) throws DeliveryExistsException {
         Delivery deliveryExists = findByDateAndTime(delivery.getDate(), delivery.getTime());
         if (deliveryExists != null) {
-            throw new DeliveryExistsException("Already have delivery record at " + delivery.getTime() + " on " + delivery.getDate());
+            throw new DeliveryExistsException("Already have delivery record at " +
+                    delivery.displayTime() +
+                    " on " + delivery.getDate().format(DateTimeFormatter.ofPattern("LLL dd yyyy")));
         }
         return deliveryRepository.save(delivery);
     }

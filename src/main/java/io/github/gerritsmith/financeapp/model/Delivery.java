@@ -3,6 +3,7 @@ package io.github.gerritsmith.financeapp.model;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Delivery extends AbstractEntity {
@@ -18,6 +19,11 @@ public class Delivery extends AbstractEntity {
         this.date = date;
         this.time = time;
         this.total = total;
+    }
+
+    // Methods
+    public String displayTime() {
+        return time.format(DateTimeFormatter.ofPattern("h:mm a"));
     }
 
     // Setters
