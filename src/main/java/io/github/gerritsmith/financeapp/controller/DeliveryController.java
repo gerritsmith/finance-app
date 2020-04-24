@@ -67,7 +67,9 @@ public class DeliveryController {
         }
         try {
             User user = userService.findUserByUsername(principal.getName());
-            double total = Double.parseDouble(deliveryFormDTO.getTotal());
+            String totalString = deliveryFormDTO.getTotal();
+            totalString = totalString.isEmpty() ? "0" : totalString;
+            double total = Double.parseDouble(totalString);
             Delivery newDelivery = new Delivery(user,
                                                 deliveryFormDTO.getDate(),
                                                 deliveryFormDTO.getTime(),
