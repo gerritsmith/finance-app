@@ -3,7 +3,7 @@ package io.github.gerritsmith.financeapp.controller;
 import io.github.gerritsmith.financeapp.dto.LoginFormDTO;
 import io.github.gerritsmith.financeapp.dto.RegisterFormDTO;
 import io.github.gerritsmith.financeapp.model.User;
-import io.github.gerritsmith.financeapp.service.UserExistsException;
+import io.github.gerritsmith.financeapp.exception.UserExistsException;
 import io.github.gerritsmith.financeapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -69,8 +69,8 @@ public class HomeController {
             userService.saveUser(newUser);
         } catch (UserExistsException e) {
             errors.rejectValue("username",
-                    "username.alreadyExists",
-                    "username is already taken");
+                               "username.alreadyExists",
+                               e.getMessage());
             return "user/register";
         }
         return "redirect:/login";
