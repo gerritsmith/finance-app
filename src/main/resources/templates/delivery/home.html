@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<header th:replace="fragments :: header"></header>
+
+<div class="container">
+    <h1>Deliveries</h1>
+
+    <a th:href="@{/delivery/new}" class="btn btn-success">Add Delivery</a>
+
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>
