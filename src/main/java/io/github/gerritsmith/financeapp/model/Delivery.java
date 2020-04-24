@@ -1,12 +1,16 @@
 package io.github.gerritsmith.financeapp.model;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
 public class Delivery extends AbstractEntity {
+
+    @ManyToOne
+    private User user;
 
     private LocalDate date;
     private LocalTime time;
@@ -15,7 +19,8 @@ public class Delivery extends AbstractEntity {
     // Constructors
     public Delivery() {}
 
-    public Delivery(LocalDate date, LocalTime time, double total) {
+    public Delivery(User user, LocalDate date, LocalTime time, double total) {
+        this.user = user;
         this.date = date;
         this.time = time;
         this.total = total;
@@ -39,6 +44,10 @@ public class Delivery extends AbstractEntity {
         this.total = total;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // Getters
     public LocalDate getDate() {
         return date;
@@ -50,6 +59,10 @@ public class Delivery extends AbstractEntity {
 
     public double getTotal() {
         return total;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     // Equals, hash, toString

@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.data;
 
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,8 @@ import java.time.LocalTime;
 @Repository
 public interface DeliveryRepository extends CrudRepository<Delivery, Long> {
 
-    Delivery findByDateAndTime(LocalDate date, LocalTime time);
+    Delivery findByUserAndDateAndTime(User user, LocalDate date, LocalTime time);
+
+    Iterable<Delivery> findAllByUser(User user);
 
 }
