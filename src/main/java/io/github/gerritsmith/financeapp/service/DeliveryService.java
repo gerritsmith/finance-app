@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class DeliveryService {
@@ -29,6 +30,17 @@ public class DeliveryService {
 
     public Iterable<Delivery> findAllDeliveriesByUser(User user) {
         return deliveryRepository.findAllByUser(user);
+    }
+
+    public Delivery findByIdAsUser(long id, User user) {
+        Optional<Delivery> searchResult = deliveryRepository.findById(id);
+        Delivery delivery = null;
+        if (searchResult.isPresent()) {
+            if (searchResult.get().getUser().equals(user)) {
+                delivery = searchResult.get();
+            }
+        }
+        return delivery;
     }
 
     // Create and Update
