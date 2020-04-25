@@ -67,13 +67,7 @@ public class DeliveryController {
         }
         try {
             User user = userService.findUserByUsername(principal.getName());
-            String totalString = deliveryFormDTO.getTotal();
-            totalString = totalString.isEmpty() ? "0" : totalString;
-            double total = Double.parseDouble(totalString);
-            Delivery newDelivery = new Delivery(user,
-                                                deliveryFormDTO.getDate(),
-                                                deliveryFormDTO.getTime(),
-                                                total);
+            Delivery newDelivery = new Delivery(user, deliveryFormDTO);
             deliveryService.saveDelivery(newDelivery);
         } catch (DeliveryExistsException e) {
             errors.reject("delivery.alreadyExists", e.getMessage());

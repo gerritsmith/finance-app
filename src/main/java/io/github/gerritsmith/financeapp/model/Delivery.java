@@ -1,5 +1,7 @@
 package io.github.gerritsmith.financeapp.model;
 
+import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
@@ -24,6 +26,15 @@ public class Delivery extends AbstractEntity {
         this.date = date;
         this.time = time;
         this.total = total;
+    }
+
+    public Delivery(User user, DeliveryFormDTO deliveryFormDTO) {
+        this.user = user;
+        date = deliveryFormDTO.getDate();
+        time = deliveryFormDTO.getTime();
+        String totalString = deliveryFormDTO.getTotal();
+        totalString = totalString.isEmpty() ? "0" : totalString;
+        total = Double.parseDouble(totalString);
     }
 
     // Methods
