@@ -1,5 +1,6 @@
 package io.github.gerritsmith.financeapp.dto;
 
+import io.github.gerritsmith.financeapp.model.Delivery;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
@@ -20,6 +21,17 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
     private String total;
 
+    // Constructors
+    public DeliveryFormDTO() {}
+
+    public DeliveryFormDTO(Delivery delivery) {
+        date = delivery.getDate();
+        time = delivery.getTime();
+        total = Double.toString(delivery.getTotal());
+    }
+
+
+    // Getters and Setters
     public LocalDate getDate() {
         return date;
     }

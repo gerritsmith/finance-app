@@ -17,6 +17,7 @@
                 <th>Date</th>
                 <th>Time</th>
                 <th>Total</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,8 @@
                 <td th:text="*{#temporals.format(date,'MMM dd')}">LLL dd</td>
                 <td th:text="*{#temporals.format(time, 'h:mm a')}">hh:mm a</td>
                 <td th:text="*{#numbers.formatCurrency(total)}">$0.00</td>
+                <td><a th:href="@{/delivery/{deliveryId}(deliveryId=*{id})}"
+                       class="btn btn-sm btn-info">View</a></td>
             </tr>
         </tbody>
     </table>
