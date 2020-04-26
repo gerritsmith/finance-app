@@ -69,7 +69,7 @@ public class DeliveryController {
         try {
             User user = userService.findUserByUsername(principal.getName());
             Delivery newDelivery = new Delivery(user, deliveryFormDTO);
-            deliveryService.saveDelivery(newDelivery);
+            deliveryService.addDelivery(newDelivery);
         } catch (DeliveryExistsException e) {
             errors.reject("delivery.alreadyExists", e.getMessage());
             return "delivery/form";
@@ -89,6 +89,25 @@ public class DeliveryController {
         DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(delivery);
         model.addAttribute("deliveryFormDTO", deliveryFormDTO);
         return "delivery/form";
+    }
+
+    @PostMapping("/delivery/{deliveryId}")
+    public String processDeliveryUpdateForm(@PathVariable long deliveryId,
+                                            @ModelAttribute @Valid DeliveryFormDTO deliveryFormDTO,
+                                            Errors errors,
+                                            Principal principal) {
+        if (errors.hasErrors()) {
+            return "delivery/form";
+        }
+        try {
+            User user = userService.findUserByUsername(principal.getName());
+            Delivery updatedDelivery = new Delivery(user, deliveryFormDTO);
+            deliveryService.updateDelivery(deliveryId, updatedDelivery);
+        } catch (DeliveryExistsException e) {
+            errors.reject("delivery.alreadyExists", e.getMessage());
+            return "delivery/form";
+        }
+        return "redirect:/deliveries";
     }
 
 }

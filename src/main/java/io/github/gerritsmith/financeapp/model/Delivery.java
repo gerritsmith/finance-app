@@ -42,6 +42,12 @@ public class Delivery extends AbstractEntity {
         return time.format(DateTimeFormatter.ofPattern("h:mm a"));
     }
 
+    public void update(Delivery delivery) {
+        date = delivery.getDate();
+        time = delivery.getTime();
+        total = delivery.getTotal();
+    }
+
     // Setters
     public void setDate(LocalDate date) {
         this.date = date;

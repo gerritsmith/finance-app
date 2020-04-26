@@ -21,6 +21,7 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
     private String total;
 
+
     // Constructors
     public DeliveryFormDTO() {}
 
