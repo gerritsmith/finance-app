@@ -43,8 +43,8 @@ public class DeliveryService {
         return delivery;
     }
 
-    // Create and Update
-    public Delivery saveDelivery(Delivery delivery) throws DeliveryExistsException {
+    // Create
+    public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException {
         Delivery deliveryExists = findByUserAndDateAndTime(delivery.getUser(), delivery.getDate(), delivery.getTime());
         if (deliveryExists != null) {
             throw new DeliveryExistsException("Already have delivery record at " +
@@ -52,6 +52,30 @@ public class DeliveryService {
                     " on " + delivery.getDate().format(DateTimeFormatter.ofPattern("LLL dd yyyy")));
         }
         return deliveryRepository.save(delivery);
+    }
+
+    // Update
+    public Delivery updateDelivery(long deliveryId, Delivery updatedDelivery) throws DeliveryExistsException {
+        Optional<Delivery> searchResult = deliveryRepository.findById(deliveryId);
+        Delivery deliveryToUpdate = null;
+        if (searchResult.isPresent()) {
+            deliveryToUpdate = searchResult.get();
+            if (deliveryToUpdate.getUser().equals(updatedDelivery.getUser())) {
+                Delivery deliveryExistsAtDateTime = findByUserAndDateAndTime(updatedDelivery.getUser(),
+                        updatedDelivery.getDate(),
+                        updatedDelivery.getTime());
+                if (!deliveryToUpdate.equals(deliveryExistsAtDateTime)) {
+                    throw new DeliveryExistsException("Already have delivery record at " +
+                            deliveryExistsAtDateTime.displayTime() +
+                            " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
+                }
+                deliveryToUpdate.update(updatedDelivery);
+                deliveryRepository.save(deliveryToUpdate);
+            } else {
+                deliveryToUpdate = null;
+            }
+        }
+        return deliveryToUpdate;
     }
 
 }
