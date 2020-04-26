@@ -6,6 +6,7 @@ import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,6 +45,7 @@ public class DeliveryService {
     }
 
     // Create
+    @Transactional
     public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException {
         Delivery deliveryExists = findByUserAndDateAndTime(delivery.getUser(), delivery.getDate(), delivery.getTime());
         if (deliveryExists != null) {
@@ -55,6 +57,7 @@ public class DeliveryService {
     }
 
     // Update
+    @Transactional
     public Delivery updateDelivery(long deliveryId, Delivery updatedDelivery) throws DeliveryExistsException {
         Optional<Delivery> searchResult = deliveryRepository.findById(deliveryId);
         Delivery deliveryToUpdate = null;
