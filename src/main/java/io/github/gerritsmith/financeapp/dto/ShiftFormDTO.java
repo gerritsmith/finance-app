@@ -1,5 +1,6 @@
 package io.github.gerritsmith.financeapp.dto;
 
+import io.github.gerritsmith.financeapp.model.Shift;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,12 @@ public class ShiftFormDTO {
 
     // Constructors
     public ShiftFormDTO() {}
+
+    public ShiftFormDTO(Shift shift) {
+        date = shift.getDate();
+        startTime = shift.getStartTime();
+        endTime = shift.getEndTime();
+    }
 
     // Getters and Setters
     public LocalDate getDate() {

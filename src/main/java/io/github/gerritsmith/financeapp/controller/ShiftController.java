@@ -1,7 +1,9 @@
 package io.github.gerritsmith.financeapp.controller;
 
+import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.dto.ShiftFormDTO;
 import io.github.gerritsmith.financeapp.exception.ShiftExistsException;
+import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.ShiftService;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -74,6 +77,20 @@ public class ShiftController {
             return "shift/form";
         }
         return "redirect:/shifts";
+    }
+
+    @GetMapping("/shift/{shiftId}")
+    public String displayShiftDetails(@PathVariable long shiftId,
+                                         Principal principal,
+                                         Model model) {
+        User user = userService.findUserByUsername(principal.getName());
+        Shift shift = shiftService.findByIdAsUser(shiftId, user);
+        if (shift == null) {
+            return "error/404";
+        }
+        ShiftFormDTO shiftFormDTO = new ShiftFormDTO(shift);
+        model.addAttribute("shiftFormDTO", shiftFormDTO);
+        return "shift/form";
     }
 
 }
