@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class ShiftService {
@@ -29,6 +30,17 @@ public class ShiftService {
 
     public Iterable<Shift> findAllShiftsByUser(User user) {
         return shiftRepository.findAllByUser(user);
+    }
+
+    public Shift findByIdAsUser(long id, User user) {
+        Optional<Shift> searchResult = shiftRepository.findById(id);
+        Shift shift = null;
+        if (searchResult.isPresent()) {
+            if (searchResult.get().getUser().equals(user)) {
+                shift = searchResult.get();
+            }
+        }
+        return shift;
     }
 
     // Create
