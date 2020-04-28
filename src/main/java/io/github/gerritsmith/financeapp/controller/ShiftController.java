@@ -1,9 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.dto.ShiftFormDTO;
 import io.github.gerritsmith.financeapp.exception.ShiftExistsException;
-import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.ShiftService;
@@ -81,8 +79,8 @@ public class ShiftController {
 
     @GetMapping("/shift/{shiftId}")
     public String displayShiftDetails(@PathVariable long shiftId,
-                                         Principal principal,
-                                         Model model) {
+                                      Principal principal,
+                                      Model model) {
         User user = userService.findUserByUsername(principal.getName());
         Shift shift = shiftService.findByIdAsUser(shiftId, user);
         if (shift == null) {
@@ -91,6 +89,25 @@ public class ShiftController {
         ShiftFormDTO shiftFormDTO = new ShiftFormDTO(shift);
         model.addAttribute("shiftFormDTO", shiftFormDTO);
         return "shift/form";
+    }
+
+    @PostMapping("/shift/{shiftId}")
+    public String processShiftUpdateForm(@PathVariable long shiftId,
+                                         @ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
+                                         Errors errors,
+                                         Principal principal) {
+        if (errors.hasErrors()) {
+            return "shift/form";
+        }
+        try {
+            User user = userService.findUserByUsername(principal.getName());
+            Shift updatedShift = new Shift(user, shiftFormDTO);
+            shiftService.updateShift(shiftId, updatedShift);
+        } catch (ShiftExistsException e) {
+            errors.reject("shift.overlap", e.getMessage());
+            return "shift/form";
+        }
+        return "redirect:/shifts";
     }
 
 }
