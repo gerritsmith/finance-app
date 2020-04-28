@@ -33,8 +33,10 @@ public class ShiftService {
         Iterable<Shift> shiftsOnDate = findByUserAndDate(shift.getUser(), shift.getDate());
         if (shiftsOnDate != null) {
             for (Shift existingShift : shiftsOnDate) {
-                if (shift.getStartTime().isAfter(existingShift.getStartTime()) &&
-                        shift.getStartTime().isBefore(existingShift.getEndTime())) {
+                if (((shift.getStartTime().compareTo(existingShift.getStartTime()) >= 0) &&
+                        (shift.getStartTime().compareTo(existingShift.getEndTime()) <= 0 )) ||
+                        ((shift.getEndTime().compareTo(existingShift.getStartTime()) >= 0) &&
+                        (shift.getEndTime().compareTo(existingShift.getEndTime()) <= 0 )) ) {
                     throw new ShiftExistsException("This overlaps an existing shift on " +
                             existingShift.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
                             " from " + existingShift.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
