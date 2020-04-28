@@ -34,6 +34,13 @@ public class Shift extends AbstractEntity {
         this.endTime = shiftFormDTO.getEndTime();
     }
 
+    // Methods
+    public void update(Shift shift) {
+        date = shift.getDate();
+        startTime = shift.getStartTime();
+        endTime = shift.getEndTime();
+    }
+
     // Setters
     public void setUser(User user) {
         this.user = user;

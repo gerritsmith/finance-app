@@ -49,10 +49,7 @@ public class ShiftService {
         Iterable<Shift> shiftsOnDate = findByUserAndDate(shift.getUser(), shift.getDate());
         if (shiftsOnDate != null) {
             for (Shift existingShift : shiftsOnDate) {
-                if (((shift.getStartTime().compareTo(existingShift.getStartTime()) >= 0) &&
-                        (shift.getStartTime().compareTo(existingShift.getEndTime()) <= 0 )) ||
-                        ((shift.getEndTime().compareTo(existingShift.getStartTime()) >= 0) &&
-                        (shift.getEndTime().compareTo(existingShift.getEndTime()) <= 0 )) ) {
+                if (hasOverlap(shift, existingShift)) {
                     throw new ShiftExistsException("This overlaps an existing shift on " +
                             existingShift.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
                             " from " + existingShift.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
@@ -61,6 +58,50 @@ public class ShiftService {
             }
         }
         return shiftRepository.save(shift);
+    }
+
+    // Update
+    @Transactional
+    public Shift updateShift(long shiftId, Shift updatedShift) throws ShiftExistsException {
+        Optional<Shift> searchResult = shiftRepository.findById(shiftId);
+        Shift shiftToUpdate = null;
+        if (searchResult.isPresent()) {
+            shiftToUpdate = searchResult.get();
+            if (shiftToUpdate.getUser().equals(updatedShift.getUser())) {
+                Iterable<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
+                        updatedShift.getDate());
+                for (Shift existingShift : shiftsExistingOnDate) {
+                    if (hasOverlap(updatedShift, existingShift) && !shiftToUpdate.equals(existingShift)) {
+                        throw new ShiftExistsException("Already have shift record on " +
+                                existingShift.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
+                                " from " + existingShift.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
+                                " to " + existingShift.getEndTime().format(DateTimeFormatter.ofPattern("h:mm a")));
+                    }
+                }
+                shiftToUpdate.update(updatedShift);
+                shiftRepository.save(shiftToUpdate);
+            } else {
+                shiftToUpdate = null;
+            }
+        }
+        return shiftToUpdate;
+    }
+
+    // Methods
+    private boolean hasOverlap(Shift shift1, Shift shift2) {
+        if (((shift1.getStartTime().compareTo(shift2.getStartTime()) >= 0) &&
+                (shift1.getStartTime().compareTo(shift2.getEndTime()) <= 0 )) ||
+                ((shift1.getEndTime().compareTo(shift2.getStartTime()) >= 0) &&
+                        (shift1.getEndTime().compareTo(shift2.getEndTime()) <= 0 )) ) {
+            return true;
+        }
+        if (((shift2.getStartTime().compareTo(shift1.getStartTime()) >= 0) &&
+                (shift2.getStartTime().compareTo(shift1.getEndTime()) <= 0 )) ||
+                ((shift2.getEndTime().compareTo(shift1.getStartTime()) >= 0) &&
+                        (shift2.getEndTime().compareTo(shift1.getEndTime()) <= 0 )) ) {
+            return true;
+        }
+        return false;
     }
 
 }
