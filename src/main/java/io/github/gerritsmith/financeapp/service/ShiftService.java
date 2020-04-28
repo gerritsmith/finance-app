@@ -27,6 +27,10 @@ public class ShiftService {
         return shiftRepository.findByUserAndDate(user, date);
     }
 
+    public Iterable<Shift> findAllShiftsByUser(User user) {
+        return shiftRepository.findAllByUser(user);
+    }
+
     // Create
     @Transactional
     public Shift addShift(Shift shift) throws ShiftExistsException {

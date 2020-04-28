@@ -12,4 +12,6 @@ public interface ShiftRepository extends CrudRepository<Shift, Long> {
 
     Iterable<Shift> findByUserAndDate(User user, LocalDate date);
 
+    Iterable<Shift> findAllByUser(User user);
+
 }
