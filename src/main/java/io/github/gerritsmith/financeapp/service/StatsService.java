@@ -40,12 +40,12 @@ public class StatsService {
         double decimalTotalHours = shiftTotalDuration.toHours() + shiftTotalDuration.toMinutesPart()/60.0;
 
         UserStatsDTO userStatsDTO = new UserStatsDTO();
-        userStatsDTO.setDeliveryCount(deliveryTotalStats.getCount());
-        userStatsDTO.setDeliveryTotalRevenue(deliveryTotalStats.getSum());
-        userStatsDTO.setRevenuePerDelivery(deliveryTotalStats.getSum()/deliveryTotalStats.getCount());
-        userStatsDTO.setShiftCount(shifts.size());
-        userStatsDTO.setShiftTotalDuration(shiftTotalDuration);
-        userStatsDTO.setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
+        userStatsDTO.setDeliveryCount(deliveryTotalStats.getCount())
+                .setDeliveryTotalRevenue(deliveryTotalStats.getSum())
+                .setRevenuePerDelivery(deliveryTotalStats.getSum()/deliveryTotalStats.getCount())
+                .setShiftCount(shifts.size())
+                .setShiftTotalDuration(shiftTotalDuration)
+                .setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
         return userStatsDTO;
     }
 

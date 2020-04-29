@@ -44,28 +44,34 @@ public class UserStatsDTO {
     }
 
     // Setters
-    public void setDeliveryCount(long deliveryCount) {
+    public UserStatsDTO setDeliveryCount(long deliveryCount) {
         this.deliveryCount = deliveryCount;
+        return this;
     }
 
-    public void setDeliveryTotalRevenue(double deliveryTotalRevenue) {
+    public UserStatsDTO setDeliveryTotalRevenue(double deliveryTotalRevenue) {
         this.deliveryTotalRevenue = deliveryTotalRevenue;
+        return this;
     }
 
-    public void setRevenuePerDelivery(double revenuePerDelivery) {
+    public UserStatsDTO setRevenuePerDelivery(double revenuePerDelivery) {
         this.revenuePerDelivery = revenuePerDelivery;
+        return this;
     }
 
-    public void setShiftCount(long shiftCount) {
+    public UserStatsDTO setShiftCount(long shiftCount) {
         this.shiftCount = shiftCount;
+        return this;
     }
 
-    public void setShiftTotalDuration(Duration shiftTotalDuration) {
+    public UserStatsDTO setShiftTotalDuration(Duration shiftTotalDuration) {
         this.shiftTotalDuration = shiftTotalDuration;
+        return this;
     }
 
-    public void setRevenuePerHour(double revenuePerHour) {
+    public UserStatsDTO setRevenuePerHour(double revenuePerHour) {
         this.revenuePerHour = revenuePerHour;
+        return this;
     }
 
 }
