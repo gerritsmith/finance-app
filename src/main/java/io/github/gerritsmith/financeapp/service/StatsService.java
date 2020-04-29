@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 @Service
@@ -28,23 +29,23 @@ public class StatsService {
     // Methods
     public UserStatsDTO getUserStats(User user) {
         List<Delivery> deliveries = new ArrayList<>((Collection<Delivery>) deliveryService.findAllDeliveriesByUser(user));
-        double deliveryTotalRevenue = 0;
-        for (Delivery delivery : deliveries) {
-            deliveryTotalRevenue += delivery.getTotal();
-        }
+        DoubleSummaryStatistics deliveryTotalStats = deliveries.stream()
+                .mapToDouble(Delivery::getTotal)
+                .summaryStatistics();
+
         List<Shift> shifts = new ArrayList<>((Collection<Shift>) shiftService.findAllShiftsByUser(user));
-        Duration shiftTotalDuration = Duration.ofHours(0);
-        for (Shift shift : shifts) {
-            shiftTotalDuration = shiftTotalDuration.plus(Duration.between(shift.getStartTime(), shift.getEndTime()));
-        }
+        Duration shiftTotalDuration = shifts.stream()
+                .map(s -> Duration.between(s.getStartTime(), s.getEndTime()))
+                .reduce(Duration.ZERO, Duration::plus);
+        double decimalTotalHours = shiftTotalDuration.toHours() + shiftTotalDuration.toMinutesPart()/60.0;
+
         UserStatsDTO userStatsDTO = new UserStatsDTO();
-        userStatsDTO.setDeliveryCount(deliveries.size());
-        userStatsDTO.setDeliveryTotalRevenue(deliveryTotalRevenue);
-        userStatsDTO.setRevenuePerDelivery(deliveryTotalRevenue/deliveries.size());
+        userStatsDTO.setDeliveryCount(deliveryTotalStats.getCount());
+        userStatsDTO.setDeliveryTotalRevenue(deliveryTotalStats.getSum());
+        userStatsDTO.setRevenuePerDelivery(deliveryTotalStats.getSum()/deliveryTotalStats.getCount());
         userStatsDTO.setShiftCount(shifts.size());
         userStatsDTO.setShiftTotalDuration(shiftTotalDuration);
-        double decimalTotalHours = shiftTotalDuration.toHours() + shiftTotalDuration.toMinutesPart()/60.0;
-        userStatsDTO.setRevenuePerHour(deliveryTotalRevenue/decimalTotalHours);
+        userStatsDTO.setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
         return userStatsDTO;
     }
 

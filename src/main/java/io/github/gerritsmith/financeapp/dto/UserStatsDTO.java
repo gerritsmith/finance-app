@@ -4,11 +4,11 @@ import java.time.Duration;
 
 public class UserStatsDTO {
 
-    private int deliveryCount;
+    private long deliveryCount;
     private double deliveryTotalRevenue;
     private double revenuePerDelivery;
 
-    private int shiftCount;
+    private long shiftCount;
     private Duration shiftTotalDuration;
     private double revenuePerHour;
 
@@ -17,7 +17,7 @@ public class UserStatsDTO {
     public UserStatsDTO() {}
 
     // Getters
-    public int getDeliveryCount() {
+    public long getDeliveryCount() {
         return deliveryCount;
     }
 
@@ -29,7 +29,7 @@ public class UserStatsDTO {
         return revenuePerDelivery;
     }
 
-    public int getShiftCount() {
+    public long getShiftCount() {
         return shiftCount;
     }
 
@@ -44,7 +44,7 @@ public class UserStatsDTO {
     }
 
     // Setters
-    public void setDeliveryCount(int deliveryCount) {
+    public void setDeliveryCount(long deliveryCount) {
         this.deliveryCount = deliveryCount;
     }
 
@@ -56,7 +56,7 @@ public class UserStatsDTO {
         this.revenuePerDelivery = revenuePerDelivery;
     }
 
-    public void setShiftCount(int shiftCount) {
+    public void setShiftCount(long shiftCount) {
         this.shiftCount = shiftCount;
     }
 
