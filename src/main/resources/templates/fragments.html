@@ -34,14 +34,14 @@
                     <span th:if="${#request.requestURI.startsWith('/user')}" class="sr-only">(current)</span>
                 </a>
                 <a class="nav-item nav-link" th:href="@{/deliveries}"
-                   th:classappend="${#request.requestURI.startsWith('/deliveries') ? 'active' : ''}">
+                   th:classappend="${#request.requestURI.startsWith('/deliver') ? 'active' : ''}">
                     Deliveries
-                    <span th:if="${#request.requestURI.startsWith('/deliveries')}" class="sr-only">(current)</span>
+                    <span th:if="${#request.requestURI.startsWith('/deliver')}" class="sr-only">(current)</span>
                 </a>
                 <a class="nav-item nav-link" th:href="@{/shifts}"
-                   th:classappend="${#request.requestURI.startsWith('/shifts') ? 'active' : ''}">
+                   th:classappend="${#request.requestURI.startsWith('/shift') ? 'active' : ''}">
                     Shifts
-                    <span th:if="${#request.requestURI.startsWith('/shifts')}" class="sr-only">(current)</span>
+                    <span th:if="${#request.requestURI.startsWith('/shift')}" class="sr-only">(current)</span>
                 </a>
                 <a class="nav-item nav-link disabled" th:href="@{/expenses}">Expenses</a>
                 <a class="nav-item nav-link disabled" th:href="@{/reports}">Reports</a>
