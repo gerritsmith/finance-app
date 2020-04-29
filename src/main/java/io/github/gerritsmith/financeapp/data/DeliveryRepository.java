@@ -7,12 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 public interface DeliveryRepository extends CrudRepository<Delivery, Long> {
 
     Delivery findByUserAndDateAndTime(User user, LocalDate date, LocalTime time);
 
-    Iterable<Delivery> findAllByUser(User user);
+    List<Delivery> findAllByUser(User user);
 
 }

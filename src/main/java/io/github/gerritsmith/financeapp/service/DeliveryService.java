@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +30,7 @@ public class DeliveryService {
         return deliveryRepository.findByUserAndDateAndTime(user, date, time);
     }
 
-    public Iterable<Delivery> findAllDeliveriesByUser(User user) {
+    public List<Delivery> findAllDeliveriesByUser(User user) {
         return deliveryRepository.findAllByUser(user);
     }
 
