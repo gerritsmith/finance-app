@@ -2,8 +2,10 @@ package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.LoginFormDTO;
 import io.github.gerritsmith.financeapp.dto.RegisterFormDTO;
+import io.github.gerritsmith.financeapp.dto.UserStatsDTO;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.exception.UserExistsException;
+import io.github.gerritsmith.financeapp.service.StatsService;
 import io.github.gerritsmith.financeapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class HomeController {
@@ -21,19 +24,20 @@ public class HomeController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    StatsService statsService;
+
     @GetMapping("/")
     public String displayHomePage() {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String displayLoginForm(Model model) {
-        model.addAttribute("loginFormDTO", new LoginFormDTO());
-        return "user/login";
-    }
-
     @GetMapping("/user")
-    public String displayUserPage(Model model) {
+    public String displayUserPage(Model model,
+                                  Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        UserStatsDTO userStatsDTO = statsService.getUserStats(user);
+        model.addAttribute("userStatsDTO", userStatsDTO);
         model.addAttribute("title", "User Home");
         return "user/home";
     }
@@ -42,6 +46,12 @@ public class HomeController {
     public String displayAdminPage(Model model) {
         model.addAttribute("users", userService.findAllUsers());
         return "user/admin";
+    }
+
+    @GetMapping("/login")
+    public String displayLoginForm(Model model) {
+        model.addAttribute("loginFormDTO", new LoginFormDTO());
+        return "user/login";
     }
 
     @GetMapping("/register")
