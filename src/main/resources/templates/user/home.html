@@ -13,6 +13,41 @@
         <a class="btn btn-info" th:href="@{/admin}">Visit Admin Page</a>
     </div>
 
+    <div class="row" th:object="${userStatsDTO}">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <tr>
+                    <th>Number of Deliveries</th>
+                    <td th:text="*{deliveryCount}">1000</td>
+                </tr>
+                <tr>
+                    <th>Total Revenue</th>
+                    <td th:text="*{#numbers.formatCurrency(deliveryTotalRevenue)}">$7500</td>
+                </tr>
+                <tr>
+                    <th>Revenue per Delivery</th>
+                    <td th:text="*{#numbers.formatCurrency(revenuePerDelivery)}">$7.50</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <tr>
+                    <th>Number of Shifts Worked</th>
+                    <td th:text="*{shiftCount}">100</td>
+                </tr>
+                <tr>
+                    <th>Total Duration of Shifts</th>
+                    <td th:text="*{shiftTotalDuration}">hhh hr mm min</td>
+                </tr>
+                <tr>
+                    <th>Revenue Per Hour</th>
+                    <td th:text="*{#numbers.formatCurrency(revenuePerHour)}">$15.10</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 <footer th:replace="fragments :: footer"></footer>
