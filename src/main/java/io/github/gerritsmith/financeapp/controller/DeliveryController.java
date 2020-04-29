@@ -34,7 +34,7 @@ public class DeliveryController {
     public String displayDeliveriesHome(Model model,
                                         Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
-        List<Delivery> deliveries = new ArrayList<>(deliveryService.findAllDeliveriesByUser(user));
+        List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
         deliveries.sort(new Comparator<Delivery>() {
             @Override
             public int compare(Delivery o1, Delivery o2) {

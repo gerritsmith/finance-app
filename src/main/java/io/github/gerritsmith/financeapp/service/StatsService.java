@@ -28,7 +28,7 @@ public class StatsService {
 
     // Methods
     public UserStatsDTO getUserStats(User user) {
-        List<Delivery> deliveries = new ArrayList<>((Collection<Delivery>) deliveryService.findAllDeliveriesByUser(user));
+        List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
         DoubleSummaryStatistics deliveryTotalStats = deliveries.stream()
                 .mapToDouble(Delivery::getTotal)
                 .summaryStatistics();
