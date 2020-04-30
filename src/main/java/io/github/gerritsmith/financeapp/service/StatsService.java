@@ -28,12 +28,12 @@ public class StatsService {
 
     // Methods
     public UserStatsDTO getUserStats(User user) {
-        List<Delivery> deliveries = new ArrayList<>((Collection<Delivery>) deliveryService.findAllDeliveriesByUser(user));
+        List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
         DoubleSummaryStatistics deliveryTotalStats = deliveries.stream()
                 .mapToDouble(Delivery::getTotal)
                 .summaryStatistics();
 
-        List<Shift> shifts = new ArrayList<>((Collection<Shift>) shiftService.findAllShiftsByUser(user));
+        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         Duration shiftTotalDuration = shifts.stream()
                 .map(s -> Duration.between(s.getStartTime(), s.getEndTime()))
                 .reduce(Duration.ZERO, Duration::plus);

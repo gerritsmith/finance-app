@@ -35,7 +35,7 @@ public class ShiftController {
     public String displayShiftsHome(Model model,
                                     Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
-        List<Shift> shifts = new ArrayList<>((Collection<Shift>) shiftService.findAllShiftsByUser(user));
+        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         shifts.sort(new Comparator<Shift>() {
             @Override
             public int compare(Shift o1, Shift o2) {

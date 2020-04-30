@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class DeliveryController {
     public String displayDeliveriesHome(Model model,
                                         Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
-        List<Delivery> deliveries = new ArrayList<>((Collection<Delivery>) deliveryService.findAllDeliveriesByUser(user));
+        List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
         deliveries.sort(new Comparator<Delivery>() {
             @Override
             public int compare(Delivery o1, Delivery o2) {
