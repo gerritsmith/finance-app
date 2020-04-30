@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<header th:replace="fragments :: header"></header>
+
+<div class="container">
+    <h1>Expense Form</h1>
+
+    <form th:action="@{${#request.requestURI}}" method="post" th:object="${expenseFormDTO}">
+        <div class="form-group">
+            <label th:for="date">Date</label>
+            <input type="date" th:field="*{date}" class="form-control"
+                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+            <p class="error" th:errors="*{date}"></p>
+        </div>
+        <div class="form-group">
+            <label th:for="time">Time</label>
+            <input type="time" th:field="*{time}" class="form-control"
+                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+            <p class="error" th:errors="*{time}"></p>
+        </div>
+        <div class="form-group">
+            <label th:for="amount">Amount</label>
+            <input type="text" th:field="*{amount}" class="form-control"
+                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+            <p class="error" th:errors="*{amount}"></p>
+        </div>
+        <div class="form-group">
+            <label th:for="mileage">Mileage</label>
+            <input type="text" th:field="*{mileage}" class="form-control"
+                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+            <p class="error" th:errors="*{mileage}"></p>
+        </div>
+        <div class="form-group">
+            <label th:for="mileage">Mileage</label>
+            <input type="text" th:field="*{mileage}" class="form-control"
+                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+            <p class="error" th:errors="*{mileage}"></p>
+        </div>
+        <div class="form-group">
+            <label th:for="description">Description</label>
+            <input type="text" th:field="*{description}" class="form-control"
+                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+            <p class="error" th:errors="*{description}"></p>
+        </div>
+
+        <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
+            <p class="error" th:text="${error}"></p>
+        </div>
+
+        <div class="form-group" th:unless="${#request.requestURI.endsWith('new')}">
+            <button id="editButton" type="button" onclick="changeEditState();" class="btn btn-primary">Edit</button>
+            <button id="cancelButton" type="reset" onclick="changeEditState();" class="btn btn-warning"
+                    hidden="true" disabled="true">Cancel Edit</button>
+        </div>
+
+        <div class="form-group" th:hidden="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
+            <input id="saveButton" type="submit" value="Save" class="btn btn-success"
+                   th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+        </div>
+    </form>
+
+</div>
+
+<script th:src="@{/js/form-mode.js}"></script>
+
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>
