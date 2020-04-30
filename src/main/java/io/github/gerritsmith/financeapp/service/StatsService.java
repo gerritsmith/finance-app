@@ -33,7 +33,7 @@ public class StatsService {
                 .mapToDouble(Delivery::getTotal)
                 .summaryStatistics();
 
-        List<Shift> shifts = new ArrayList<>((Collection<Shift>) shiftService.findAllShiftsByUser(user));
+        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         Duration shiftTotalDuration = shifts.stream()
                 .map(s -> Duration.between(s.getStartTime(), s.getEndTime()))
                 .reduce(Duration.ZERO, Duration::plus);

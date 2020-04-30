@@ -6,12 +6,13 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface ShiftRepository extends CrudRepository<Shift, Long> {
 
-    Iterable<Shift> findByUserAndDate(User user, LocalDate date);
+    List<Shift> findByUserAndDate(User user, LocalDate date);
 
-    Iterable<Shift> findAllByUser(User user);
+    List<Shift> findAllByUser(User user);
 
 }

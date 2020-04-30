@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,11 +25,11 @@ public class ShiftService {
     }
 
     // Read
-    public Iterable<Shift> findByUserAndDate(User user, LocalDate date) {
+    public List<Shift> findByUserAndDate(User user, LocalDate date) {
         return shiftRepository.findByUserAndDate(user, date);
     }
 
-    public Iterable<Shift> findAllShiftsByUser(User user) {
+    public List<Shift> findAllShiftsByUser(User user) {
         return shiftRepository.findAllByUser(user);
     }
 
@@ -46,7 +47,7 @@ public class ShiftService {
     // Create
     @Transactional
     public Shift addShift(Shift shift) throws ShiftExistsException {
-        Iterable<Shift> shiftsOnDate = findByUserAndDate(shift.getUser(), shift.getDate());
+        List<Shift> shiftsOnDate = findByUserAndDate(shift.getUser(), shift.getDate());
         if (shiftsOnDate != null) {
             for (Shift existingShift : shiftsOnDate) {
                 if (hasOverlap(shift, existingShift)) {
@@ -68,7 +69,7 @@ public class ShiftService {
         if (searchResult.isPresent()) {
             shiftToUpdate = searchResult.get();
             if (shiftToUpdate.getUser().equals(updatedShift.getUser())) {
-                Iterable<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
+                List<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
                         updatedShift.getDate());
                 for (Shift existingShift : shiftsExistingOnDate) {
                     if (hasOverlap(updatedShift, existingShift) && !shiftToUpdate.equals(existingShift)) {
