@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface ShiftRepository extends CrudRepository<Shift, Long> {
 
+    Shift findByIdAndUser(long id, User user);
+
     List<Shift> findByUserAndDate(User user, LocalDate date);
 
     List<Shift> findAllByUser(User user);

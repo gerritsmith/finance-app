@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface DeliveryRepository extends CrudRepository<Delivery, Long> {
 
+    Delivery findByIdAndUser(long id, User user);
+
     Delivery findByUserAndDateAndTime(User user, LocalDate date, LocalTime time);
 
     List<Delivery> findAllByUser(User user);
