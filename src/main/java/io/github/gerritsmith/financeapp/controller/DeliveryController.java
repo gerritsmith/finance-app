@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -35,18 +33,15 @@ public class DeliveryController {
                                         Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
         List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
-        deliveries.sort(new Comparator<Delivery>() {
-            @Override
-            public int compare(Delivery o1, Delivery o2) {
-                if (o1.getDate().isAfter(o2.getDate())) {
+        deliveries.sort((o1, o2) -> {
+            if (o1.getDate().isAfter(o2.getDate())) {
+                return -1;
+            } else if (o1.getDate().isEqual(o2.getDate())) {
+                if (o1.getTime().isAfter(o2.getTime())) {
                     return -1;
-                } else if (o1.getDate().isEqual(o2.getDate())) {
-                    if (o1.getTime().isAfter(o2.getTime())) {
-                        return -1;
-                    }
                 }
-                return 1;
             }
+            return 1;
         });
         model.addAttribute("deliveries", deliveries);
         return "delivery/home";

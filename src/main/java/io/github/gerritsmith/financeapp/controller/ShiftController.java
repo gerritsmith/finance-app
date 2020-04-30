@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -36,18 +33,15 @@ public class ShiftController {
                                     Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
-        shifts.sort(new Comparator<Shift>() {
-            @Override
-            public int compare(Shift o1, Shift o2) {
-                if (o1.getDate().isAfter(o2.getDate())) {
+        shifts.sort((o1, o2) -> {
+            if (o1.getDate().isAfter(o2.getDate())) {
+                return -1;
+            } else if (o1.getDate().isEqual(o2.getDate())) {
+                if (o1.getStartTime().isAfter(o2.getStartTime())) {
                     return -1;
-                } else if (o1.getDate().isEqual(o2.getDate())) {
-                    if (o1.getStartTime().isAfter(o2.getStartTime())) {
-                        return -1;
-                    }
                 }
-                return 1;
             }
+            return 1;
         });
         model.addAttribute("shifts", shifts);
         return "shift/home";
