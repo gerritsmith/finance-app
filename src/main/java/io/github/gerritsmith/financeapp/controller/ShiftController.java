@@ -57,6 +57,9 @@ public class ShiftController {
     public String processNewShiftForm(@ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
                                          Errors errors,
                                          Principal principal) {
+        if (!shiftFormDTO.getStartTime().isBefore(shiftFormDTO.getEndTime())) {
+            errors.reject("shift.timeInterval", "The start time must be before the end time");
+        }
         if (errors.hasErrors()) {
             return "shift/form";
         }
@@ -90,6 +93,9 @@ public class ShiftController {
                                          @ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
                                          Errors errors,
                                          Principal principal) {
+        if (!shiftFormDTO.getStartTime().isBefore(shiftFormDTO.getEndTime())) {
+            errors.reject("shift.timeInterval", "The start time must be before the end time");
+        }
         if (errors.hasErrors()) {
             return "shift/form";
         }
