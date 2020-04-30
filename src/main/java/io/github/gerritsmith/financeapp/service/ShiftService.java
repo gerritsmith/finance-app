@@ -34,14 +34,7 @@ public class ShiftService {
     }
 
     public Shift findByIdAsUser(long id, User user) {
-        Optional<Shift> searchResult = shiftRepository.findById(id);
-        Shift shift = null;
-        if (searchResult.isPresent()) {
-            if (searchResult.get().getUser().equals(user)) {
-                shift = searchResult.get();
-            }
-        }
-        return shift;
+        return shiftRepository.findByIdAndUser(id, user);
     }
 
     // Create

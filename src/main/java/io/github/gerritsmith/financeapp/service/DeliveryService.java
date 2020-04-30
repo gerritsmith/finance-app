@@ -35,14 +35,7 @@ public class DeliveryService {
     }
 
     public Delivery findByIdAsUser(long id, User user) {
-        Optional<Delivery> searchResult = deliveryRepository.findById(id);
-        Delivery delivery = null;
-        if (searchResult.isPresent()) {
-            if (searchResult.get().getUser().equals(user)) {
-                delivery = searchResult.get();
-            }
-        }
-        return delivery;
+        return deliveryRepository.findByIdAndUser(id, user);
     }
 
     // Create
