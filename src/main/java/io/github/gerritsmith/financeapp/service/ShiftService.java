@@ -57,27 +57,19 @@ public class ShiftService {
     // Update
     @Transactional
     public Shift updateShift(long shiftId, Shift updatedShift) throws ShiftExistsException {
-        Optional<Shift> searchResult = shiftRepository.findById(shiftId);
-        Shift shiftToUpdate = null;
-        if (searchResult.isPresent()) {
-            shiftToUpdate = searchResult.get();
-            if (shiftToUpdate.getUser().equals(updatedShift.getUser())) {
-                List<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
-                        updatedShift.getDate());
-                for (Shift existingShift : shiftsExistingOnDate) {
-                    if (hasOverlap(updatedShift, existingShift) && !shiftToUpdate.equals(existingShift)) {
-                        throw new ShiftExistsException("Already have shift record on " +
-                                existingShift.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
-                                " from " + existingShift.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
-                                " to " + existingShift.getEndTime().format(DateTimeFormatter.ofPattern("h:mm a")));
-                    }
-                }
-                shiftToUpdate.update(updatedShift);
-                shiftRepository.save(shiftToUpdate);
-            } else {
-                shiftToUpdate = null;
+        Shift shiftToUpdate = shiftRepository.findByIdAndUser(shiftId, updatedShift.getUser());
+        List<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
+                updatedShift.getDate());
+        for (Shift existingShift : shiftsExistingOnDate) {
+            if (hasOverlap(updatedShift, existingShift) && !shiftToUpdate.equals(existingShift)) {
+                throw new ShiftExistsException("Already have shift record on " +
+                        existingShift.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
+                        " from " + existingShift.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
+                        " to " + existingShift.getEndTime().format(DateTimeFormatter.ofPattern("h:mm a")));
             }
         }
+        shiftToUpdate.update(updatedShift);
+        shiftRepository.save(shiftToUpdate);
         return shiftToUpdate;
     }
 

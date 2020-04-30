@@ -53,25 +53,17 @@ public class DeliveryService {
     // Update
     @Transactional
     public Delivery updateDelivery(long deliveryId, Delivery updatedDelivery) throws DeliveryExistsException {
-        Optional<Delivery> searchResult = deliveryRepository.findById(deliveryId);
-        Delivery deliveryToUpdate = null;
-        if (searchResult.isPresent()) {
-            deliveryToUpdate = searchResult.get();
-            if (deliveryToUpdate.getUser().equals(updatedDelivery.getUser())) {
-                Delivery deliveryExistsAtDateTime = findByUserAndDateAndTime(updatedDelivery.getUser(),
-                        updatedDelivery.getDate(),
-                        updatedDelivery.getTime());
-                if (!deliveryToUpdate.equals(deliveryExistsAtDateTime)) {
-                    throw new DeliveryExistsException("Already have delivery record at " +
-                            deliveryExistsAtDateTime.displayTime() +
-                            " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
-                }
-                deliveryToUpdate.update(updatedDelivery);
-                deliveryRepository.save(deliveryToUpdate);
-            } else {
-                deliveryToUpdate = null;
-            }
+        Delivery deliveryToUpdate = findByIdAsUser(deliveryId, updatedDelivery.getUser());
+        Delivery deliveryExistsAtDateTime = findByUserAndDateAndTime(updatedDelivery.getUser(),
+                updatedDelivery.getDate(),
+                updatedDelivery.getTime());
+        if (deliveryExistsAtDateTime !=null && !deliveryToUpdate.equals(deliveryExistsAtDateTime)) {
+            throw new DeliveryExistsException("Already have delivery record at " +
+                    deliveryExistsAtDateTime.displayTime() +
+                    " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
         }
+        deliveryToUpdate.update(updatedDelivery);
+        deliveryRepository.save(deliveryToUpdate);
         return deliveryToUpdate;
     }
 
