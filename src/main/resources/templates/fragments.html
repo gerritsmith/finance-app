@@ -43,7 +43,11 @@
                     Shifts
                     <span th:if="${#request.requestURI.startsWith('/shift')}" class="sr-only">(current)</span>
                 </a>
-                <a class="nav-item nav-link disabled" th:href="@{/expenses}">Expenses</a>
+                <a class="nav-item nav-link" th:href="@{/expenses}"
+                   th:classappend="${#request.requestURI.startsWith('/expense') ? 'active' : ''}">
+                    Expenses
+                    <span th:if="${#request.requestURI.startsWith('/expense')}" class="sr-only">(current)</span>
+                </a>
                 <a class="nav-item nav-link disabled" th:href="@{/reports}">Reports</a>
             </div>
             <span class="navbar-text mr-3" sec:authorize="isAuthenticated()" sec:authentication="name"></span>
