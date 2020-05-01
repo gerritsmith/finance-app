@@ -44,6 +44,10 @@ public class Shift extends AbstractEntity {
         date = shift.getDate();
         startTime = shift.getStartTime();
         endTime = shift.getEndTime();
+        startMileage = shift.getStartMileage();
+        endMileage = shift.getEndMileage();
+        miles = shift.getMiles();
+        mpg = shift.getMpg();
     }
 
     // Getters and Setters

@@ -43,6 +43,10 @@ public class ShiftFormDTO {
         date = shift.getDate();
         startTime = shift.getStartTime();
         endTime = shift.getEndTime();
+        startMileage = (shift.getStartMileage() == null) ? "" : shift.getStartMileage().toString();
+        endMileage = (shift.getEndMileage() == null) ? "" : shift.getEndMileage().toString();
+        miles = (shift.getMiles() == null) ? "" : shift.getMiles().toString();
+        mpg = (shift.getMpg() == null) ? "" : shift.getMpg().toString();
     }
 
     // Getters and Setters
