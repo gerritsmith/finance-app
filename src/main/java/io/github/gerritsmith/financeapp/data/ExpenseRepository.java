@@ -7,10 +7,16 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 
-    Expense findByUserAndDateAndTimeAndDescription(User user, LocalDate date, LocalTime time, String description);
+    Expense findByUserAndDateAndTimeAndDescription(User user,
+                                                   LocalDate date,
+                                                   LocalTime time,
+                                                   String description);
+
+    List<Expense> findAllByUser(User user);
 
 }

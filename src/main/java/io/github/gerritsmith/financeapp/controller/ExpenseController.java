@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class ExpenseController {
@@ -27,7 +28,20 @@ public class ExpenseController {
     ExpenseService expenseService;
 
     @GetMapping("/expenses")
-    public String displayExpensesHome(Model model) {
+    public String displayExpensesHome(Model model, Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        List<Expense> expenses = expenseService.findAllExpensesByUser(user);
+        expenses.sort((o1, o2) -> {
+            if (o1.getDate().isAfter(o2.getDate())) {
+                return -1;
+            } else if (o1.getDate().isEqual(o2.getDate())) {
+                if (o1.getTime().isAfter(o2.getTime())) {
+                    return -1;
+                }
+            }
+            return 1;
+        });
+        model.addAttribute("expenses", expenses);
         return "expense/home";
     }
 
