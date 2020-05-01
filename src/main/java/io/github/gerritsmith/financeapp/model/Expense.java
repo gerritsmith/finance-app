@@ -33,6 +33,15 @@ public class Expense extends AbstractEntity {
         description = expenseFormDTO.getDescription();
     }
 
+    // Methods
+    public void update(Expense expense) {
+        date = expense.getDate();
+        time = expense.getTime();
+        amount = expense.getAmount();
+        mileage = expense.getMileage();
+        description = expense.getDescription();
+    }
+
     // Getters and Setters
     public User getUser() {
         return user;

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ShiftService {
@@ -69,8 +68,7 @@ public class ShiftService {
             }
         }
         shiftToUpdate.update(updatedShift);
-        shiftRepository.save(shiftToUpdate);
-        return shiftToUpdate;
+        return shiftRepository.save(shiftToUpdate);
     }
 
     // Methods
