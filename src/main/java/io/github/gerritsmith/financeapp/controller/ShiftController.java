@@ -55,8 +55,8 @@ public class ShiftController {
 
     @PostMapping("/shift/new")
     public String processNewShiftForm(@ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
-                                         Errors errors,
-                                         Principal principal) {
+                                      Errors errors,
+                                      Principal principal) {
         if (!shiftFormDTO.getStartTime().isBefore(shiftFormDTO.getEndTime())) {
             errors.reject("shift.timeInterval", "The start time must be before the end time");
         }

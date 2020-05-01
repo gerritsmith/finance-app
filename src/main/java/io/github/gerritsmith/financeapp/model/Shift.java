@@ -16,22 +16,27 @@ public class Shift extends AbstractEntity {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
+    private Integer startMileage;
+    private Integer endMileage;
+    private Double miles;
+    private Double mpg;
 
     // Constructors
     public Shift() {}
-
-    public Shift(User user, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        this.user = user;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
 
     public Shift(User user, ShiftFormDTO shiftFormDTO) {
         this.user = user;
         this.date = shiftFormDTO.getDate();
         this.startTime = shiftFormDTO.getStartTime();
         this.endTime = shiftFormDTO.getEndTime();
+        String startMileageString = shiftFormDTO.getStartMileage();
+        startMileage = startMileageString.isEmpty() ? null : Integer.parseInt(startMileageString);
+        String endMileageString = shiftFormDTO.getEndMileage();
+        endMileage = endMileageString.isEmpty() ? null : Integer.parseInt(endMileageString);
+        String milesString = shiftFormDTO.getMiles();
+        miles = milesString.isEmpty() ? null : Double.parseDouble(milesString);
+        String mpgString = shiftFormDTO.getMpg();
+        mpg = mpgString.isEmpty() ? null : Double.parseDouble(mpgString);
     }
 
     // Methods
@@ -41,42 +46,72 @@ public class Shift extends AbstractEntity {
         endTime = shift.getEndTime();
     }
 
-    // Setters
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-
-    // Getters
+    // Getters and Setters
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
     public LocalTime getStartTime() {
         return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
     }
 
     public LocalTime getEndTime() {
         return endTime;
     }
 
-    // Equals, hash, toString
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
 
+    public Integer getStartMileage() {
+        return startMileage;
+    }
+
+    public void setStartMileage(Integer startMileage) {
+        this.startMileage = startMileage;
+    }
+
+    public Integer getEndMileage() {
+        return endMileage;
+    }
+
+    public void setEndMileage(Integer endMileage) {
+        this.endMileage = endMileage;
+    }
+
+    public Double getMiles() {
+        return miles;
+    }
+
+    public void setMiles(Double miles) {
+        this.miles = miles;
+    }
+
+    public Double getMpg() {
+        return mpg;
+    }
+
+    public void setMpg(Double mpg) {
+        this.mpg = mpg;
+    }
+
+    // Equals, hash, toString
     @Override
     public String toString() {
         return "Shift: " + date +
