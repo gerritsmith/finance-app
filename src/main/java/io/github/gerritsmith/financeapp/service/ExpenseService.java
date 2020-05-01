@@ -50,4 +50,22 @@ public class ExpenseService {
         return expenseRepository.save(expense);
     }
 
+    // Update
+    @Transactional
+    public Expense updateExpense(long expenseId, Expense updatedExpense) throws ExpenseExistsException {
+        Expense expenseToUpdate = findByIdAsUser(expenseId, updatedExpense.getUser());
+        Expense expenseExistsAtDateTime = findByUserAndDateAndTimeAndDescription(updatedExpense.getUser(),
+                updatedExpense.getDate(),
+                updatedExpense.getTime(),
+                updatedExpense.getDescription());
+        if (expenseExistsAtDateTime != null && !expenseToUpdate.equals(expenseExistsAtDateTime)) {
+            throw new ExpenseExistsException("Already have expense record at " +
+                    " on " + expenseExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
+                    " at " + expenseExistsAtDateTime.getTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
+                    " for " + expenseExistsAtDateTime.getDescription());
+        }
+        expenseToUpdate.update(updatedExpense);
+        return expenseRepository.save(expenseToUpdate);
+    }
+
 }

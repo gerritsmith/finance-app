@@ -84,4 +84,23 @@ public class ExpenseController {
         return "expense/form";
     }
 
+    @PostMapping("/expense/{expenseId}")
+    public String processExpenseUpdateForm(@PathVariable long expenseId,
+                                           @ModelAttribute @Valid ExpenseFormDTO expenseFormDTO,
+                                           Errors errors,
+                                           Principal principal) {
+        if (errors.hasErrors()) {
+            return "expense/form";
+        }
+        try {
+            User user = userService.findUserByUsername(principal.getName());
+            Expense updatedExpense = new Expense(user, expenseFormDTO);
+            expenseService.updateExpense(expenseId, updatedExpense);
+        } catch (ExpenseExistsException e) {
+            errors.reject("expense.alreadyExists", e.getMessage());
+            return "expense/form";
+        }
+        return "redirect:/expenses";
+    }
+
 }

@@ -56,14 +56,13 @@ public class DeliveryService {
         Delivery deliveryExistsAtDateTime = findByUserAndDateAndTime(updatedDelivery.getUser(),
                 updatedDelivery.getDate(),
                 updatedDelivery.getTime());
-        if (deliveryExistsAtDateTime !=null && !deliveryToUpdate.equals(deliveryExistsAtDateTime)) {
+        if (deliveryExistsAtDateTime != null && !deliveryToUpdate.equals(deliveryExistsAtDateTime)) {
             throw new DeliveryExistsException("Already have delivery record at " +
                     deliveryExistsAtDateTime.displayTime() +
                     " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
         }
         deliveryToUpdate.update(updatedDelivery);
-        deliveryRepository.save(deliveryToUpdate);
-        return deliveryToUpdate;
+        return deliveryRepository.save(deliveryToUpdate);
     }
 
 }
