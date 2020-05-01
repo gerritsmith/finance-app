@@ -10,21 +10,66 @@
     <form th:action="@{${#request.requestURI}}" method="post" th:object="${shiftFormDTO}">
         <div class="form-group">
             <label th:for="date">Date</label>
-            <input type="date" th:field="*{date}" class="form-control"
+            <input type="date" th:field="*{date}" required="required" class="form-control"
                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
             <p class="error" th:errors="*{date}"></p>
         </div>
-        <div class="form-group">
-            <label th:for="startTime">Start Time</label>
-            <input type="time" th:field="*{startTime}" class="form-control"
-                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
-            <p class="error" th:errors="*{startTime}"></p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="startTime">Start Time</label>
+                    <input type="time" th:field="*{startTime}" required="required" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{startTime}"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="startMileage">Start Mileage</label>
+                    <input type="text" th:field="*{startMileage}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{startMileage}"></p>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label th:for="endTime">End Time</label>
-            <input type="time" th:field="*{endTime}" class="form-control"
-                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
-            <p class="error" th:errors="*{endTime}"></p>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="endTime">End Time</label>
+                    <input type="time" th:field="*{endTime}" required="required" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{endTime}"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="endMileage">End Mileage</label>
+                    <input type="text" th:field="*{endMileage}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{endMileage}"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="miles">Miles</label>
+                    <input type="text" th:field="*{miles}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{miles}"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="mpg">MPG</label>
+                    <input type="text" th:field="*{mpg}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{mpg}"></p>
+                </div>
+            </div>
         </div>
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
