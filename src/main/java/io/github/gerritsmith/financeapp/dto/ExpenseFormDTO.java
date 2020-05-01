@@ -2,6 +2,7 @@ package io.github.gerritsmith.financeapp.dto;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
@@ -23,9 +24,9 @@ public class ExpenseFormDTO {
     private String amount;
 
     @Pattern(regexp = "\\d*", message = "mileage must be an non-negative integer")
-    private Integer mileage;
+    private String mileage;
 
-    @NotNull
+    @NotBlank(message = "description is required")
     private String description;
     
     // Constructors
@@ -36,45 +37,40 @@ public class ExpenseFormDTO {
         return date;
     }
 
-    public ExpenseFormDTO setDate(LocalDate date) {
+    public void setDate(LocalDate date) {
         this.date = date;
-        return this;
     }
 
     public LocalTime getTime() {
         return time;
     }
 
-    public ExpenseFormDTO setTime(LocalTime time) {
+    public void setTime(LocalTime time) {
         this.time = time;
-        return this;
     }
 
     public String getAmount() {
         return amount;
     }
 
-    public ExpenseFormDTO setAmount(String amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
-        return this;
     }
 
-    public Integer getMileage() {
+    public String getMileage() {
         return mileage;
     }
 
-    public ExpenseFormDTO setMileage(Integer mileage) {
+    public void setMileage(String mileage) {
         this.mileage = mileage;
-        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public ExpenseFormDTO setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
-        return this;
     }
-    
+
 }
