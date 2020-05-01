@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -67,6 +68,20 @@ public class ExpenseController {
             return "expense/form";
         }
         return "redirect:/expenses";
+    }
+
+    @GetMapping("/expense/{expenseId}")
+    public String displayExpenseDetails(@PathVariable long expenseId,
+                                        Principal principal,
+                                        Model model) {
+        User user = userService.findUserByUsername(principal.getName());
+        Expense expense = expenseService.findByIdAsUser(expenseId, user);
+        if (expense == null) {
+            return "error/404";
+        }
+        ExpenseFormDTO expenseFormDTO = new ExpenseFormDTO(expense);
+        model.addAttribute("expenseFormDTO", expenseFormDTO);
+        return "expense/form";
     }
 
 }

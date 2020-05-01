@@ -1,5 +1,6 @@
 package io.github.gerritsmith.financeapp.dto;
 
+import io.github.gerritsmith.financeapp.model.Expense;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -31,6 +32,14 @@ public class ExpenseFormDTO {
     
     // Constructors
     public ExpenseFormDTO() {}
+
+    public ExpenseFormDTO(Expense expense) {
+        date = expense.getDate();
+        time = expense.getTime();
+        amount = Double.toString(expense.getAmount());
+        mileage = (expense.getMileage() == null) ? "" : expense.getMileage().toString();
+        description = expense.getDescription();
+    }
     
     // Getters and Setters
     public LocalDate getDate() {
