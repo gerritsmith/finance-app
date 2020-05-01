@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class ExpenseService {
@@ -26,6 +27,10 @@ public class ExpenseService {
     // Read
     public Expense findByUserAndDateAndTimeAndDescription(User user, LocalDate date, LocalTime time, String description) {
         return expenseRepository.findByUserAndDateAndTimeAndDescription(user, date, time, description);
+    }
+
+    public List<Expense> findAllExpensesByUser(User user) {
+        return expenseRepository.findAllByUser(user);
     }
 
     // Create
