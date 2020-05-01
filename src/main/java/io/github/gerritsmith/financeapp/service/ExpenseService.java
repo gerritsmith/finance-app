@@ -33,6 +33,10 @@ public class ExpenseService {
         return expenseRepository.findAllByUser(user);
     }
 
+    public Expense findByIdAsUser(long id, User user) {
+        return expenseRepository.findByIdAndUser(id, user);
+    }
+
     // Create
     @Transactional
     public Expense addExpense(Expense expense) throws ExpenseExistsException {

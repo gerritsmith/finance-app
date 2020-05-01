@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface ExpenseRepository extends CrudRepository<Expense, Long> {
 
+    Expense findByIdAndUser(long id, User user);
+
     Expense findByUserAndDateAndTimeAndDescription(User user,
                                                    LocalDate date,
                                                    LocalTime time,
