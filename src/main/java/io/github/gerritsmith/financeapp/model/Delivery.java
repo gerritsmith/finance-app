@@ -4,6 +4,7 @@ import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -18,23 +19,28 @@ public class Delivery extends AbstractEntity {
     private LocalTime time;
     private double total;
 
+    private Double appMiles;
+    private Double appWaitTime;
+    private Double totalMiles;
+    private Duration totalTime;
+
     // Constructors
     public Delivery() {}
-
-    public Delivery(User user, LocalDate date, LocalTime time, double total) {
-        this.user = user;
-        this.date = date;
-        this.time = time;
-        this.total = total;
-    }
 
     public Delivery(User user, DeliveryFormDTO deliveryFormDTO) {
         this.user = user;
         date = deliveryFormDTO.getDate();
         time = deliveryFormDTO.getTime();
         String totalString = deliveryFormDTO.getTotal();
-        totalString = totalString.isEmpty() ? "0" : totalString;
-        total = Double.parseDouble(totalString);
+        total = totalString.isEmpty() ? 0 : Double.parseDouble(totalString);
+        String appMilesString = deliveryFormDTO.getAppMiles();
+        appMiles = appMilesString.isEmpty() ? null : Double.parseDouble(appMilesString);
+        String appWaitTimeString = deliveryFormDTO.getAppWaitTime();
+        appWaitTime = appWaitTimeString.isEmpty() ? null : Double.parseDouble(appWaitTimeString);
+        String totalMilesString = deliveryFormDTO.getTotalMiles();
+        totalMiles = totalMilesString.isEmpty() ? null : Double.parseDouble(totalMilesString);
+        String totalTimeString = deliveryFormDTO.getTotalTime();
+        totalTime = totalTimeString.isEmpty() ? null : Duration.ofMinutes(Long.parseLong(totalTimeString));
     }
 
     // Methods
@@ -46,40 +52,75 @@ public class Delivery extends AbstractEntity {
         date = delivery.getDate();
         time = delivery.getTime();
         total = delivery.getTotal();
+        appMiles = delivery.getAppMiles();
+        appWaitTime = delivery.getAppWaitTime();
+        totalMiles = delivery.getTotalMiles();
+        totalTime = delivery.getTotalTime();
     }
 
-    // Setters
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
+    // Getters and Setters
+    public User getUser() {
+        return user;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    // Getters
     public LocalDate getDate() {
         return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public LocalTime getTime() {
         return time;
     }
 
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
     public double getTotal() {
         return total;
     }
 
-    public User getUser() {
-        return user;
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public Double getAppMiles() {
+        return appMiles;
+    }
+
+    public void setAppMiles(Double appMiles) {
+        this.appMiles = appMiles;
+    }
+
+    public Double getAppWaitTime() {
+        return appWaitTime;
+    }
+
+    public void setAppWaitTime(Double appWaitTime) {
+        this.appWaitTime = appWaitTime;
+    }
+
+    public Double getTotalMiles() {
+        return totalMiles;
+    }
+
+    public void setTotalMiles(Double totalMiles) {
+        this.totalMiles = totalMiles;
+    }
+
+    public Duration getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(Duration totalTime) {
+        this.totalTime = totalTime;
     }
 
     // Equals, hash, toString
