@@ -3,8 +3,9 @@ package io.github.gerritsmith.financeapp.dto;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.*;
-import java.time.Duration;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -101,5 +102,5 @@ public class DeliveryFormDTO {
     public void setTotal(String total) {
         this.total = total;
     }
-    
+
 }
