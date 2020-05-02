@@ -26,7 +26,7 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "app wait time must be in the form 0.00")
     private String appWaitTime;
 
-    @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "total miles must be in the form 0.0")
+    @Pattern(regexp = "(\\d+\\.?\\d{0,1}|\\.\\d)?", message = "total miles must be in the form 0.0")
     private String totalMiles;
 
     @Pattern(regexp = "\\d*", message = "total time must a non-negative integer")
@@ -43,6 +43,10 @@ public class DeliveryFormDTO {
         date = delivery.getDate();
         time = delivery.getTime();
         total = Double.toString(delivery.getTotal());
+        appMiles = (delivery.getAppMiles() == null) ? "" : Double.toString(delivery.getAppMiles());
+        appWaitTime = (delivery.getAppWaitTime() == null) ? "" : Double.toString(delivery.getAppWaitTime());
+        totalMiles = (delivery.getTotalMiles() == null) ? "" : Double.toString(delivery.getTotalMiles());
+        totalTime = (delivery.getTotalTime() == null) ? "" : Long.toString(delivery.getTotalTime().toMinutes());
     }
 
 
