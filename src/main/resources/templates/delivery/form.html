@@ -84,7 +84,7 @@
                         <th>Note</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="formTableBody">
                     <tr><th:block th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
                         <td>
                             <input type="text" class="form-control"
@@ -114,6 +114,7 @@
                     </th:block></tr>
                 </tbody>
             </table>
+            <button id="addRowButton" type="button" onclick="addRow();" class="btn btn-info">Add Row</button>
         </div>
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
@@ -135,6 +136,7 @@
 </div>
 
 <script th:src="@{/js/form-mode.js}"></script>
+<script th:src="@{/js/delivery-add-leg-row.js}"></script>
 
 <footer th:replace="fragments :: footer"></footer>
 </body>
