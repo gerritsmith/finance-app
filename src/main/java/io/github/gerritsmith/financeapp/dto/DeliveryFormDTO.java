@@ -9,11 +9,22 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryFormDTO {
 
-    private List<DeliveryLeg> legs;
+    private List<DeliveryLeg> legs = new ArrayList<>();
+
+
+    public DeliveryFormDTO() {
+        DeliveryLeg firstLeg = new DeliveryLeg();
+        firstLeg.setFoodTotal("20");
+        firstLeg.setTip("3");
+        firstLeg.setPickup("Pizza");
+        firstLeg.setDropoff("House");
+        legs.add(firstLeg);
+    }
 
     public List<DeliveryLeg> getLegs() {
         return legs;
@@ -47,9 +58,8 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
     private String total;
 
-
     // Constructors
-    public DeliveryFormDTO() {}
+//    public DeliveryFormDTO() {}
 
     public DeliveryFormDTO(Delivery delivery) {
         date = delivery.getDate();
