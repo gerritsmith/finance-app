@@ -72,6 +72,49 @@
             <p class="error" th:errors="*{total}"></p>
         </div>
 
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label>Food Total</label>
+                    <input type="text" th:field="*{legs[0].foodTotal}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{legs[0].foodTotal}"></p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Tip</label>
+                    <input type="text" th:field="*{legs[0].tip}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{legs[0].tip}"></p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Pickup</label>
+                    <input type="text" th:field="*{legs[0].pickup}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{legs[0].pickup}"></p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Dropoff</label>
+                    <input type="text" th:field="*{legs[0].dropoff}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{legs[0].dropoff}"></p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label>Note</label>
+                    <input type="text" th:field="*{legs[0].note}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{legs[0].note}"></p>
+                </div>
+            </div>
+        </div>
+
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
             <p class="error" th:text="${error}"></p>
         </div>

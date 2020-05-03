@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.dto;
 
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -8,8 +9,19 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class DeliveryFormDTO {
+
+    private List<DeliveryLeg> legs;
+
+    public List<DeliveryLeg> getLegs() {
+        return legs;
+    }
+
+    public void setLegs(List<DeliveryLeg> legs) {
+        this.legs = legs;
+    }
 
     @NotNull(message = "date is required")
     @PastOrPresent(message = "date can't be in the future")
