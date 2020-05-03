@@ -4,6 +4,7 @@ import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
@@ -13,26 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DeliveryFormDTO {
-
-    private List<DeliveryLeg> legs = new ArrayList<>();
-
-
-    public DeliveryFormDTO() {
-        DeliveryLeg firstLeg = new DeliveryLeg();
-        firstLeg.setFoodTotal("20");
-        firstLeg.setTip("3");
-        firstLeg.setPickup("Pizza");
-        firstLeg.setDropoff("House");
-        legs.add(firstLeg);
-    }
-
-    public List<DeliveryLeg> getLegs() {
-        return legs;
-    }
-
-    public void setLegs(List<DeliveryLeg> legs) {
-        this.legs = legs;
-    }
 
     @NotNull(message = "date is required")
     @PastOrPresent(message = "date can't be in the future")
@@ -58,8 +39,10 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
     private String total;
 
+    private List<DeliveryLeg> legs = new ArrayList<>();
+
     // Constructors
-//    public DeliveryFormDTO() {}
+    public DeliveryFormDTO() {}
 
     public DeliveryFormDTO(Delivery delivery) {
         date = delivery.getDate();
@@ -70,7 +53,6 @@ public class DeliveryFormDTO {
         totalMiles = (delivery.getTotalMiles() == null) ? "" : Double.toString(delivery.getTotalMiles());
         totalTime = (delivery.getTotalTime() == null) ? "" : Long.toString(delivery.getTotalTime().toMinutes());
     }
-
 
     // Getters and Setters
     public LocalDate getDate() {
@@ -127,6 +109,14 @@ public class DeliveryFormDTO {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public List<DeliveryLeg> getLegs() {
+        return legs;
+    }
+
+    public void setLegs(List<DeliveryLeg> legs) {
+        this.legs = legs;
     }
 
 }

@@ -1,6 +1,13 @@
 package io.github.gerritsmith.financeapp.model;
 
-public class DeliveryLeg {
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+
+@Entity
+public class DeliveryLeg extends AbstractEntity {
+
+    @ManyToOne
+    private Delivery delivery;
 
     private String foodTotal;
     private String tip;
@@ -9,6 +16,14 @@ public class DeliveryLeg {
     private String note;
 
     // Getters and Setters
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
     public String getFoodTotal() {
         return foodTotal;
     }
