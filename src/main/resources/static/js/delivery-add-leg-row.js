@@ -2,7 +2,7 @@ let tbody = document.getElementById("formTableBody");
 
 function addRow() {
   let rowNumber = tbody.rows.length;
-  let row = tbody.insertRow();
+  let row = tbody.insertRow(-1);
   let foodTotalCell = row.insertCell();
   foodTotalCell.innerHTML = `<input type="text" class="form-control" name="legs[${rowNumber}].foodTotal"/>`;
   let tipCell = row.insertCell();

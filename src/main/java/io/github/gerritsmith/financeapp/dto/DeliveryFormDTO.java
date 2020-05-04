@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.dto;
 
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -52,6 +53,9 @@ public class DeliveryFormDTO {
         appWaitTime = (delivery.getAppWaitTime() == null) ? "" : Double.toString(delivery.getAppWaitTime());
         totalMiles = (delivery.getTotalMiles() == null) ? "" : Double.toString(delivery.getTotalMiles());
         totalTime = (delivery.getTotalTime() == null) ? "" : Long.toString(delivery.getTotalTime().toMinutes());
+        for (DeliveryLeg deliveryLeg : delivery.getLegs()) {
+            legs.add(new DeliveryLegFormDTO(deliveryLeg));
+        }
     }
 
     // Getters and Setters

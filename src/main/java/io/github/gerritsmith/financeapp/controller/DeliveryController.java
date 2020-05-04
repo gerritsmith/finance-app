@@ -100,14 +100,14 @@ public class DeliveryController {
                                             @ModelAttribute @Valid DeliveryFormDTO deliveryFormDTO,
                                             Errors errors,
                                             Principal principal) {
-//        ////////////////////////////////////
-//        System.out.println(deliveryFormDTO.getLegs());
-//        if (deliveryFormDTO.getLegs() != null) {
-//            for (DeliveryLeg deliveryLeg : deliveryFormDTO.getLegs()) {
-//                System.out.println(deliveryLeg);
-//            }
-//        }
-//        ////////////////////////////////////
+        ////////////////////////////////////
+        System.out.println(deliveryFormDTO.getLegs());
+        if (deliveryFormDTO.getLegs() != null) {
+            for (DeliveryLegFormDTO deliveryLegFormDTO : deliveryFormDTO.getLegs()) {
+                System.out.println(deliveryLegFormDTO);
+            }
+        }
+        ////////////////////////////////////
         if (errors.hasErrors()) {
             return "delivery/form";
         }

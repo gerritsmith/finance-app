@@ -1,5 +1,7 @@
 package io.github.gerritsmith.financeapp.dto;
 
+import io.github.gerritsmith.financeapp.model.DeliveryLeg;
+
 public class DeliveryLegFormDTO {
 
     private String foodTotal;
@@ -7,6 +9,17 @@ public class DeliveryLegFormDTO {
     private String pickup;
     private String dropoff;
     private String note;
+
+    // Constructors
+    public DeliveryLegFormDTO() {}
+
+    public DeliveryLegFormDTO(DeliveryLeg deliveryLeg) {
+        foodTotal = deliveryLeg.getFoodTotal();
+        tip = deliveryLeg.getTip();
+        pickup = deliveryLeg.getPickup();
+        dropoff = deliveryLeg.getDropoff();
+        note = deliveryLeg.getNote();
+    }
 
     // Getters and Setters
     public String getFoodTotal() {

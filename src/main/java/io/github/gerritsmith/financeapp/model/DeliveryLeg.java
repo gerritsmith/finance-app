@@ -29,6 +29,15 @@ public class DeliveryLeg extends AbstractEntity {
         note = deliveryLegFormDTO.getNote();
     }
 
+    // Methods
+    public void update(DeliveryLeg deliveryLeg) {
+        foodTotal = deliveryLeg.getFoodTotal();
+        tip = deliveryLeg.getTip();
+        pickup = deliveryLeg.getPickup();
+        dropoff = deliveryLeg.getDropoff();
+        note = deliveryLeg.getNote();
+    }
+
     // Getters and Setters
     public Delivery getDelivery() {
         return delivery;

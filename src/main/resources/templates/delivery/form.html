@@ -83,9 +83,8 @@
                         <th>Note</th>
                     </tr>
                 </thead>
-                <tbody id="formTableBody"
-                       th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
-                    <tr>
+                <tbody id="formTableBody">
+                    <tr th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
                         <td>
                             <input type="text" class="form-control"
                                    th:field="*{legs[__${i}__].foodTotal}"
