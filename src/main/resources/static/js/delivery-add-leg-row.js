@@ -1,4 +1,3 @@
-let addRowButton = document.getElementById("addRowButton");
 let tbody = document.getElementById("formTableBody");
 
 function addRow() {

@@ -1,15 +1,6 @@
-package io.github.gerritsmith.financeapp.model;
+package io.github.gerritsmith.financeapp.dto;
 
-import io.github.gerritsmith.financeapp.dto.DeliveryLegFormDTO;
-
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-
-@Entity
-public class DeliveryLeg extends AbstractEntity {
-
-    @ManyToOne
-    private Delivery delivery;
+public class DeliveryLegFormDTO {
 
     private String foodTotal;
     private String tip;
@@ -17,27 +8,7 @@ public class DeliveryLeg extends AbstractEntity {
     private String dropoff;
     private String note;
 
-    // Constructors
-    public DeliveryLeg() {}
-
-    public DeliveryLeg(Delivery delivery, DeliveryLegFormDTO deliveryLegFormDTO) {
-        this.delivery = delivery;
-        foodTotal = deliveryLegFormDTO.getFoodTotal();
-        tip = deliveryLegFormDTO.getTip();
-        pickup = deliveryLegFormDTO.getPickup();
-        dropoff = deliveryLegFormDTO.getDropoff();
-        note = deliveryLegFormDTO.getNote();
-    }
-
     // Getters and Setters
-    public Delivery getDelivery() {
-        return delivery;
-    }
-
-    public void setDelivery(Delivery delivery) {
-        this.delivery = delivery;
-    }
-
     public String getFoodTotal() {
         return foodTotal;
     }
@@ -81,7 +52,7 @@ public class DeliveryLeg extends AbstractEntity {
     // Equals, hash, toString
     @Override
     public String toString() {
-        return "DeliveryLeg{" +
+        return "DeliveryLegFormDTO{" +
                 "foodTotal='" + foodTotal + '\'' +
                 ", tip='" + tip + '\'' +
                 ", pickup='" + pickup + '\'' +

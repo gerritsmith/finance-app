@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.DeliveryLegFormDTO;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.DeliveryLeg;
@@ -61,8 +62,8 @@ public class DeliveryController {
         ////////////////////////////////////
         System.out.println(deliveryFormDTO.getLegs());
         if (deliveryFormDTO.getLegs() != null) {
-            for (DeliveryLeg deliveryLeg : deliveryFormDTO.getLegs()) {
-                System.out.println(deliveryLeg);
+            for (DeliveryLegFormDTO deliveryLegFormDTO : deliveryFormDTO.getLegs()) {
+                System.out.println(deliveryLegFormDTO);
             }
         }
         ////////////////////////////////////
@@ -99,14 +100,14 @@ public class DeliveryController {
                                             @ModelAttribute @Valid DeliveryFormDTO deliveryFormDTO,
                                             Errors errors,
                                             Principal principal) {
-        ////////////////////////////////////
-        System.out.println(deliveryFormDTO.getLegs());
-        if (deliveryFormDTO.getLegs() != null) {
-            for (DeliveryLeg deliveryLeg : deliveryFormDTO.getLegs()) {
-                System.out.println(deliveryLeg);
-            }
-        }
-        ////////////////////////////////////
+//        ////////////////////////////////////
+//        System.out.println(deliveryFormDTO.getLegs());
+//        if (deliveryFormDTO.getLegs() != null) {
+//            for (DeliveryLeg deliveryLeg : deliveryFormDTO.getLegs()) {
+//                System.out.println(deliveryLeg);
+//            }
+//        }
+//        ////////////////////////////////////
         if (errors.hasErrors()) {
             return "delivery/form";
         }

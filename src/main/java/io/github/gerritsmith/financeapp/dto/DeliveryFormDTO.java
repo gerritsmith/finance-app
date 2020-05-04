@@ -1,7 +1,6 @@
 package io.github.gerritsmith.financeapp.dto;
 
 import io.github.gerritsmith.financeapp.model.Delivery;
-import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -39,7 +38,8 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
     private String total;
 
-    private List<DeliveryLeg> legs = new ArrayList<>();
+    @Valid
+    private List<DeliveryLegFormDTO> legs = new ArrayList<>();
 
     // Constructors
     public DeliveryFormDTO() {}
@@ -111,11 +111,11 @@ public class DeliveryFormDTO {
         this.total = total;
     }
 
-    public List<DeliveryLeg> getLegs() {
+    public List<DeliveryLegFormDTO> getLegs() {
         return legs;
     }
 
-    public void setLegs(List<DeliveryLeg> legs) {
+    public void setLegs(List<DeliveryLegFormDTO> legs) {
         this.legs = legs;
     }
 

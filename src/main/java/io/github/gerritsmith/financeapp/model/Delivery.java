@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.model;
 
 import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.DeliveryLegFormDTO;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +30,7 @@ public class Delivery extends AbstractEntity {
     private Duration totalTime;
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
-    private List<DeliveryLeg> legs;
+    private List<DeliveryLeg> legs = new ArrayList<>();
 
     // Constructors
     public Delivery() {}
@@ -47,9 +49,8 @@ public class Delivery extends AbstractEntity {
         totalMiles = totalMilesString.isEmpty() ? null : Double.parseDouble(totalMilesString);
         String totalTimeString = deliveryFormDTO.getTotalTime();
         totalTime = totalTimeString.isEmpty() ? null : Duration.ofMinutes(Long.parseLong(totalTimeString));
-        legs = deliveryFormDTO.getLegs();
-        for (DeliveryLeg deliveryLeg : legs) {
-            deliveryLeg.setDelivery(this);
+        for (DeliveryLegFormDTO deliveryLegFormDTO : deliveryFormDTO.getLegs()) {
+            legs.add(new DeliveryLeg(this, deliveryLegFormDTO));
         }
     }
 

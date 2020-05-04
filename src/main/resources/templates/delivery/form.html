@@ -83,9 +83,9 @@
                         <th>Note</th>
                     </tr>
                 </thead>
-                <tbody id="formTableBody">
-                    <th:block th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
-                        <tr>
+                <tbody id="formTableBody"
+                       th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
+                    <tr>
                         <td>
                             <input type="text" class="form-control"
                                    th:field="*{legs[__${i}__].foodTotal}"
@@ -111,11 +111,13 @@
                                    th:field="*{legs[__${i}__].note}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
-                        </tr>
-                    </th:block>
+                    </tr>
                 </tbody>
             </table>
-            <button id="addRowButton" type="button" onclick="addRow();" class="btn btn-info">Add Row</button>
+            <div th:hidden="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
+                <button id="addRowButton" type="button" onclick="addRow();" class="btn btn-info"
+                        th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">Add Row</button>
+            </div>
         </div>
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
