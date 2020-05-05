@@ -8,8 +8,10 @@ function changeEditState() {
   for (let input of inputFields) {
     input.readOnly = !input.readOnly;
   }
-  addRowButton.disabled = !addRowButton.disabled;
-  addRowButton.parentElement.hidden = !addRowButton.parentElement.hidden;
+  if (addRowButton != null) {
+    addRowButton.disabled = !addRowButton.disabled;
+    addRowButton.parentElement.hidden = !addRowButton.parentElement.hidden;
+  }
   editButton.disabled = !editButton.disabled;
   editButton.hidden = !editButton.hidden;
   cancelButton.disabled = !cancelButton.disabled;
