@@ -2,6 +2,7 @@ package io.github.gerritsmith.financeapp.dto;
 
 import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 public class DeliveryLegFormDTO {
@@ -12,7 +13,9 @@ public class DeliveryLegFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "tip must be in the form 0.00")
     private String tip;
 
+    @NotBlank(message = "pickup location is required")
     private String pickup;
+
     private String dropoff;
     private String note;
 

@@ -102,6 +102,7 @@
                         </td>
                         <td>
                             <input type="text" class="form-control" th:errorclass="delivery-leg-error"
+                                   required="required"
                                    th:field="*{legs[__${i}__].pickup}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
