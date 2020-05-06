@@ -3,6 +3,7 @@ package io.github.gerritsmith.financeapp.service;
 import io.github.gerritsmith.financeapp.data.DeliveryRepository;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,14 @@ import java.util.List;
 public class DeliveryService {
 
     private DeliveryRepository deliveryRepository;
+    private DeliveryLegService deliveryLegService;
 
     // Constructors
     @Autowired
-    public DeliveryService(DeliveryRepository deliveryRepository) {
+    public DeliveryService(DeliveryRepository deliveryRepository,
+                           DeliveryLegService deliveryLegService) {
         this.deliveryRepository = deliveryRepository;
+        this.deliveryLegService = deliveryLegService;
     }
 
     // Read
@@ -61,8 +65,33 @@ public class DeliveryService {
                     deliveryExistsAtDateTime.displayTime() +
                     " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
         }
-        deliveryToUpdate.update(updatedDelivery);
+        transferDeliveryFields(deliveryToUpdate, updatedDelivery);
         return deliveryRepository.save(deliveryToUpdate);
+    }
+
+    // Methods
+    private void transferDeliveryFields(Delivery deliveryToUpdate, Delivery updatedDelivery) {
+        deliveryToUpdate.setDate(updatedDelivery.getDate());
+        deliveryToUpdate.setTime(updatedDelivery.getTime());
+        deliveryToUpdate.setTotal(updatedDelivery.getTotal());
+        deliveryToUpdate.setAppMiles(updatedDelivery.getAppMiles());
+        deliveryToUpdate.setAppWaitTime(updatedDelivery.getAppWaitTime());
+        deliveryToUpdate.setTotalMiles(updatedDelivery.getTotalMiles());
+        deliveryToUpdate.setTotalTime(updatedDelivery.getTotalTime());
+        int originalSize = deliveryToUpdate.getLegs().size();
+        int newSize = updatedDelivery.getLegs().size();
+        for (int i = 0; i < Math.min(originalSize, newSize); i++) {
+            deliveryToUpdate.getLegs().get(i).update(updatedDelivery.getLegs().get(i));
+        }
+        for (int i = originalSize; i < newSize; i++) {
+            DeliveryLeg deliveryLeg = updatedDelivery.getLegs().get(i);
+            deliveryLeg.setDelivery(deliveryToUpdate);
+            deliveryToUpdate.getLegs().add(deliveryLeg);
+        }
+        for (int i = newSize; i < originalSize; i++) {
+            int lastIndex = deliveryToUpdate.getLegs().size() - 1;
+            deliveryLegService.deleteDeliveryLeg(deliveryToUpdate.getLegs().remove(lastIndex));
+        }
     }
 
 }
