@@ -67,16 +67,21 @@ public class Delivery extends AbstractEntity {
         appWaitTime = delivery.getAppWaitTime();
         totalMiles = delivery.getTotalMiles();
         totalTime = delivery.getTotalTime();
-        for (int i = 0; i < legs.size(); i++) {
+        int originalSize = legs.size();
+        int newSize = delivery.getLegs().size();
+        for (int i = 0; i < Math.min(originalSize, newSize); i++) {
             legs.get(i).update(delivery.getLegs().get(i));
         }
-        if (delivery.getLegs().size() > legs.size()) {
-            for (int i = legs.size(); i < delivery.getLegs().size(); i ++) {
-                DeliveryLeg deliveryLeg = delivery.getLegs().get(i);
-                deliveryLeg.setDelivery(this);
-                legs.add(deliveryLeg);
-            }
+        for (int i = originalSize; i < newSize; i++) {
+            DeliveryLeg deliveryLeg = delivery.getLegs().get(i);
+            deliveryLeg.setDelivery(this);
+            legs.add(deliveryLeg);
         }
+        for (int i = newSize; i < originalSize; i++) {
+            legs.remove(legs.size() - 1);
+        }
+        System.out.println("before save");
+        System.out.println(legs);
     }
 
     // Getters and Setters
