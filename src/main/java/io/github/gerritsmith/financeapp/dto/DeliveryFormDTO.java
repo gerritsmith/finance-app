@@ -1,13 +1,17 @@
 package io.github.gerritsmith.financeapp.dto;
 
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeliveryFormDTO {
 
@@ -35,6 +39,8 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
     private String total;
 
+    @Valid
+    private List<DeliveryLegFormDTO> legs = new ArrayList<>();
 
     // Constructors
     public DeliveryFormDTO() {}
@@ -47,8 +53,10 @@ public class DeliveryFormDTO {
         appWaitTime = (delivery.getAppWaitTime() == null) ? "" : Double.toString(delivery.getAppWaitTime());
         totalMiles = (delivery.getTotalMiles() == null) ? "" : Double.toString(delivery.getTotalMiles());
         totalTime = (delivery.getTotalTime() == null) ? "" : Long.toString(delivery.getTotalTime().toMinutes());
+        for (DeliveryLeg deliveryLeg : delivery.getLegs()) {
+            legs.add(new DeliveryLegFormDTO(deliveryLeg));
+        }
     }
-
 
     // Getters and Setters
     public LocalDate getDate() {
@@ -105,6 +113,14 @@ public class DeliveryFormDTO {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public List<DeliveryLegFormDTO> getLegs() {
+        return legs;
+    }
+
+    public void setLegs(List<DeliveryLegFormDTO> legs) {
+        this.legs = legs;
     }
 
 }

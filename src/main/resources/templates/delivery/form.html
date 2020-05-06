@@ -72,13 +72,62 @@
             <p class="error" th:errors="*{total}"></p>
         </div>
 
+        <div class="form-group">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Food Total</th>
+                        <th>Tip</th>
+                        <th>Pickup</th>
+                        <th>Dropoff</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody id="formTableBody">
+                    <tr th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
+                        <td>
+                            <input type="text" class="form-control"
+                                   th:field="*{legs[__${i}__].foodTotal}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control"
+                                   th:field="*{legs[__${i}__].tip}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control"
+                                   th:field="*{legs[__${i}__].pickup}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control"
+                                   th:field="*{legs[__${i}__].dropoff}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control"
+                                   th:field="*{legs[__${i}__].note}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div th:hidden="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
+                <button id="addRowButton" type="button" onclick="addRow();" class="btn btn-info"
+                        th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">Add Row</button>
+                <button id="removeRowButton" type="button" onclick="removeRow();" class="btn btn-warning"
+                        th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">Remove Row</button>
+            </div>
+        </div>
+
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
             <p class="error" th:text="${error}"></p>
         </div>
 
         <div class="form-group" th:unless="${#request.requestURI.endsWith('new')}">
-            <button id="editButton" type="button" onclick="changeEditState();" class="btn btn-primary">Edit</button>
-            <button id="cancelButton" type="reset" onclick="changeEditState();" class="btn btn-warning"
+            <button id="editButton" type="button" onclick="changeDeliveryEditState();" class="btn btn-primary">Edit</button>
+            <button id="cancelButton" type="reset" onclick="changeDeliveryEditState();" class="btn btn-warning"
                     hidden="true" disabled="true">Cancel Edit</button>
         </div>
 
@@ -91,6 +140,7 @@
 </div>
 
 <script th:src="@{/js/form-mode.js}"></script>
+<script th:src="@{/js/delivery-form.js}"></script>
 
 <footer th:replace="fragments :: footer"></footer>
 </body>

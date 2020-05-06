@@ -1,13 +1,18 @@
 package io.github.gerritsmith.financeapp.model;
 
 import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.DeliveryLegFormDTO;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Delivery extends AbstractEntity {
@@ -23,6 +28,9 @@ public class Delivery extends AbstractEntity {
     private Double appWaitTime;
     private Double totalMiles;
     private Duration totalTime;
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
+    private List<DeliveryLeg> legs = new ArrayList<>();
 
     // Constructors
     public Delivery() {}
@@ -41,21 +49,14 @@ public class Delivery extends AbstractEntity {
         totalMiles = totalMilesString.isEmpty() ? null : Double.parseDouble(totalMilesString);
         String totalTimeString = deliveryFormDTO.getTotalTime();
         totalTime = totalTimeString.isEmpty() ? null : Duration.ofMinutes(Long.parseLong(totalTimeString));
+        for (DeliveryLegFormDTO deliveryLegFormDTO : deliveryFormDTO.getLegs()) {
+            legs.add(new DeliveryLeg(this, deliveryLegFormDTO));
+        }
     }
 
     // Methods
     public String displayTime() {
         return time.format(DateTimeFormatter.ofPattern("h:mm a"));
-    }
-
-    public void update(Delivery delivery) {
-        date = delivery.getDate();
-        time = delivery.getTime();
-        total = delivery.getTotal();
-        appMiles = delivery.getAppMiles();
-        appWaitTime = delivery.getAppWaitTime();
-        totalMiles = delivery.getTotalMiles();
-        totalTime = delivery.getTotalTime();
     }
 
     // Getters and Setters
@@ -121,6 +122,14 @@ public class Delivery extends AbstractEntity {
 
     public void setTotalTime(Duration totalTime) {
         this.totalTime = totalTime;
+    }
+
+    public List<DeliveryLeg> getLegs() {
+        return legs;
+    }
+
+    public void setLegs(List<DeliveryLeg> legs) {
+        this.legs = legs;
     }
 
     // Equals, hash, toString
