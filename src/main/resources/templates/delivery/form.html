@@ -8,6 +8,11 @@
     <h1>Delivery Form</h1>
 
     <form th:action="@{${#request.requestURI}}" method="post" th:object="${deliveryFormDTO}">
+
+        <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
+            <p class="error" th:text="${error}"></p>
+        </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
@@ -86,27 +91,28 @@
                 <tbody id="formTableBody">
                     <tr th:each="i : *{#lists.size(legs) == 0 ? #numbers.sequence(0, 0) : #numbers.sequence(0, #lists.size(legs) - 1)}">
                         <td>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
                                    th:field="*{legs[__${i}__].foodTotal}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
                                    th:field="*{legs[__${i}__].tip}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
+                                   required="required"
                                    th:field="*{legs[__${i}__].pickup}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
                                    th:field="*{legs[__${i}__].dropoff}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
                                    th:field="*{legs[__${i}__].note}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
@@ -119,10 +125,6 @@
                 <button id="removeRowButton" type="button" onclick="removeRow();" class="btn btn-warning"
                         th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">Remove Row</button>
             </div>
-        </div>
-
-        <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
-            <p class="error" th:text="${error}"></p>
         </div>
 
         <div class="form-group" th:unless="${#request.requestURI.endsWith('new')}">

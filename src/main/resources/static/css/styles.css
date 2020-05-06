@@ -5,3 +5,7 @@
 .error {
     color: red;
 }
+
+.form-control.delivery-leg-error {
+    background-color: #f8d7da;
+}

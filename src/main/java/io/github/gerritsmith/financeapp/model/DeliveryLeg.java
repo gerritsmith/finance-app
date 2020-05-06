@@ -11,8 +11,8 @@ public class DeliveryLeg extends AbstractEntity {
     @ManyToOne
     private Delivery delivery;
 
-    private String foodTotal;
-    private String tip;
+    private Double foodTotal;
+    private Double tip;
     private String pickup;
     private String dropoff;
     private String note;
@@ -22,8 +22,10 @@ public class DeliveryLeg extends AbstractEntity {
 
     public DeliveryLeg(Delivery delivery, DeliveryLegFormDTO deliveryLegFormDTO) {
         this.delivery = delivery;
-        foodTotal = deliveryLegFormDTO.getFoodTotal();
-        tip = deliveryLegFormDTO.getTip();
+        String foodTotalString = deliveryLegFormDTO.getFoodTotal();
+        foodTotal = foodTotalString.isEmpty() ? null : Double.parseDouble(foodTotalString);
+        String tipString = deliveryLegFormDTO.getTip();
+        tip = tipString.isEmpty() ? null : Double.parseDouble(tipString);
         pickup = deliveryLegFormDTO.getPickup();
         dropoff = deliveryLegFormDTO.getDropoff();
         note = deliveryLegFormDTO.getNote();
@@ -47,19 +49,19 @@ public class DeliveryLeg extends AbstractEntity {
         this.delivery = delivery;
     }
 
-    public String getFoodTotal() {
+    public Double getFoodTotal() {
         return foodTotal;
     }
 
-    public void setFoodTotal(String foodTotal) {
+    public void setFoodTotal(Double foodTotal) {
         this.foodTotal = foodTotal;
     }
 
-    public String getTip() {
+    public Double getTip() {
         return tip;
     }
 
-    public void setTip(String tip) {
+    public void setTip(Double tip) {
         this.tip = tip;
     }
 
