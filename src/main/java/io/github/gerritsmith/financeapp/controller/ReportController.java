@@ -1,8 +1,8 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.StatsForDayDTO;
+import io.github.gerritsmith.financeapp.dto.DayReportDTO;
 import io.github.gerritsmith.financeapp.model.User;
-import io.github.gerritsmith.financeapp.service.StatsService;
+import io.github.gerritsmith.financeapp.service.ReportService;
 import io.github.gerritsmith.financeapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +21,7 @@ public class ReportController {
     UserService userService;
 
     @Autowired
-    StatsService statsService;
+    ReportService reportService;
 
     @GetMapping("/reports")
     public String displayReportsHome() {
@@ -34,9 +34,9 @@ public class ReportController {
                                    Model model,
                                    Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
-        StatsForDayDTO statsForDayDTO = statsService.getUserStatsForDay(user, date);
+        DayReportDTO dayReportDTO = reportService.getDayReport(user, date);
         model.addAttribute("date", date);
-        model.addAttribute("statsForDayDTO", statsForDayDTO);
+        model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
     }
 

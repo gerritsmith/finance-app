@@ -7,7 +7,7 @@ import io.github.gerritsmith.financeapp.model.Shift;
 import java.time.Duration;
 import java.util.List;
 
-public class StatsForDayDTO {
+public class DayReportDTO {
 
     private int deliveryCount;
 
@@ -26,14 +26,14 @@ public class StatsForDayDTO {
     private List<Expense> expenses;
 
     // Constructors
-    public StatsForDayDTO() {}
+    public DayReportDTO() {}
 
     // Getters and Builder Setters
     public int getDeliveryCount() {
         return deliveryCount;
     }
 
-    public StatsForDayDTO setDeliveryCount(int deliveryCount) {
+    public DayReportDTO setDeliveryCount(int deliveryCount) {
         this.deliveryCount = deliveryCount;
         return this;
     }
@@ -42,7 +42,7 @@ public class StatsForDayDTO {
         return totalIncome;
     }
 
-    public StatsForDayDTO setTotalIncome(double totalIncome) {
+    public DayReportDTO setTotalIncome(double totalIncome) {
         this.totalIncome = totalIncome;
         return this;
     }
@@ -51,7 +51,7 @@ public class StatsForDayDTO {
         return totalHours;
     }
 
-    public StatsForDayDTO setTotalHours(Duration totalHours) {
+    public DayReportDTO setTotalHours(Duration totalHours) {
         this.totalHours = totalHours;
         return this;
     }
@@ -60,7 +60,7 @@ public class StatsForDayDTO {
         return totalMiles;
     }
 
-    public StatsForDayDTO setTotalMiles(double totalMiles) {
+    public DayReportDTO setTotalMiles(double totalMiles) {
         this.totalMiles = totalMiles;
         return this;
     }
@@ -69,7 +69,7 @@ public class StatsForDayDTO {
         return deliveriesPerHour;
     }
 
-    public StatsForDayDTO setDeliveriesPerHour(double deliveriesPerHour) {
+    public DayReportDTO setDeliveriesPerHour(double deliveriesPerHour) {
         this.deliveriesPerHour = deliveriesPerHour;
         return this;
     }
@@ -78,7 +78,7 @@ public class StatsForDayDTO {
         return incomePerHour;
     }
 
-    public StatsForDayDTO setIncomePerHour(double incomePerHour) {
+    public DayReportDTO setIncomePerHour(double incomePerHour) {
         this.incomePerHour = incomePerHour;
         return this;
     }
@@ -87,7 +87,7 @@ public class StatsForDayDTO {
         return milesPerHour;
     }
 
-    public StatsForDayDTO setMilesPerHour(double milesPerHour) {
+    public DayReportDTO setMilesPerHour(double milesPerHour) {
         this.milesPerHour = milesPerHour;
         return this;
     }
@@ -96,7 +96,7 @@ public class StatsForDayDTO {
         return incomePerDelivery;
     }
 
-    public StatsForDayDTO setIncomePerDelivery(double incomePerDelivery) {
+    public DayReportDTO setIncomePerDelivery(double incomePerDelivery) {
         this.incomePerDelivery = incomePerDelivery;
         return this;
     }
@@ -105,7 +105,7 @@ public class StatsForDayDTO {
         return milesPerDelivery;
     }
 
-    public StatsForDayDTO setMilesPerDelivery(double milesPerDelivery) {
+    public DayReportDTO setMilesPerDelivery(double milesPerDelivery) {
         this.milesPerDelivery = milesPerDelivery;
         return this;
     }
@@ -114,7 +114,7 @@ public class StatsForDayDTO {
         return deliveries;
     }
 
-    public StatsForDayDTO setDeliveries(List<Delivery> deliveries) {
+    public DayReportDTO setDeliveries(List<Delivery> deliveries) {
         this.deliveries = deliveries;
         return this;
     }
@@ -123,7 +123,7 @@ public class StatsForDayDTO {
         return shifts;
     }
 
-    public StatsForDayDTO setShifts(List<Shift> shifts) {
+    public DayReportDTO setShifts(List<Shift> shifts) {
         this.shifts = shifts;
         return this;
     }
@@ -132,7 +132,7 @@ public class StatsForDayDTO {
         return expenses;
     }
 
-    public StatsForDayDTO setExpenses(List<Expense> expenses) {
+    public DayReportDTO setExpenses(List<Expense> expenses) {
         this.expenses = expenses;
         return this;
     }

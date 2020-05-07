@@ -7,7 +7,8 @@
 <div class="container">
     <h1>Report for <span th:text="${#temporals.format(date,'MMM d yyyy')}">MMM d yyyy</span></h1>
 
-    <th:block th:object="${statsForDayDTO}">
+    <th:block th:object="${dayReportDTO}">
+        <h2>Deliveries</h2>
         <table th:replace="/delivery/fragments :: table"></table>
     </th:block>
 
