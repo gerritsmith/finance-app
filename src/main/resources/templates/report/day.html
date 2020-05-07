@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<header th:replace="fragments :: header"></header>
+
+<div class="container">
+    <h1>Report for <span th:text="${#temporals.format(date,'MMM d yyyy')}">MMM d yyyy</span></h1>
+
+
+
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>
