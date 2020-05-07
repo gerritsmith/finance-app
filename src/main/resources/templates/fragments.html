@@ -48,7 +48,20 @@
                     Expenses
                     <span th:if="${#request.requestURI.startsWith('/expense')}" class="sr-only">(current)</span>
                 </a>
-                <a class="nav-item nav-link disabled" th:href="@{/reports}">Reports</a>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" th:href="@{/reports}"
+                       id="reportsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       th:classappend="${#request.requestURI.startsWith('/report') ? 'active' : ''}">
+                        Reports
+                        <span th:if="${#request.requestURI.startsWith('/report')}" class="sr-only">(current)</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportsDropdown">
+                        <a class="dropdown-item" th:href="@{/reports}">Reports Home</a>
+                        <a class="dropdown-item disabled" th:href="@{/report/by-day}">By Day</a>
+                        <a class="dropdown-item disabled" th:href="@{/report/by-month}">By Month</a>
+                        <a class="dropdown-item disabled" th:href="@{/report/by-year}">By Year</a>
+                    </div>
+                </div>
             </div>
             <span class="navbar-text mr-3" sec:authorize="isAuthenticated()" sec:authentication="name"></span>
             <div class="navbar-nav" sec:authorize="isAnonymous()">

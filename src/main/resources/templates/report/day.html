@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<header th:replace="fragments :: header"></header>
+
+<div class="container" th:object="${dayReportDTO}">
+    <h1>Report for <span th:text="${#temporals.format(date,'MMM d yyyy')}">MMM d yyyy</span></h1>
+
+    <ul>
+        <li>Number of Deliveries: <span th:text="*{deliveryCount}">10</span></li>
+        <li>Number of Delivery Groups: <span th:text="*{deliveryGroupCount}">4</span></li>
+        <li>Total Revenue: <span th:text="*{#numbers.formatCurrency(totalRevenue)}">$60.12</span></li>
+        <li>Total Expenses: <span th:text="*{#numbers.formatCurrency(totalExpenses)}">$3.21</span></li>
+        <li>Total Shift Hours: <span th:text="*{totalShiftHoursString}">HHH hr MM min</span> (<span th:text="*{#numbers.formatDecimal(totalShiftHoursAsDecimal, 1, 2)}">HHH.HH</span> hr)</li>
+        <li>Total Shift Miles: <span th:text="*{totalShiftMiles}">42.0</span></li>
+    </ul>
+
+    <ul>
+        <li>Deliveries Per Group: <span th:text="*{#numbers.formatDecimal(deliveriesPerGroup, 1, 1)}">2.5</span></li>
+        <li>Deliveries Per Hour: <span th:text="*{#numbers.formatDecimal(deliveriesPerHour, 1, 1)}">2.3</span></li>
+        <li>Revenue Per Hour: <span th:text="*{#numbers.formatCurrency(revenuePerHour)}">$14.11</span></li>
+        <li>Miles Per Hour: <span th:text="*{#numbers.formatDecimal(shiftMilesPerHour, 1, 1)}">11.1</span></li>
+        <li>Revenue Per Delivery: <span th:text="*{#numbers.formatCurrency(revenuePerDelivery)}">$7.43</span></li>
+        <li>Miles Per Delivery: <span th:text="*{#numbers.formatDecimal(shiftMilesPerDelivery, 1, 2)}">6.45</span></li>
+    </ul>
+
+
+    <th:block th:object="${dayReportDTO}"><th:block th:if="*{#lists.size(deliveries) > 0}">
+        <h2>Deliveries</h2>
+        <table th:replace="/delivery/fragments :: table"></table>
+    </th:block></th:block>
+
+    <th:block th:object="${dayReportDTO}"><th:block th:if="*{#lists.size(shifts) > 0}">
+        <h2>Shifts</h2>
+        <table th:replace="/shift/fragments :: table"></table>
+    </th:block></th:block>
+
+    <th:block th:object="${dayReportDTO}"><th:block th:if="*{#lists.size(expenses) > 0}">
+        <h2>Expenses</h2>
+        <table th:replace="/expense/fragments :: table"></table>
+    </th:block></th:block>
+
+
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>

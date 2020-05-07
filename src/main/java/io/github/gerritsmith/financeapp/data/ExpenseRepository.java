@@ -19,6 +19,8 @@ public interface ExpenseRepository extends CrudRepository<Expense, Long> {
                                                    LocalTime time,
                                                    String description);
 
+    List<Expense> findByUserAndDate(User user, LocalDate date);
+
     List<Expense> findAllByUser(User user);
 
 }
