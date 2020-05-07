@@ -29,6 +29,10 @@ public class ExpenseService {
         return expenseRepository.findByUserAndDateAndTimeAndDescription(user, date, time, description);
     }
 
+    public List<Expense> findByUserAndDate(User user, LocalDate date) {
+        return expenseRepository.findByUserAndDate(user, date);
+    }
+
     public List<Expense> findAllExpensesByUser(User user) {
         return expenseRepository.findAllByUser(user);
     }

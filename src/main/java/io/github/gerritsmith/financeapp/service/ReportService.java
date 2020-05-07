@@ -2,6 +2,8 @@ package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.Expense;
+import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,13 @@ public class ReportService {
     // Methods
     public DayReportDTO getDayReport(User user, LocalDate date) {
         List<Delivery> deliveries = deliveryService.findByUserAndDate(user, date);
+        List<Shift> shifts = shiftService.findByUserAndDate(user, date);
+        List<Expense> expenses = expenseService.findByUserAndDate(user, date);
 
         DayReportDTO dayReportDTO = new DayReportDTO();
-        dayReportDTO.setDeliveries(deliveries);
+        dayReportDTO.setDeliveries(deliveries)
+                .setShifts(shifts)
+                .setExpenses(expenses);
         return dayReportDTO;
     }
 
