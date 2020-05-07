@@ -1,5 +1,6 @@
 package io.github.gerritsmith.financeapp.service;
 
+import io.github.gerritsmith.financeapp.dto.StatsForDayDTO;
 import io.github.gerritsmith.financeapp.dto.UserStatsDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Shift;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
@@ -16,12 +18,16 @@ public class StatsService {
 
     DeliveryService deliveryService;
     ShiftService shiftService;
+    ExpenseService expenseService;
 
     // Constructors
     @Autowired
-    public StatsService(DeliveryService deliveryService, ShiftService shiftService) {
+    public StatsService(DeliveryService deliveryService,
+                        ShiftService shiftService,
+                        ExpenseService expenseService) {
         this.deliveryService = deliveryService;
         this.shiftService = shiftService;
+        this.expenseService = expenseService;
     }
 
     // Methods
@@ -45,6 +51,14 @@ public class StatsService {
                 .setShiftTotalDuration(shiftTotalDuration)
                 .setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
         return userStatsDTO;
+    }
+
+    public StatsForDayDTO getUserStatsForDay(User user, LocalDate date) {
+        List<Delivery> deliveries = deliveryService.findByUserAndDate(user, date);
+
+        StatsForDayDTO statsForDayDTO = new StatsForDayDTO();
+        statsForDayDTO.setDeliveries(deliveries);
+        return statsForDayDTO;
     }
 
 }

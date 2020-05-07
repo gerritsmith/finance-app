@@ -33,6 +33,10 @@ public class DeliveryService {
         return deliveryRepository.findByUserAndDateAndTime(user, date, time);
     }
 
+    public List<Delivery> findByUserAndDate(User user, LocalDate date) {
+        return deliveryRepository.findByUserAndDate(user, date);
+    }
+
     public List<Delivery> findAllDeliveriesByUser(User user) {
         return deliveryRepository.findAllByUser(user);
     }
