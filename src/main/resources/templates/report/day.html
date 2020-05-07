@@ -10,6 +10,12 @@
     <th:block th:object="${dayReportDTO}">
         <h2>Deliveries</h2>
         <table th:replace="/delivery/fragments :: table"></table>
+
+        <h2>Shifts</h2>
+        <table th:replace="/shift/fragments :: table"></table>
+
+        <h2>Expenses</h2>
+        <table th:replace="/expense/fragments :: table"></table>
     </th:block>
 
 
