@@ -36,7 +36,6 @@ public class ReportController {
                                    Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
         DayReportDTO dayReportDTO = reportService.getDayReport(user, date);
-//        model.addAttribute("date", date);
         model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
     }

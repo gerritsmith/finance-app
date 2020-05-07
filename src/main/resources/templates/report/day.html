@@ -25,7 +25,6 @@
         <li>Miles Per Delivery: <span th:text="*{#numbers.formatDecimal(shiftMilesPerDelivery, 1, 2)}">6.45</span></li>
     </ul>
 
-
     <th:block th:object="${dayReportDTO}"><th:block th:if="*{#lists.size(deliveries) > 0}">
         <h2>Deliveries</h2>
         <table th:replace="/delivery/fragments :: table"></table>
@@ -40,7 +39,6 @@
         <h2>Expenses</h2>
         <table th:replace="/expense/fragments :: table"></table>
     </th:block></th:block>
-
 
 </div>
 

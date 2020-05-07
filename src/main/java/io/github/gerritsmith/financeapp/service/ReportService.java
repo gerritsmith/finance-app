@@ -70,6 +70,14 @@ public class ReportService {
         for (LocalDate date : dates) {
             dailyReports.add(getDayReport(user, date));
         }
+        dailyReports.sort((o1, o2) -> {
+            if (o1.getDate().isAfter(o2.getDate())) {
+                return -1;
+            } else if (o1.getDate().equals(o2.getDate())) {
+                return 0;
+            }
+            return 1;
+        });
         ReportByDayDTO reportByDayDTO = new ReportByDayDTO();
         reportByDayDTO.setDailyReports(dailyReports);
         return reportByDayDTO;
