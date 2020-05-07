@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
+import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.ReportService;
 import io.github.gerritsmith.financeapp.service.UserService;
@@ -35,9 +36,18 @@ public class ReportController {
                                    Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
         DayReportDTO dayReportDTO = reportService.getDayReport(user, date);
-        model.addAttribute("date", date);
+//        model.addAttribute("date", date);
         model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
+    }
+
+    @GetMapping("/report/by-day")
+    public String displayReportByDay(Model model,
+                                     Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        ReportByDayDTO reportByDayDTO = reportService.getReportByDay(user);
+        model.addAttribute("reportByDayDTO", reportByDayDTO);
+        return "report/by-day";
     }
 
 }

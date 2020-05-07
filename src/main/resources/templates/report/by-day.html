@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<header th:replace="fragments :: header"></header>
+
+<div class="container" th:object="${reportByDayDTO}">
+    <h1>Report By Day</h1>
+
+    <ul th:each="dayReport : *{dailyReports}" th:object="${dayReport}">
+        <li>
+            <span th:text="*{date}"></span>: Total = <span th:text="*{totalRevenue}"></span>
+        </li>
+    </ul>
+
+
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>

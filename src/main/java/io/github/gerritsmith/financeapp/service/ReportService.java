@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
+import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.Shift;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -45,7 +48,8 @@ public class ReportService {
         }
 
         DayReportDTO dayReportDTO = new DayReportDTO();
-        dayReportDTO.setDeliveries(deliveries)
+        dayReportDTO.setDate(date)
+                .setDeliveries(deliveries)
                 .setShifts(shifts)
                 .setExpenses(expenses)
                 .setDeliveryCount(deliveryCount)
@@ -57,6 +61,18 @@ public class ReportService {
                         shifts.stream().map(Shift::getMiles)))
                 .setTotalExpenses(statsService.sumDoubles(expenses.stream().map(Expense::getAmount)));
         return dayReportDTO;
+    }
+
+    public ReportByDayDTO getReportByDay(User user) {
+        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
+        List<LocalDate> dates = shifts.stream().map(Shift::getDate).distinct().collect(Collectors.toList());
+        List<DayReportDTO> dailyReports = new ArrayList<>();
+        for (LocalDate date : dates) {
+            dailyReports.add(getDayReport(user, date));
+        }
+        ReportByDayDTO reportByDayDTO = new ReportByDayDTO();
+        reportByDayDTO.setDailyReports(dailyReports);
+        return reportByDayDTO;
     }
 
 }

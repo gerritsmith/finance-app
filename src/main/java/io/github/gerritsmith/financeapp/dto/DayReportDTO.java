@@ -5,9 +5,12 @@ import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.Shift;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DayReportDTO {
+
+    private LocalDate date;
 
     private List<Delivery> deliveries;
     private List<Shift> shifts;
@@ -64,6 +67,15 @@ public class DayReportDTO {
 
 
     // Getters and Builder Setters
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public DayReportDTO setDate(LocalDate date) {
+        this.date = date;
+        return this;
+    }
+
     public List<Delivery> getDeliveries() {
         return deliveries;
     }

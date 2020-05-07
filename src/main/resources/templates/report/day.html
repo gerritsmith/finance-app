@@ -5,7 +5,7 @@
 <header th:replace="fragments :: header"></header>
 
 <div class="container" th:object="${dayReportDTO}">
-    <h1>Report for <span th:text="${#temporals.format(date,'MMM d yyyy')}">MMM d yyyy</span></h1>
+    <h1>Report for <span th:text="*{#temporals.format(date,'MMM d yyyy')}">MMM d yyyy</span></h1>
 
     <ul>
         <li>Number of Deliveries: <span th:text="*{deliveryCount}">10</span></li>
