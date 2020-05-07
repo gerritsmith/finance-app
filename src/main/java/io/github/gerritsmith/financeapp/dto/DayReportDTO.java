@@ -9,107 +9,61 @@ import java.util.List;
 
 public class DayReportDTO {
 
-    private int deliveryCount;
-
-    private double totalIncome;
-    private Duration totalHours;
-    private double totalMiles;
-
-    private double deliveriesPerHour;
-    private double incomePerHour;
-    private double milesPerHour;
-    private double incomePerDelivery;
-    private double milesPerDelivery;
-
     private List<Delivery> deliveries;
     private List<Shift> shifts;
     private List<Expense> expenses;
 
-    // Constructors
-    public DayReportDTO() {}
+    private int deliveryCount;
 
-    // Getters and Builder Setters
-    public int getDeliveryCount() {
-        return deliveryCount;
+    private double totalRevenue;
+    private Duration totalShiftHours;
+    private double totalShiftMiles;
+    private double totalExpenses;
+
+    // Computed fields
+    public int getDeliveryGroupCount() {
+        return deliveries.size();
     }
 
-    public DayReportDTO setDeliveryCount(int deliveryCount) {
-        this.deliveryCount = deliveryCount;
-        return this;
+    public double getDeliveriesPerGroup() {
+        return deliveryCount / (double) getDeliveryGroupCount();
     }
 
-    public double getTotalIncome() {
-        return totalIncome;
-    }
-
-    public DayReportDTO setTotalIncome(double totalIncome) {
-        this.totalIncome = totalIncome;
-        return this;
-    }
-
-    public Duration getTotalHours() {
-        return totalHours;
-    }
-
-    public DayReportDTO setTotalHours(Duration totalHours) {
-        this.totalHours = totalHours;
-        return this;
-    }
-
-    public double getTotalMiles() {
-        return totalMiles;
-    }
-
-    public DayReportDTO setTotalMiles(double totalMiles) {
-        this.totalMiles = totalMiles;
-        return this;
+    public double getTotalShiftHoursAsDecimal() {
+        return totalShiftHours.toHours() + totalShiftHours.toMinutesPart()/60.0;
     }
 
     public double getDeliveriesPerHour() {
-        return deliveriesPerHour;
+        return deliveryCount/getTotalShiftHoursAsDecimal();
     }
 
-    public DayReportDTO setDeliveriesPerHour(double deliveriesPerHour) {
-        this.deliveriesPerHour = deliveriesPerHour;
-        return this;
+    public double getRevenuePerHour() {
+        return totalRevenue/getTotalShiftHoursAsDecimal();
     }
 
-    public double getIncomePerHour() {
-        return incomePerHour;
+    public double getShiftMilesPerHour() {
+        return totalShiftMiles/getTotalShiftHoursAsDecimal();
     }
 
-    public DayReportDTO setIncomePerHour(double incomePerHour) {
-        this.incomePerHour = incomePerHour;
-        return this;
+    public double getRevenuePerDelivery() {
+        return totalRevenue/deliveryCount;
     }
 
-    public double getMilesPerHour() {
-        return milesPerHour;
+    public double getShiftMilesPerDelivery() {
+        return totalShiftMiles/deliveryCount;
     }
 
-    public DayReportDTO setMilesPerHour(double milesPerHour) {
-        this.milesPerHour = milesPerHour;
-        return this;
+    public String getTotalShiftHoursString() {
+        return totalShiftHours.toHours() + " hr " +
+                totalShiftHours.toMinutesPart() + " min";
     }
 
-    public double getIncomePerDelivery() {
-        return incomePerDelivery;
-    }
 
-    public DayReportDTO setIncomePerDelivery(double incomePerDelivery) {
-        this.incomePerDelivery = incomePerDelivery;
-        return this;
-    }
+    // Constructors
+    public DayReportDTO() {}
 
-    public double getMilesPerDelivery() {
-        return milesPerDelivery;
-    }
 
-    public DayReportDTO setMilesPerDelivery(double milesPerDelivery) {
-        this.milesPerDelivery = milesPerDelivery;
-        return this;
-    }
-
+    // Getters and Builder Setters
     public List<Delivery> getDeliveries() {
         return deliveries;
     }
@@ -134,6 +88,51 @@ public class DayReportDTO {
 
     public DayReportDTO setExpenses(List<Expense> expenses) {
         this.expenses = expenses;
+        return this;
+    }
+
+    public int getDeliveryCount() {
+        return deliveryCount;
+    }
+
+    public DayReportDTO setDeliveryCount(int deliveryCount) {
+        this.deliveryCount = deliveryCount;
+        return this;
+    }
+
+    public double getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public DayReportDTO setTotalRevenue(double totalRevenue) {
+        this.totalRevenue = totalRevenue;
+        return this;
+    }
+
+    public Duration getTotalShiftHours() {
+        return totalShiftHours;
+    }
+
+    public DayReportDTO setTotalShiftHours(Duration totalShiftHours) {
+        this.totalShiftHours = totalShiftHours;
+        return this;
+    }
+
+    public double getTotalShiftMiles() {
+        return totalShiftMiles;
+    }
+
+    public DayReportDTO setTotalShiftMiles(double totalShiftMiles) {
+        this.totalShiftMiles = totalShiftMiles;
+        return this;
+    }
+
+    public double getTotalExpenses() {
+        return totalExpenses;
+    }
+
+    public DayReportDTO setTotalExpenses(double totalExpenses) {
+        this.totalExpenses = totalExpenses;
         return this;
     }
 

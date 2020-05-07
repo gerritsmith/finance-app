@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class StatsService {
@@ -49,6 +51,14 @@ public class StatsService {
                 .setShiftTotalDuration(shiftTotalDuration)
                 .setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
         return userStatsDTO;
+    }
+
+    public Double sumDoubles(Stream<Double> numbers) {
+        return numbers.filter(Objects::nonNull).reduce(0.0, Double::sum);
+    }
+
+    public Duration sumDurations(Stream<Duration> durations) {
+        return durations.reduce(Duration.ZERO, Duration::plus);
     }
 
 }
