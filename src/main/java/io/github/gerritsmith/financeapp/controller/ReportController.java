@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ReportController {
@@ -46,6 +50,17 @@ public class ReportController {
         User user = userService.findUserByUsername(principal.getName());
         ReportByDayDTO reportByDayDTO = reportService.getReportByDay(user);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
+
+        List<LocalDate> dates = reportByDayDTO.getDailyReports()
+                .stream()
+                .map(DayReportDTO::getDate)
+                .collect(Collectors.toList());
+        List<Double> totals = reportByDayDTO.getDailyReports()
+                .stream()
+                .map(DayReportDTO::getTotalRevenue)
+                .collect(Collectors.toList());
+        model.addAttribute("dates", dates);
+        model.addAttribute("totals", totals);
         return "report/by-day";
     }
 

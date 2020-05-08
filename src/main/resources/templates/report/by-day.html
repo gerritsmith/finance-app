@@ -7,6 +7,8 @@
 <div class="container" th:object="${reportByDayDTO}">
     <h1>Report By Day</h1>
 
+    <div id="d3-visualization"></div>
+
     <table class="table table-dark table-striped">
         <thead>
             <tr>
@@ -34,5 +36,16 @@
 </div>
 
 <footer th:replace="fragments :: footer"></footer>
+<footer>
+    <!--  D3 data visualization library  -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!--  Make Visualization  -->
+    <script th:src="@{/js/graph.js}"></script>
+    <script th:inline="javascript">
+        let dates = [[${dates}]];
+        let totals = [[${totals}]];
+        drawGraph(dates, totals);
+    </script>
+</footer>
 </body>
 </html>
