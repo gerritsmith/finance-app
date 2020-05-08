@@ -1,4 +1,4 @@
-package io.github.gerritsmith.financeapp.dto;
+package io.github.gerritsmith.financeapp.dto.form;
 
 import javax.validation.constraints.NotBlank;
 

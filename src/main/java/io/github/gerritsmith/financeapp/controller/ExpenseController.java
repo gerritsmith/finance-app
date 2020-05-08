@@ -1,6 +1,6 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.ExpenseFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.ExpenseFormDTO;
 import io.github.gerritsmith.financeapp.exception.ExpenseExistsException;
 import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.User;

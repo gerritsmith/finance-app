@@ -1,4 +1,6 @@
-package io.github.gerritsmith.financeapp.dto;
+package io.github.gerritsmith.financeapp.dto.form;
+
+import io.github.gerritsmith.financeapp.dto.form.LoginFormDTO;
 
 public class RegisterFormDTO extends LoginFormDTO {
 

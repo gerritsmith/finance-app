@@ -1,6 +1,6 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.ShiftFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.ShiftFormDTO;
 import io.github.gerritsmith.financeapp.exception.ShiftExistsException;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;

@@ -1,6 +1,6 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.User;
