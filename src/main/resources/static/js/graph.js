@@ -12,7 +12,7 @@ function drawGraph(dates, values) {
   for (let i = 0; i < dates.length; i++) {
     datePieces = dates[i].split("-");
     data.push({
-      date: new Date(datePieces[0], datePieces[1], datePieces[2]),
+      date: new Date(datePieces[0], datePieces[1] - 1, datePieces[2]),
       value: values[i]
     })
   }
