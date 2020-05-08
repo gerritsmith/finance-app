@@ -1,6 +1,6 @@
 package io.github.gerritsmith.financeapp.model;
 
-import io.github.gerritsmith.financeapp.dto.ShiftFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.ShiftFormDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;

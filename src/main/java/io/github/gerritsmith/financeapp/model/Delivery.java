@@ -1,7 +1,7 @@
 package io.github.gerritsmith.financeapp.model;
 
-import io.github.gerritsmith.financeapp.dto.DeliveryFormDTO;
-import io.github.gerritsmith.financeapp.dto.DeliveryLegFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.DeliveryLegFormDTO;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

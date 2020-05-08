@@ -1,6 +1,6 @@
 package io.github.gerritsmith.financeapp.model;
 
-import io.github.gerritsmith.financeapp.dto.DeliveryLegFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.DeliveryLegFormDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;

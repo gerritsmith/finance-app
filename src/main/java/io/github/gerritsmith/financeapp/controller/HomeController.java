@@ -1,7 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.LoginFormDTO;
-import io.github.gerritsmith.financeapp.dto.RegisterFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.LoginFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.RegisterFormDTO;
 import io.github.gerritsmith.financeapp.dto.UserStatsDTO;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.exception.UserExistsException;
