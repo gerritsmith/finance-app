@@ -7,9 +7,14 @@
 <div class="container" th:object="${reportByDayDTO}">
     <h1>Report By Day</h1>
 
-    <div id="line-plot" class="m-3"></div>
-
-    <div id="bar-plot" class="m-3"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="line-plot" class="m-3"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="bar-plot" class="m-3"></div>
+        </div>
+    </div>
 
     <table class="table table-dark table-striped">
         <thead>
@@ -41,7 +46,6 @@
 <footer>
     <!--  D3 data visualization library  -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
-
 
     <!--  Make Visualization  -->
     <script th:src="@{/js/graph.js}"></script>

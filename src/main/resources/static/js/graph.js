@@ -5,13 +5,10 @@ function drawBarPlot(data) {
   let yLabel = data.yLabel;
 
   // Parse date string
-  data = data.map(d => {
-    p = d.date.split("-");
-    return {
-      date: new Date(p[0], p[1]-1, p[2]),
-      value: d.value
-    };
-  }).sort((a, b) => d3.ascending(a.date, b.date));
+  data = parseInputDateStrings(data);
+
+  // // Add missing dates to array with undefined values
+  // data = addMissingDates(data);
 
   // Set chart size
   let width = 1000;
@@ -79,20 +76,20 @@ function drawBarPlot(data) {
 
 }
 
-
+/********************************************************
+ * 
+ *
+ */
 
 function drawLineGraph(data) {
 
   let yLabel = data.yLabel;
 
   // Parse date string
-  data = data.map(d => {
-    p = d.date.split("-");
-    return {
-      date: new Date(p[0], p[1]-1, p[2]),
-      value: d.value
-    };
-  });
+  data = parseInputDateStrings(data);
+
+  // Add missing dates to array with undefined values
+  data = addMissingDates(data);
 
   // Set chart size
   let width = 1000;
@@ -154,12 +151,53 @@ function drawLineGraph(data) {
      .attr("d", line);
   
   svg.selectAll("circle")
-     .data(data)
+     .data(data.filter(d => !isNaN(d.value)))
      .enter()
      .append("circle")
      .attr("fill", "steelblue")
      .attr("cx", d => x(d.date))
      .attr("cy", d => y(d.value))
-     .attr("r", 2.5);
+     .attr("r", 5);
 
+}
+
+
+
+/**
+ * Parse input data array date strings
+ */
+function parseInputDateStrings(data) {
+  return data.map(d => {
+    p = d.date.split("-");
+    return {
+      date: new Date(p[0], p[1]-1, p[2]),
+      value: d.value
+    };
+  }).sort((a, b) => d3.ascending(a.date, b.date));
+}
+
+
+/**
+ * Add missing dates to data array with corresponding values undefined
+ */
+function addMissingDates(data) {
+  let [minDate, maxDate] = d3.extent(data, d => d.date);
+
+  date = new Date(minDate.getTime());
+  // add additional day before min to pad the graph
+  date.setDate(date.getDate() - 1);
+
+  newData = [];
+  while (date <= maxDate) {
+    if (data[0].date - date === 0) {
+      newData.push(data.shift());
+    } else {
+      newData.push({
+        date: new Date(date.getTime()),
+        value: undefined
+      });
+    }
+    date.setDate(date.getDate() + 1);
+  }
+  return newData;
 }
