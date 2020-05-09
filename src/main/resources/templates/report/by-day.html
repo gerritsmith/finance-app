@@ -15,6 +15,14 @@
             <div id="bar-plot" class="m-3"></div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="histogram" class="m-3"></div>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
 
     <table class="table table-dark table-striped">
         <thead>
@@ -51,9 +59,10 @@
     <script th:src="@{/js/graph.js}"></script>
     <script th:inline="javascript">
         let data = [[${dataToPlot.data}]];
-        data['yLabel'] = [[${dataToPlot.name}]];
+        data['valueLabel'] = [[${dataToPlot.name}]];
         drawLineGraph(data);
         drawBarPlot(data);
+        drawHistogram(data);
     </script>
 </footer>
 </body>

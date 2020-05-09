@@ -1,8 +1,96 @@
 // const d3 = require("d3");
 
+
+/****************************************************
+ * Draw histogram
+ */
+function drawHistogram(data) {
+  
+  let valueLabel = data.valueLabel;
+
+  // Remove dates
+  data = data.map(d => d.value);
+
+  // Set chart size
+  let width = 1000;
+  let height = 500;
+  let margin = {
+    top: 20,
+    right: 30,
+    bottom: 30,
+    left: 40
+  };
+
+  // Make x scaler
+  let [xMin, xMax] = d3.extent(data);
+  xMax = xMax + 1;
+  let x = d3.scaleLinear()
+            .domain([xMin, xMax]).nice()
+            .range([margin.left, width - margin.right]);
+
+  // Sort into bins
+  let binDivider = d3.histogram()
+                     .domain(x.domain())
+                     .thresholds(x.ticks(40));
+  let bins = binDivider(data);
+
+  // Make y scaler
+  let y = d3.scaleLinear()
+            .domain([0, d3.max(bins, d => d.length)]).nice()
+            .range([height - margin.bottom, margin.top]);
+
+  // Make axis groups
+  let xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`)
+                    .call(d3.axisBottom(x)
+                            .ticks(width / 80)
+                            .tickSizeOuter(0))
+                    .call(g => g.append("text")
+                                .attr("x", width - margin.right)
+                                .attr("y", -4)
+                                .attr("fill", "currentColor")
+                                .attr("font-weight", "bold")
+                                .attr("text-anchor", "end")
+                                .text(valueLabel))
+
+  let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
+                    .call(d3.axisLeft(y)
+                            .ticks(height / 40))
+                    .call(g => g.select(".tick:last-of-type text").clone()
+                                .attr("x", 4)
+                                .attr("text-anchor", "start")
+                                .attr("font-weight", "bold")
+                                .text("Count"))
+
+  // Make chart
+  const svg = d3.select("#histogram")
+                .append("svg")
+                .attr("viewBox", [0, 0, width, height]);
+
+  svg.append("g")
+     .attr("fill", "steelblue")
+     .selectAll("rect")
+      .data(bins)
+      .join("rect")
+       .attr("x", d => x(d.x0) + 1)
+       .attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 1))
+       .attr("y", d => y(d.length))
+       .attr("height", d => y(0) - y(d.length));
+
+  svg.append("g")
+     .call(xAxis);
+
+  svg.append("g")
+     .call(yAxis);
+
+}
+
+
+/****************************************************
+ * Draw bar plot
+ */
 function drawBarPlot(data) {
 
-  let yLabel = data.yLabel;
+  let valueLabel = data.valueLabel;
 
   // Parse date string
   data = parseInputDateStrings(data);
@@ -45,7 +133,7 @@ function drawBarPlot(data) {
                                 .attr("y", 10)
                                 .attr("fill", "currentColor")
                                 .attr("text-anchor", "start")
-                                .text(yLabel));
+                                .text(valueLabel));
 
   // Make line
   let line = d3.line()
@@ -65,25 +153,24 @@ function drawBarPlot(data) {
       .call(yAxis);
 
   svg.append("g")
-      .attr("fill", "steelblue")
+     .attr("fill", "steelblue")
      .selectAll("rect")
-     .data(data)
-     .join("rect")
-      .attr("x", (d, i) => x(i))
-      .attr("y", d => y(d.value))
-      .attr("height", d => y(0) - y(d.value))
-      .attr("width", x.bandwidth());
+      .data(data)
+      .join("rect")
+       .attr("x", (d, i) => x(i))
+       .attr("y", d => y(d.value))
+       .attr("height", d => y(0) - y(d.value))
+       .attr("width", x.bandwidth());
 
 }
 
-/********************************************************
- * 
- *
- */
 
+/********************************************************
+ * Draw line graph
+ */
 function drawLineGraph(data) {
 
-  let yLabel = data.yLabel;
+  let valueLabel = data.valueLabel;
 
   // Parse date string
   data = parseInputDateStrings(data);
@@ -122,7 +209,7 @@ function drawLineGraph(data) {
                                 .attr("x", 3)
                                 .attr("text-anchor", "start")
                                 .attr("font-weight", "bold")
-                                .text(yLabel));
+                                .text(valueLabel));
 
   // Make line
   let line = d3.line()
@@ -154,14 +241,12 @@ function drawLineGraph(data) {
      .data(data.filter(d => !isNaN(d.value)))
      .enter()
      .append("circle")
-     .attr("fill", "steelblue")
-     .attr("cx", d => x(d.date))
-     .attr("cy", d => y(d.value))
-     .attr("r", 5);
+      .attr("fill", "steelblue")
+      .attr("cx", d => x(d.date))
+      .attr("cy", d => y(d.value))
+      .attr("r", 5);
 
 }
-
-
 
 /**
  * Parse input data array date strings
@@ -175,7 +260,6 @@ function parseInputDateStrings(data) {
     };
   }).sort((a, b) => d3.ascending(a.date, b.date));
 }
-
 
 /**
  * Add missing dates to data array with corresponding values undefined
