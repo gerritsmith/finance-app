@@ -2,6 +2,7 @@ package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
 import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
+import io.github.gerritsmith.financeapp.dto.TimeSeriesDTO;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.ReportService;
 import io.github.gerritsmith.financeapp.service.UserService;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,16 +50,13 @@ public class ReportController {
         ReportByDayDTO reportByDayDTO = reportService.getReportByDay(user);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
 
-        List<LocalDate> dates = reportByDayDTO.getDailyReports()
-                .stream()
-                .map(DayReportDTO::getDate)
-                .collect(Collectors.toList());
-        List<Double> totals = reportByDayDTO.getDailyReports()
-                .stream()
-                .map(DayReportDTO::getTotalRevenue)
-                .collect(Collectors.toList());
-        model.addAttribute("dates", dates);
-        model.addAttribute("totals", totals);
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
+        dataToPlot.setName("$/hr");
+        for (DayReportDTO dayReport : reportByDayDTO.getDailyReports()) {
+            dataToPlot.addDataPoint(dayReport.getDate(), dayReport.getRevenuePerHour());
+        }
+        model.addAttribute("dataToPlot", dataToPlot);
+
         return "report/by-day";
     }
 

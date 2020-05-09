@@ -7,7 +7,9 @@
 <div class="container" th:object="${reportByDayDTO}">
     <h1>Report By Day</h1>
 
-    <div id="d3-visualization"></div>
+    <div id="line-plot" class="m-3"></div>
+
+    <div id="bar-plot" class="m-3"></div>
 
     <table class="table table-dark table-striped">
         <thead>
@@ -39,12 +41,15 @@
 <footer>
     <!--  D3 data visualization library  -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
+
+
     <!--  Make Visualization  -->
     <script th:src="@{/js/graph.js}"></script>
     <script th:inline="javascript">
-        let dates = [[${dates}]];
-        let totals = [[${totals}]];
-        drawGraph(dates, totals);
+        let data = [[${dataToPlot.data}]];
+        data['yLabel'] = [[${dataToPlot.name}]];
+        drawLineGraph(data);
+        drawBarPlot(data);
     </script>
 </footer>
 </body>
