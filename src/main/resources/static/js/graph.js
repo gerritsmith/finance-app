@@ -246,6 +246,60 @@ function drawLineGraph(data) {
       .attr("cy", d => y(d.value))
       .attr("r", 5);
 
+  //////////////////////////////////////////////
+  // Add tooltips
+  const tooltip = svg.append("g");
+
+  svg.on("touchmove mousemove", function() {
+    const {date, value} = bisect(d3.mouse(this)[0]);
+
+    if (value) {
+      tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
+             .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
+${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
+    }
+
+  });
+
+  svg.on("touchend mouseleave", () => tooltip.call(callout, null));
+
+  // Callout function
+  callout = (g, value) => {
+    if (!value) {
+      return g.style("display", "none");
+    }
+    g.style("display", null)
+     .style("pointer-events", "none")
+     .style("font", "10px sans-serif");
+    const path = g.selectAll("path")
+                  .data([null])
+                  .join("path")
+                   .attr("fill", "white")
+                   .attr("stroke", "black");
+    const text = g.selectAll("text")
+                  .data([null])
+                  .join("text")
+                  .call(text => text.selectAll("tspan")
+                                    .data((value + "").split(/\n/))
+                                    .join("tspan")
+                                     .attr("x", 0)
+                                     .attr("y", (d, i) => `${i * 1.1}em`)
+                                     .style("font-weight", (_, i) => i ? null : "bold")
+                                     .text(d => d));
+    const {x, y, width: w, height: h} = text.node().getBBox();
+    text.attr("transform", `translate(${-w / 2},${15 - y})`);
+    path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+  };
+
+  let bisect = (mx) => {
+    const bisect = d3.bisector(d => d.date).left;
+    const date = x.invert(mx);
+    const index = bisect(data, date, 1);
+    const a = data[index - 1];
+    const b = data[index];
+    return date - a.date > b.date - date ? b : a;
+  }
+
 }
 
 /**
@@ -267,13 +321,16 @@ function parseInputDateStrings(data) {
 function addMissingDates(data) {
   let [minDate, maxDate] = d3.extent(data, d => d.date);
 
-  date = new Date(minDate.getTime());
   // add additional day before min to pad the graph
+  date = new Date(minDate.getTime());
   date.setDate(date.getDate() - 1);
+  // add additional day after max in loop condition
+  upperLimit = new Date(maxDate.getTime());
+  upperLimit.setDate(upperLimit.getDate() + 1);
 
   newData = [];
-  while (date <= maxDate) {
-    if (data[0].date - date === 0) {
+  while (date <= upperLimit) {
+    if (data.length > 0 && data[0].date - date === 0) {
       newData.push(data.shift());
     } else {
       newData.push({
