@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class ReportController {
