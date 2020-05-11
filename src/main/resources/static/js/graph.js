@@ -237,7 +237,8 @@ function drawLineGraph(data) {
      .attr("stroke-linecap", "round")
      .attr("d", line);
   
-  svg.selectAll("circle")
+  svg.append("g")
+     .selectAll("circle")
      .data(data.filter(d => !isNaN(d.value)))
      .enter()
      .append("circle")
@@ -253,7 +254,7 @@ function drawLineGraph(data) {
   svg.on("touchmove mousemove", function() {
     const {date, value} = bisect(d3.mouse(this)[0]);
 
-    if (value) {
+    if (value != undefined) {
       tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
              .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
 ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
@@ -283,12 +284,30 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
                                     .data((value + "").split(/\n/))
                                     .join("tspan")
                                      .attr("x", 0)
-                                     .attr("y", (d, i) => `${i * 1.1}em`)
+                                     .attr("y", (d, i) => `${i * 1.25}em`)
                                      .style("font-weight", (_, i) => i ? null : "bold")
                                      .text(d => d));
     const {x, y, width: w, height: h} = text.node().getBBox();
-    text.attr("transform", `translate(${-w / 2},${15 - y})`);
-    path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+    if (g.attr("transform").match(/\(([^)]+)\)/)[1].split(',').map(Number)[1] < 0.5 * height) {
+      text.attr("transform", `translate(${-w / 2},${16 - y})`);
+      path.attr("d", `M${-w / 2 - 10},5
+                      H-5
+                      l5,-5
+                      l5,5
+                      H${w / 2 + 10}
+                      v${h + 20}
+                      h-${w + 20}z`);
+    } else {
+      text.attr("transform", `translate(${-w / 2},${-20 + y})`);
+      path.attr("d", `M${-w / 2 - 10},-5
+                      H-5
+                      l5,5
+                      l5,-5
+                      H${w / 2 + 10}
+                      v-${h + 20}
+                      h-${w + 20}z`);
+    }
+
   };
 
   let bisect = (mx) => {
