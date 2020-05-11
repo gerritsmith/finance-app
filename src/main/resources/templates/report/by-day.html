@@ -60,9 +60,7 @@
     <script th:inline="javascript">
         let data = [[${dataToPlot.data}]];
         data['valueLabel'] = [[${dataToPlot.name}]];
-        drawLineGraph(data);
-        drawBarPlot(data);
-        drawHistogram(data);
+        drawCharts(data);
     </script>
 </footer>
 </body>
