@@ -9,3 +9,7 @@
 .form-control.delivery-leg-error {
     background-color: #f8d7da;
 }
+
+.tick {
+    font-size: 2em;
+}

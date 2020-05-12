@@ -61,20 +61,20 @@ function drawCharts(data) {
     const svg = addSVGToElement("#line-plot", xAxis, yAxis);
 
     svg.append("path")
-      .datum(data)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("d", line);
+       .datum(data)
+       .attr("fill", "none")
+       .attr("stroke", "steelblue")
+       .attr("stroke-width", 1.5)
+       .attr("stroke-linejoin", "round")
+       .attr("stroke-linecap", "round")
+       .attr("d", line);
     
     svg.append("g")
-      .selectAll("circle")
-      .data(data.filter(d => !isNaN(d.value)))
-      .enter()
-      .append("circle")
-        .attr("fill", "steelblue")
+       .attr("fill", "steelblue")
+       .selectAll("circle")
+       .data(data.filter(d => !isNaN(d.value)))
+       .enter()
+       .append("circle")
         .attr("cx", d => x(d.date))
         .attr("cy", d => y(d.value))
         .attr("r", 5);
@@ -85,16 +85,38 @@ function drawCharts(data) {
 
     svg.on("touchmove mousemove", function() {
       const {date, value} = bisect(d3.mouse(this)[0]);
-
       if (value != undefined) {
         tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
               .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
 ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
-      }
 
+        d3.selectAll("#line-plot svg g circle")
+          .attr("fill", null)
+          .filter(d => d.date === date)
+          .attr("fill", "red");
+
+        d3.selectAll("#bar-plot svg g rect")
+          .attr("fill", null)
+          .filter(d => d.date === date)
+          .attr("fill", "red");
+        
+        d3.selectAll("#histogram svg g rect")
+          .attr("fill", null)
+          .filter(d => (d.x0 <= value && value <= d.x1))
+          .attr("fill", "red");
+
+      }
     });
 
-    svg.on("touchend mouseleave", () => tooltip.call(callout, null));
+    svg.on("touchend mouseleave", () => {
+      tooltip.call(callout, null);
+
+      d3.selectAll("circle")
+        .attr("fill", null);
+      d3.selectAll("rect")
+        .attr("fill", null);
+
+    });
 
     // Callout function
     callout = (g, value) => {
@@ -103,7 +125,7 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
       }
       g.style("display", null)
       .style("pointer-events", "none")
-      .style("font", "10px sans-serif");
+      .style("font", "1em sans-serif");
       const path = g.selectAll("path")
                     .data([null])
                     .join("path")
@@ -121,10 +143,10 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
                                       .text(d => d));
       const {x, y, width: w, height: h} = text.node().getBBox();
       if (g.attr("transform").match(/\(([^)]+)\)/)[1].split(',').map(Number)[1] < 0.5 * height) {
-        text.attr("transform", `translate(${-w / 2},${16 - y})`);
+        text.attr("transform", `translate(${-w / 2},${0.8 * h})`);
         path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
       } else {
-        text.attr("transform", `translate(${-w / 2},${-20 + y})`);
+        text.attr("transform", `translate(${-w / 2},${-h})`);
         path.attr("d", `M${-w / 2 - 10},-5H-5l5,5l5,-5H${w / 2 + 10}v-${h + 20}h-${w + 20}z`);
       }
     };
@@ -166,11 +188,10 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y))
-                      .call(g => g.append("text")
-                                  .attr("x", -margin.left)
-                                  .attr("y", 10)
-                                  .attr("fill", "currentColor")
+                      .call(g => g.select(".tick:last-of-type text").clone()
+                                  .attr("x", 3)
                                   .attr("text-anchor", "start")
+                                  .attr("font-weight", "bold")
                                   .text(valueLabel));
 
     // Make chart
@@ -205,8 +226,8 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
               .range([margin.left, width - margin.right]);
     // Sort into bins
     let binDivider = d3.histogram()
-                      .domain(x.domain())
-                      .thresholds(x.ticks(40));
+                       .domain(x.domain())
+                       .thresholds(x.ticks(40));
     let bins = binDivider(data);
     // Make y scaler
     let y = d3.scaleLinear()
@@ -218,12 +239,10 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
                       .call(d3.axisBottom(x)
                               .ticks(width / 80)
                               .tickSizeOuter(0))
-                      .call(g => g.append("text")
-                                  .attr("x", width - margin.right)
-                                  .attr("y", -4)
-                                  .attr("fill", "currentColor")
+                      .call(g => g.select(".tick:last-of-type text").clone()
+                                  .attr("y", -20)
+                                  .attr("text-anchor", "middle")
                                   .attr("font-weight", "bold")
-                                  .attr("text-anchor", "end")
                                   .text(valueLabel));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y)
@@ -238,8 +257,8 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
     const svg = addSVGToElement("#histogram", xAxis, yAxis);
 
     svg.append("g")
-      .attr("fill", "steelblue")
-      .selectAll("rect")
+       .attr("fill", "steelblue")
+       .selectAll("rect")
         .data(bins)
         .join("rect")
         .attr("x", d => x(d.x0) + 1)
