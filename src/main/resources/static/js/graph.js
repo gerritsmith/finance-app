@@ -1,6 +1,5 @@
 // const d3 = require("d3");
 
-
 function drawCharts(data) {
 
   // Dependent Variable Name
@@ -19,10 +18,9 @@ function drawCharts(data) {
     left: 40
   };
 
-  drawLineGraph(data);
-  drawBarPlot(data);
-  drawHistogram(data);
-
+  drawLineGraph(data.slice());
+  drawBarPlot(data.slice());
+  drawHistogram(data.slice());
 
   /********************************************************
    * Draw line graph
@@ -53,19 +51,14 @@ function drawCharts(data) {
                                   .attr("font-weight", "bold")
                                   .text(valueLabel));
 
-    // Make line
+    // Make path builder
     let line = d3.line()
-                .defined(d => !isNaN(d.value))
-                .x(d => x(d.date))
-                .y(d => y(d.value));
+                 .defined(d => !isNaN(d.value))
+                 .x(d => x(d.date))
+                 .y(d => y(d.value));
 
     // Make chart
-    const svg = d3.select("#line-plot")
-                  .append("svg")
-                  .attr("viewBox", [0, 0, width, height]);
-    
-    svg.append("g").call(xAxis);
-    svg.append("g").call(yAxis);
+    const svg = addSVGToElement("#line-plot", xAxis, yAxis);
 
     svg.append("path")
       .datum(data)
@@ -96,7 +89,7 @@ function drawCharts(data) {
       if (value != undefined) {
         tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
               .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
-  ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
+${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
       }
 
     });
@@ -129,24 +122,11 @@ function drawCharts(data) {
       const {x, y, width: w, height: h} = text.node().getBBox();
       if (g.attr("transform").match(/\(([^)]+)\)/)[1].split(',').map(Number)[1] < 0.5 * height) {
         text.attr("transform", `translate(${-w / 2},${16 - y})`);
-        path.attr("d", `M${-w / 2 - 10},5
-                        H-5
-                        l5,-5
-                        l5,5
-                        H${w / 2 + 10}
-                        v${h + 20}
-                        h-${w + 20}z`);
+        path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
       } else {
         text.attr("transform", `translate(${-w / 2},${-20 + y})`);
-        path.attr("d", `M${-w / 2 - 10},-5
-                        H-5
-                        l5,5
-                        l5,-5
-                        H${w / 2 + 10}
-                        v-${h + 20}
-                        h-${w + 20}z`);
+        path.attr("d", `M${-w / 2 - 10},-5H-5l5,5l5,-5H${w / 2 + 10}v-${h + 20}h-${w + 20}z`);
       }
-
     };
 
     let bisect = (mx) => {
@@ -193,19 +173,8 @@ function drawCharts(data) {
                                   .attr("text-anchor", "start")
                                   .text(valueLabel));
 
-    // Make line
-    let line = d3.line()
-                  .defined(d => !isNaN(d.value))
-                  .x(d => x(d.date))
-                  .y(d => y(d.value));
-
     // Make chart
-    const svg = d3.select("#bar-plot")
-                  .append("svg")
-                  .attr("viewBox", [0, 0, width, height]);
-    
-    svg.append("g").call(xAxis);
-    svg.append("g").call(yAxis);
+    const svg = addSVGToElement("#bar-plot", xAxis, yAxis);
 
     svg.append("g")
       .attr("fill", "steelblue")
@@ -234,13 +203,11 @@ function drawCharts(data) {
     let x = d3.scaleLinear()
               .domain([xMin, xMax]).nice()
               .range([margin.left, width - margin.right]);
-
     // Sort into bins
     let binDivider = d3.histogram()
                       .domain(x.domain())
                       .thresholds(x.ticks(40));
     let bins = binDivider(data);
-
     // Make y scaler
     let y = d3.scaleLinear()
               .domain([0, d3.max(bins, d => d.length)]).nice()
@@ -257,8 +224,7 @@ function drawCharts(data) {
                                   .attr("fill", "currentColor")
                                   .attr("font-weight", "bold")
                                   .attr("text-anchor", "end")
-                                  .text(valueLabel))
-
+                                  .text(valueLabel));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y)
                               .ticks(height / 40))
@@ -266,15 +232,10 @@ function drawCharts(data) {
                                   .attr("x", 4)
                                   .attr("text-anchor", "start")
                                   .attr("font-weight", "bold")
-                                  .text("Count"))
+                                  .text("Count"));
 
     // Make chart
-    const svg = d3.select("#histogram")
-                  .append("svg")
-                  .attr("viewBox", [0, 0, width, height]);
-    
-    svg.append("g").call(xAxis);
-    svg.append("g").call(yAxis);
+    const svg = addSVGToElement("#histogram", xAxis, yAxis);
 
     svg.append("g")
       .attr("fill", "steelblue")
@@ -288,9 +249,20 @@ function drawCharts(data) {
 
   }
 
+  /**
+   * Add SVG element with given x axis group and y axis group
+   *  to the element with the given id
+   */
+  function addSVGToElement(id, xAxis, yAxis) {
+    const svg = d3.select(id)
+                  .append("svg")
+                  .attr("viewBox", [0, 0, width, height]);
+    svg.append("g").call(xAxis);
+    svg.append("g").call(yAxis);
+    return svg;
+  }
+
 }
-
-
 
 /**
  * Parse input data array date strings into Date objects
