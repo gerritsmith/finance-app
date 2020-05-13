@@ -1,5 +1,8 @@
 package io.github.gerritsmith.financeapp.dto.form;
 
+import io.github.gerritsmith.financeapp.model.Location;
+import io.github.gerritsmith.financeapp.model.LocationType;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -12,14 +15,28 @@ public class LocationFormDTO {
     private String address;
     private String apt;
 
-    @Pattern(regexp = "((\\d+\\.?\\d*|\\d*\\.\\d+)\\s*,\\s*(\\d+\\.?\\d*|\\d*\\.\\d+))?", message = "must be in the form 'lat, long'")
+    @Pattern(regexp = "((-?\\d+\\.?\\d*|\\d*\\.\\d+)\\s*,\\s*(-?\\d+\\.?\\d*|\\d*\\.\\d+))?", message = "must be in the form 'lat, long'")
     private String latLong;
 
     @NotNull(message = "location type is required")
-    private String type;
+    private LocationType type;
+
+    private final LocationType[] locationTypes = LocationType.values();
 
     // Constructors
     public LocationFormDTO() {}
+
+    public LocationFormDTO(Location location) {
+        name = location.getName();
+        address = location.getAddress();
+        apt = location.getApt();
+        if (location.getLatitude() == null || location.getLongitude() == null) {
+            latLong = "";
+        } else {
+            latLong = location.getLatitude() + ", " + location.getLongitude();
+        }
+        type = location.getType();
+    }
 
     // Getters and Setters
     public String getName() {
@@ -54,12 +71,16 @@ public class LocationFormDTO {
         this.latLong = latLong;
     }
 
-    public String getType() {
+    public LocationType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(LocationType type) {
         this.type = type;
     }
 
+    public LocationType[] getLocationTypes() {
+        return locationTypes;
+    }
+    
 }

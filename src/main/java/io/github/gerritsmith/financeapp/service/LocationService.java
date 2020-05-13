@@ -3,10 +3,13 @@ package io.github.gerritsmith.financeapp.service;
 import io.github.gerritsmith.financeapp.data.LocationRepository;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.model.Location;
+import io.github.gerritsmith.financeapp.model.LocationType;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class LocationService {
@@ -20,8 +23,16 @@ public class LocationService {
     }
 
     // Read
-    public Location findByUserAndNameAndType(User user, String name, String type) {
+    public Location findByUserAndNameAndType(User user, String name, LocationType type) {
         return locationRepository.findByUserAndNameAndType(user, name, type);
+    }
+
+    public List<Location> findAllLocationsByUser(User user) {
+        return locationRepository.findAllByUser(user);
+    }
+
+    public Location findByIdAsUser(long id, User user) {
+        return locationRepository.findByIdAndUser(id, user);
     }
 
     // Create

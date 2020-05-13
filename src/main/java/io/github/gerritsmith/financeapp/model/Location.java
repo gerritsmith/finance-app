@@ -16,7 +16,7 @@ public class Location extends AbstractEntity {
     private String apt;
     private Double latitude;
     private Double longitude;
-    private String type;
+    private LocationType type;
 
     // Constructors
     public Location() {}
@@ -86,11 +86,11 @@ public class Location extends AbstractEntity {
         this.longitude = longitude;
     }
 
-    public String getType() {
+    public LocationType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(LocationType type) {
         this.type = type;
     }
 
