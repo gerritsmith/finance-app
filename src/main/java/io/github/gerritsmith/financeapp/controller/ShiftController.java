@@ -85,6 +85,7 @@ public class ShiftController {
         }
         ShiftFormDTO shiftFormDTO = new ShiftFormDTO(shift);
         model.addAttribute("shiftFormDTO", shiftFormDTO);
+        model.addAttribute("deliveries", shift.getDeliveries());
         return "shift/form";
     }
 
