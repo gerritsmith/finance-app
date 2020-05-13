@@ -2,6 +2,7 @@ package io.github.gerritsmith.financeapp.dto.form;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class LocationFormDTO {
 
@@ -10,7 +11,8 @@ public class LocationFormDTO {
 
     private String address;
     private String apt;
-    
+
+    @Pattern(regexp = "((\\d+\\.?\\d*|\\d*\\.\\d+)\\s*,\\s*(\\d+\\.?\\d*|\\d*\\.\\d+))?", message = "must be in the form 'lat, long'")
     private String latLong;
 
     @NotNull(message = "location type is required")
