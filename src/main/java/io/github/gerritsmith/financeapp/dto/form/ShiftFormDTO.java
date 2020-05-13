@@ -1,5 +1,6 @@
 package io.github.gerritsmith.financeapp.dto.form;
 
+import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Shift;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class ShiftFormDTO {
 
@@ -36,6 +38,8 @@ public class ShiftFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,1}|\\.\\d)?", message = "miles must be in the form 0.0")
     private String mpg;
 
+    private List<Delivery> deliveries;
+
     // Constructors
     public ShiftFormDTO() {}
 
@@ -47,6 +51,7 @@ public class ShiftFormDTO {
         endMileage = (shift.getEndMileage() == null) ? "" : shift.getEndMileage().toString();
         miles = (shift.getMiles() == null) ? "" : shift.getMiles().toString();
         mpg = (shift.getMpg() == null) ? "" : shift.getMpg().toString();
+        deliveries = shift.getDeliveries();
     }
 
     // Getters and Setters
@@ -104,6 +109,14 @@ public class ShiftFormDTO {
 
     public void setMpg(String mpg) {
         this.mpg = mpg;
+    }
+
+    public List<Delivery> getDeliveries() {
+        return deliveries;
+    }
+
+    public void setDeliveries(List<Delivery> deliveries) {
+        this.deliveries = deliveries;
     }
 
 }

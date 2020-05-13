@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.form.ShiftFormDTO;
+import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.exception.ShiftExistsException;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
@@ -85,7 +86,7 @@ public class ShiftController {
         }
         ShiftFormDTO shiftFormDTO = new ShiftFormDTO(shift);
         model.addAttribute("shiftFormDTO", shiftFormDTO);
-        model.addAttribute("deliveries", shift.getDeliveries());
+//        model.addAttribute("deliveries", shift.getDeliveries());
         return "shift/form";
     }
 
@@ -94,6 +95,9 @@ public class ShiftController {
                                          @ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
                                          Errors errors,
                                          Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        Shift shiftToUpdate = shiftService.findByIdAsUser(shiftId, user);
+        shiftFormDTO.setDeliveries(shiftToUpdate.getDeliveries());
         if (!shiftFormDTO.getStartTime().isBefore(shiftFormDTO.getEndTime())) {
             errors.reject("shift.timeInterval", "The start time must be before the end time");
         }
@@ -101,9 +105,11 @@ public class ShiftController {
             return "shift/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Shift updatedShift = new Shift(user, shiftFormDTO);
             shiftService.updateShift(shiftId, updatedShift);
+        } catch (DeliveryWithoutShiftException e) {
+            errors.reject("shift.orphanDeliveries", e.getMessage());
+            return "shift/form";
         } catch (ShiftExistsException e) {
             errors.reject("shift.overlap", e.getMessage());
             return "shift/form";

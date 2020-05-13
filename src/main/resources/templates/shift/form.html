@@ -4,10 +4,10 @@
 <body>
 <header th:replace="fragments :: header"></header>
 
-<div class="container">
+<div class="container" th:object="${shiftFormDTO}">
     <h1>Shift Form</h1>
 
-    <form th:action="@{${#request.requestURI}}" method="post" th:object="${shiftFormDTO}">
+    <form th:action="@{${#request.requestURI}}" method="post">
         <div class="form-group">
             <label th:for="date">Date</label>
             <input type="date" th:field="*{date}" required="required" class="form-control"
@@ -88,7 +88,7 @@
         </div>
     </form>
 
-    <th:block th:if="${#lists.size(deliveries) > 0}">
+    <th:block th:if="*{deliveries != null && (#lists.size(deliveries) > 0)}">
         <h2>Deliveries During Shift</h2>
         <table th:replace="/delivery/fragments :: table"></table>
     </th:block>
