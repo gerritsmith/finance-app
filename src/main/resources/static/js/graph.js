@@ -58,7 +58,7 @@ function drawCharts(data) {
                  .y(d => y(d.value));
 
     // Make chart
-    const svg = addSVGToElement("#line-plot", xAxis, yAxis);
+    const svg = addSVGToElement("#line-plot", width, height, xAxis, yAxis);
 
     svg.append("path")
        .datum(data)
@@ -81,84 +81,16 @@ function drawCharts(data) {
 
     //////////////////////////////////////////////
     // Add tooltips
-    const tooltip = svg.append("g");
+    svg.append("g")
+       .attr("id", "tooltip");
 
-    svg.on("touchmove mousemove", function() {
-      const {date, value} = bisect(d3.mouse(this)[0]);
-      if (value != undefined) {
-        tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
-              .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
-${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
-
-        d3.selectAll("#line-plot svg g circle")
-          .attr("fill", null)
-          .filter(d => d.date === date)
-          .attr("fill", "red");
-
-        d3.selectAll("#bar-plot svg g rect")
-          .attr("fill", null)
-          .filter(d => d.date === date)
-          .attr("fill", "red");
-        
-        d3.selectAll("#histogram svg g rect")
-          .attr("fill", null)
-          .filter(d => (d.x0 <= value && value <= d.x1))
-          .attr("fill", "red");
-
-      }
+    svg.on("touchmove mousemove", function () {
+      highlightDataPoint(this, x, data);
     });
 
     svg.on("touchend mouseleave", () => {
-      tooltip.call(callout, null);
-
-      d3.selectAll("circle")
-        .attr("fill", null);
-      d3.selectAll("rect")
-        .attr("fill", null);
-
+      removeHighlight();
     });
-
-    // Callout function
-    callout = (g, value) => {
-      if (!value) {
-        return g.style("display", "none");
-      }
-      g.style("display", null)
-      .style("pointer-events", "none")
-      .style("font", "1em sans-serif");
-      const path = g.selectAll("path")
-                    .data([null])
-                    .join("path")
-                    .attr("fill", "white")
-                    .attr("stroke", "black");
-      const text = g.selectAll("text")
-                    .data([null])
-                    .join("text")
-                    .call(text => text.selectAll("tspan")
-                                      .data((value + "").split(/\n/))
-                                      .join("tspan")
-                                      .attr("x", 0)
-                                      .attr("y", (d, i) => `${i * 1.25}em`)
-                                      .style("font-weight", (_, i) => i ? null : "bold")
-                                      .text(d => d));
-      const {x, y, width: w, height: h} = text.node().getBBox();
-      if (g.attr("transform").match(/\(([^)]+)\)/)[1].split(',').map(Number)[1] < 0.5 * height) {
-        text.attr("transform", `translate(${-w / 2},${0.8 * h})`);
-        path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
-      } else {
-        text.attr("transform", `translate(${-w / 2},${-h})`);
-        path.attr("d", `M${-w / 2 - 10},-5H-5l5,5l5,-5H${w / 2 + 10}v-${h + 20}h-${w + 20}z`);
-      }
-    };
-
-    let bisect = (mx) => {
-      const bisect = d3.bisector(d => d.date).left;
-      const date = x.invert(mx);
-      const index = bisect(data, date, 1);
-      const a = data[index - 1];
-      const b = data[index];
-      return date - a.date > b.date - date ? b : a;
-    }
 
   }
 
@@ -195,7 +127,7 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
                                   .text(valueLabel));
 
     // Make chart
-    const svg = addSVGToElement("#bar-plot", xAxis, yAxis);
+    const svg = addSVGToElement("#bar-plot", width, height, xAxis, yAxis);
 
     svg.append("g")
       .attr("fill", "steelblue")
@@ -206,6 +138,42 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
         .attr("y", d => y(d.value))
         .attr("height", d => y(0) - y(d.value))
         .attr("width", x.bandwidth());
+    
+    /////////////////////////////////////////////////
+    // Mouse Actions
+    svg.on("touchmove mousemove", function () {
+      highlightDataPoint(this, x, data);
+    });
+
+    svg.on("touchend mouseleave", () => {
+      removeHighlight();
+    });
+    /** 
+    svg.on("touchmove mousemove", function() {
+      const {date, value} = bisect(d3.mouse(this)[0], x, data);
+      if (value != undefined) {
+        tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
+              .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
+${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
+
+        d3.selectAll("#line-plot svg g circle")
+          .attr("fill", null)
+          .filter(d => d.date === date)
+          .attr("fill", "red");
+
+        d3.selectAll("#bar-plot svg g rect")
+          .attr("fill", null)
+          .filter(d => d.date === date)
+          .attr("fill", "red");
+        
+        d3.selectAll("#histogram svg g rect")
+          .attr("fill", null)
+          .filter(d => (d.x0 <= value && value <= d.x1))
+          .attr("fill", "red");
+
+      }
+    });
+    */
 
   }
 
@@ -254,7 +222,7 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
                                   .text("Count"));
 
     // Make chart
-    const svg = addSVGToElement("#histogram", xAxis, yAxis);
+    const svg = addSVGToElement("#histogram", width, height, xAxis, yAxis);
 
     svg.append("g")
        .attr("fill", "steelblue")
@@ -268,22 +236,125 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
 
   }
 
-  /**
-   * Add SVG element with given x axis group and y axis group
-   *  to the element with the given id
-   */
-  function addSVGToElement(id, xAxis, yAxis) {
-    const svg = d3.select(id)
-                  .append("svg")
-                  .attr("viewBox", [0, 0, width, height]);
-    svg.append("g").call(xAxis);
-    svg.append("g").call(yAxis);
-    return svg;
-  }
-
 }
 
-/**
+
+/** MOUSE INTERACTION
+ * Highlight in all charts the data point under the mouse
+ */
+function highlightDataPoint(svg, xScale, data) {
+  const {date, value} = bisect(d3.mouse(svg)[0], xScale, data);
+  if (value != undefined) {
+    const activeCircle = d3.selectAll("#line-plot svg g circle")
+                           .attr("fill", null)
+                           .filter(d => d.date === date)
+                           .attr("fill", "red");
+
+    d3.select("#tooltip")
+      .attr("transform", `translate(${activeCircle.attr("cx")},${activeCircle.attr("cy")})`)
+      .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
+  ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
+
+    d3.selectAll("#bar-plot svg g rect")
+      .attr("fill", null)
+      .filter(d => d.date === date)
+      .attr("fill", "red");
+      
+    d3.selectAll("#histogram svg g rect")
+      .attr("fill", null)
+      .filter(d => (d.x0 <= value && value <= d.x1))
+      .attr("fill", "red");
+  }
+}
+
+/** MOUSE INTERACTION
+ * Remove all highlights applied to charts when mouse leaves svg
+ */
+function removeHighlight() {
+  d3.select("#tooltip")
+    .call(callout, null);
+
+  d3.selectAll("circle")
+    .attr("fill", null);
+  d3.selectAll("rect")
+    .attr("fill", null);
+}
+
+
+/** MOUSE INTERACTION
+ * Build or hide the tooltip for the line graph
+ */
+let callout = (g, value) => {
+  if (!value) {
+    return g.style("display", "none");
+  }
+  g.style("display", null)
+  .style("pointer-events", "none")
+  .style("font", "1em sans-serif");
+  const path = g.selectAll("path")
+                .data([null])
+                .join("path")
+                .attr("fill", "white")
+                .attr("stroke", "black");
+  const text = g.selectAll("text")
+                .data([null])
+                .join("text")
+                .call(text => text.selectAll("tspan")
+                                  .data((value + "").split(/\n/))
+                                  .join("tspan")
+                                  .attr("x", 0)
+                                  .attr("y", (d, i) => `${i * 1.25}em`)
+                                  .style("font-weight", (_, i) => i ? null : "bold")
+                                  .text(d => d));
+  const {x, y, width: w, height: h} = text.node().getBBox();
+
+  let parentSVG = g.select(function() {
+    return this.parentNode;
+  });
+  let height = Number(parentSVG.attr("viewBox").split(',')[3])
+
+  if (g.attr("transform").match(/\(([^)]+)\)/)[1].split(',').map(Number)[1] < 0.5 * height) {
+    text.attr("transform", `translate(${-w / 2},${0.8 * h})`);
+    path.attr("d", `M${-w / 2 - 10},5H-5l5,-5l5,5H${w / 2 + 10}v${h + 20}h-${w + 20}z`);
+  } else {
+    text.attr("transform", `translate(${-w / 2},${-h})`);
+    path.attr("d", `M${-w / 2 - 10},-5H-5l5,5l5,-5H${w / 2 + 10}v-${h + 20}h-${w + 20}z`);
+  }
+};
+
+
+/** MOUSE INTERACTION
+ * Determine the data point over which the mouse is hovering
+ *  for a chart with dates along the x-axis
+ */
+let bisect = (mouseX, xScale, data) => {
+  const bisect = d3.bisector(d => d.date).left;
+  const date = xScale.invert(mouseX);
+  const index = bisect(data, date, 1);
+  const a = data[index - 1];
+  const b = data[index];
+  if (b == undefined) {
+    return a;
+  }
+  return date - a.date > b.date - date ? b : a;
+}
+
+
+/** SVG TEMPLATE
+ * Add SVG element with given x axis group and y axis group
+ *  to the element with the given id
+ */
+function addSVGToElement(id, width, height, xAxis, yAxis) {
+  const svg = d3.select(id)
+                .append("svg")
+                .attr("viewBox", [0, 0, width, height]);
+  svg.append("g").call(xAxis);
+  svg.append("g").call(yAxis);
+  return svg;
+}
+
+
+/** FORMAT DATA
  * Parse input data array date strings into Date objects
  * Sorts the array by date
  * Will remove any extra fields on the data array object
@@ -298,7 +369,7 @@ function parseInputDateStrings(data) {
   }).sort((a, b) => d3.ascending(a.date, b.date));
 }
 
-/**
+/** FORMAT DATA
  * Add missing dates to data array with corresponding values undefined
  * Also adds extra day at start and end for padding the graph
  */
