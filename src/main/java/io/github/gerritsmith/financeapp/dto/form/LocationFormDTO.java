@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.dto.form;
 
 import io.github.gerritsmith.financeapp.model.Location;
+import io.github.gerritsmith.financeapp.model.LocationType;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -18,7 +19,9 @@ public class LocationFormDTO {
     private String latLong;
 
     @NotNull(message = "location type is required")
-    private String type;
+    private LocationType type;
+
+    private final LocationType[] locationTypes = LocationType.values();
 
     // Constructors
     public LocationFormDTO() {}
@@ -68,12 +71,16 @@ public class LocationFormDTO {
         this.latLong = latLong;
     }
 
-    public String getType() {
+    public LocationType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(LocationType type) {
         this.type = type;
     }
 
+    public LocationType[] getLocationTypes() {
+        return locationTypes;
+    }
+    
 }

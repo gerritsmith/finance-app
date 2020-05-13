@@ -1,9 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.dto.form.LocationFormDTO;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
-import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Location;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.LocationService;

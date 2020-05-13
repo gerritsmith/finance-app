@@ -19,7 +19,7 @@
         <tr th:each="location : *{locations}" th:object="${location}">
             <td th:text="*{name}">Place Name</td>
             <td th:text="*{address}">123 Fake St. City ST, 12345</td>
-            <td th:text="*{type}">Pickup</td>
+            <td th:text="*{type.displayName}">Pickup</td>
             <td><a th:href="@{/location/{locationId}(locationId=*{id})}"
                    class="btn btn-sm btn-info">View</a></td>
         </tr>

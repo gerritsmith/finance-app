@@ -43,15 +43,11 @@
 
         <div class="form-group">
             <label>Type of Location</label>
-            <div class="form-check">
-                <input id="pickup" type="radio" name="type" value="pickup" class="form-check-input"
-                       th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}" required="required"/>
-                <label for="pickup" class="form-check-label">Pickup Location</label>
-            </div>
-            <div class="form-check">
-                <input id="dropoff" type="radio" name="type" value="dropoff" class="form-check-input"
-                       th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
-                <label for="dropoff" class="form-check-label">Dropoff Location</label>
+            <div class="form-check" th:each="locationType : *{locationTypes}">
+                <input type="radio" th:field="*{type}" th:value="${locationType}" class="form-check-input"
+                       th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}" required="required"/>
+                <label th:for="${#ids.prev('type')}" th:text="${locationType.displayName}"
+                       class="form-check-label">Location Type</label>
             </div>
             <p class="error" th:errors="*{type}"></p>
         </div>
