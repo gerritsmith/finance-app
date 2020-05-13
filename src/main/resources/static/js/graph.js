@@ -1,5 +1,3 @@
-// const d3 = require("d3");
-
 function drawCharts(data) {
 
   // Dependent Variable Name
@@ -80,12 +78,13 @@ function drawCharts(data) {
         .attr("r", 5);
 
     //////////////////////////////////////////////
-    // Add tooltips
+    // Add mouseover tooltips
     svg.append("g")
        .attr("id", "tooltip");
 
     svg.on("touchmove mousemove", function () {
-      highlightDataPoint(this, x, data);
+      const {date, value} = bisect(d3.mouse(this)[0], x, data);
+      highlightDataPoint(date, value);
     });
 
     svg.on("touchend mouseleave", () => {
@@ -116,6 +115,7 @@ function drawCharts(data) {
     let format = d3.timeFormat("%b %e")
     let xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`)
                       .call(d3.axisBottom(x)
+                              // .tickValues(x.domain().filter(i => i % 3 === 0))
                               .tickFormat(i => format(data[i].date))
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
@@ -135,45 +135,15 @@ function drawCharts(data) {
         .data(data)
         .join("rect")
         .attr("x", (d, i) => x(i))
-        .attr("y", d => y(d.value))
+        .attr("y", d => d.value == undefined ? y(0) : y(d.value))
         .attr("height", d => y(0) - y(d.value))
-        .attr("width", x.bandwidth());
-    
-    /////////////////////////////////////////////////
-    // Mouse Actions
-    svg.on("touchmove mousemove", function () {
-      highlightDataPoint(this, x, data);
-    });
-
-    svg.on("touchend mouseleave", () => {
-      removeHighlight();
-    });
-    /** 
-    svg.on("touchmove mousemove", function() {
-      const {date, value} = bisect(d3.mouse(this)[0], x, data);
-      if (value != undefined) {
-        tooltip.attr("transform", `translate(${x(date)},${y(value)})`)
-              .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
-${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
-
-        d3.selectAll("#line-plot svg g circle")
-          .attr("fill", null)
-          .filter(d => d.date === date)
-          .attr("fill", "red");
-
-        d3.selectAll("#bar-plot svg g rect")
-          .attr("fill", null)
-          .filter(d => d.date === date)
-          .attr("fill", "red");
-        
-        d3.selectAll("#histogram svg g rect")
-          .attr("fill", null)
-          .filter(d => (d.x0 <= value && value <= d.x1))
-          .attr("fill", "red");
-
-      }
-    });
-    */
+        .attr("width", x.bandwidth())
+        .on("touchmove mousemove", function(d) {
+          highlightDataPoint(d.date, d.value);
+        })
+        .on("touchend mouseleave", () => {
+          removeHighlight();
+        });
 
   }
 
@@ -242,8 +212,7 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
 /** MOUSE INTERACTION
  * Highlight in all charts the data point under the mouse
  */
-function highlightDataPoint(svg, xScale, data) {
-  const {date, value} = bisect(d3.mouse(svg)[0], xScale, data);
+function highlightDataPoint(date, value) {
   if (value != undefined) {
     const activeCircle = d3.selectAll("#line-plot svg g circle")
                            .attr("fill", null)
@@ -253,7 +222,7 @@ function highlightDataPoint(svg, xScale, data) {
     d3.select("#tooltip")
       .attr("transform", `translate(${activeCircle.attr("cx")},${activeCircle.attr("cy")})`)
       .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
-  ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
+${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
 
     d3.selectAll("#bar-plot svg g rect")
       .attr("fill", null)
@@ -273,7 +242,6 @@ function highlightDataPoint(svg, xScale, data) {
 function removeHighlight() {
   d3.select("#tooltip")
     .call(callout, null);
-
   d3.selectAll("circle")
     .attr("fill", null);
   d3.selectAll("rect")
@@ -289,8 +257,8 @@ let callout = (g, value) => {
     return g.style("display", "none");
   }
   g.style("display", null)
-  .style("pointer-events", "none")
-  .style("font", "1em sans-serif");
+   .style("pointer-events", "none")
+   .style("font", "1em sans-serif");
   const path = g.selectAll("path")
                 .data([null])
                 .join("path")
@@ -361,7 +329,7 @@ function addSVGToElement(id, width, height, xAxis, yAxis) {
  */
 function parseInputDateStrings(data) {
   return data.map(d => {
-    p = d.date.split("-");
+    let p = d.date.split("-");
     return {
       date: new Date(p[0], p[1]-1, p[2]),
       value: d.value
@@ -377,13 +345,13 @@ function addMissingDates(data) {
   let [minDate, maxDate] = d3.extent(data, d => d.date);
 
   // add additional day before min to pad the graph
-  date = new Date(minDate.getTime());
+  let date = new Date(minDate.getTime());
   date.setDate(date.getDate() - 1);
   // add additional day after max in loop condition
-  upperLimit = new Date(maxDate.getTime());
+  let upperLimit = new Date(maxDate.getTime());
   upperLimit.setDate(upperLimit.getDate() + 1);
 
-  newData = [];
+  let newData = [];
   while (date <= upperLimit) {
     if (data.length > 0 && data[0].date - date === 0) {
       newData.push(data.shift());
