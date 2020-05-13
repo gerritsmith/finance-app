@@ -2,6 +2,7 @@ package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
+import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.DeliveryService;
@@ -64,6 +65,9 @@ public class DeliveryController {
             User user = userService.findUserByUsername(principal.getName());
             Delivery newDelivery = new Delivery(user, deliveryFormDTO);
             deliveryService.addDelivery(newDelivery);
+        } catch (DeliveryWithoutShiftException e) {
+            errors.reject("delivery.withoutShift", e.getMessage());
+            return "delivery/form";
         } catch (DeliveryExistsException e) {
             errors.reject("delivery.alreadyExists", e.getMessage());
             return "delivery/form";

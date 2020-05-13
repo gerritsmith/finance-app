@@ -4,8 +4,11 @@ import io.github.gerritsmith.financeapp.dto.form.ShiftFormDTO;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Shift extends AbstractEntity {
@@ -20,6 +23,9 @@ public class Shift extends AbstractEntity {
     private Integer endMileage;
     private Double miles;
     private Double mpg;
+
+    @OneToMany(mappedBy = "shift")
+    private final List<Delivery> deliveries = new ArrayList<>();
 
     // Constructors
     public Shift() {}
@@ -113,6 +119,10 @@ public class Shift extends AbstractEntity {
 
     public void setMpg(Double mpg) {
         this.mpg = mpg;
+    }
+
+    public List<Delivery> getDeliveries() {
+        return deliveries;
     }
 
     // Equals, hash, toString

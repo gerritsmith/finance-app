@@ -32,6 +32,9 @@ public class Delivery extends AbstractEntity {
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<DeliveryLeg> legs = new ArrayList<>();
 
+    @ManyToOne
+    private Shift shift;
+
     // Constructors
     public Delivery() {}
 
@@ -130,6 +133,14 @@ public class Delivery extends AbstractEntity {
 
     public void setLegs(List<DeliveryLeg> legs) {
         this.legs = legs;
+    }
+
+    public Shift getShift() {
+        return shift;
+    }
+
+    public void setShift(Shift shift) {
+        this.shift = shift;
     }
 
     // Equals, hash, toString
