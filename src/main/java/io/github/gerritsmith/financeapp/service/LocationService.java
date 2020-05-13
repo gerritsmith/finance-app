@@ -30,6 +30,10 @@ public class LocationService {
         return locationRepository.findAllByUser(user);
     }
 
+    public Location findByIdAsUser(long id, User user) {
+        return locationRepository.findByIdAndUser(id, user);
+    }
+
     // Create
     @Transactional
     public Location addLocation(Location location) throws LocationExistsException {

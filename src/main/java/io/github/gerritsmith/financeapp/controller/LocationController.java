@@ -1,7 +1,9 @@
 package io.github.gerritsmith.financeapp.controller;
 
+import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.dto.form.LocationFormDTO;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
+import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Location;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.LocationService;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -68,6 +71,20 @@ public class LocationController {
             return "location/form";
         }
         return "redirect:/locations";
+    }
+
+    @GetMapping("/location/{locationId}")
+    public String displayLocationDetails(@PathVariable long locationId,
+                                         Principal principal,
+                                         Model model) {
+        User user = userService.findUserByUsername(principal.getName());
+        Location location = locationService.findByIdAsUser(locationId, user);
+        if (location == null) {
+            return "error/404";
+        }
+        LocationFormDTO locationFormDTO = new LocationFormDTO(location);
+        model.addAttribute("locationFormDTO", locationFormDTO);
+        return "location/form";
     }
 
 }

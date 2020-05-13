@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface LocationRepository extends CrudRepository<Location, Long> {
 
+    Location findByIdAndUser(long id, User user);
+
     Location findByUserAndNameAndType(User user, String name, String type);
 
     List<Location> findAllByUser(User user);

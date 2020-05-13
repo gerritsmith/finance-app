@@ -1,5 +1,7 @@
 package io.github.gerritsmith.financeapp.dto.form;
 
+import io.github.gerritsmith.financeapp.model.Location;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -12,7 +14,7 @@ public class LocationFormDTO {
     private String address;
     private String apt;
 
-    @Pattern(regexp = "((\\d+\\.?\\d*|\\d*\\.\\d+)\\s*,\\s*(\\d+\\.?\\d*|\\d*\\.\\d+))?", message = "must be in the form 'lat, long'")
+    @Pattern(regexp = "((-?\\d+\\.?\\d*|\\d*\\.\\d+)\\s*,\\s*(-?\\d+\\.?\\d*|\\d*\\.\\d+))?", message = "must be in the form 'lat, long'")
     private String latLong;
 
     @NotNull(message = "location type is required")
@@ -20,6 +22,18 @@ public class LocationFormDTO {
 
     // Constructors
     public LocationFormDTO() {}
+
+    public LocationFormDTO(Location location) {
+        name = location.getName();
+        address = location.getAddress();
+        apt = location.getApt();
+        if (location.getLatitude() == null || location.getLongitude() == null) {
+            latLong = "";
+        } else {
+            latLong = location.getLatitude() + ", " + location.getLongitude();
+        }
+        type = location.getType();
+    }
 
     // Getters and Setters
     public String getName() {
