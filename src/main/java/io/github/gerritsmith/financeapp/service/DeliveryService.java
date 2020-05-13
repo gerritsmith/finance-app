@@ -2,8 +2,10 @@ package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.data.DeliveryRepository;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
+import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.DeliveryLeg;
+import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +21,16 @@ public class DeliveryService {
 
     private DeliveryRepository deliveryRepository;
     private DeliveryLegService deliveryLegService;
+    private ShiftService shiftService;
 
     // Constructors
     @Autowired
     public DeliveryService(DeliveryRepository deliveryRepository,
-                           DeliveryLegService deliveryLegService) {
+                           DeliveryLegService deliveryLegService,
+                           ShiftService shiftService) {
         this.deliveryRepository = deliveryRepository;
         this.deliveryLegService = deliveryLegService;
+        this.shiftService = shiftService;
     }
 
     // Read
@@ -47,7 +52,9 @@ public class DeliveryService {
 
     // Create
     @Transactional
-    public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException {
+    public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException,
+                                                          DeliveryWithoutShiftException {
+        delivery.setShift(findShiftForDelivery(delivery));
         Delivery deliveryExists = findByUserAndDateAndTime(delivery.getUser(), delivery.getDate(), delivery.getTime());
         if (deliveryExists != null) {
             throw new DeliveryExistsException("Already have delivery record at " +
@@ -59,7 +66,9 @@ public class DeliveryService {
 
     // Update
     @Transactional
-    public Delivery updateDelivery(long deliveryId, Delivery updatedDelivery) throws DeliveryExistsException {
+    public Delivery updateDelivery(long deliveryId,
+                                   Delivery updatedDelivery) throws DeliveryExistsException,
+                                                                    DeliveryWithoutShiftException {
         Delivery deliveryToUpdate = findByIdAsUser(deliveryId, updatedDelivery.getUser());
         Delivery deliveryExistsAtDateTime = findByUserAndDateAndTime(updatedDelivery.getUser(),
                 updatedDelivery.getDate(),
@@ -69,6 +78,7 @@ public class DeliveryService {
                     deliveryExistsAtDateTime.displayTime() +
                     " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
         }
+        updatedDelivery.setShift(findShiftForDelivery(updatedDelivery));
         transferDeliveryFields(deliveryToUpdate, updatedDelivery);
         return deliveryRepository.save(deliveryToUpdate);
     }
@@ -96,6 +106,18 @@ public class DeliveryService {
             int lastIndex = deliveryToUpdate.getLegs().size() - 1;
             deliveryLegService.deleteDeliveryLeg(deliveryToUpdate.getLegs().remove(lastIndex));
         }
+        deliveryToUpdate.setShift(updatedDelivery.getShift());
+    }
+
+    private Shift findShiftForDelivery(Delivery delivery) throws DeliveryWithoutShiftException {
+        List<Shift> shiftsOnDate = shiftService.findByUserAndDate(delivery.getUser(), delivery.getDate());
+        for (Shift shift : shiftsOnDate) {
+            if (delivery.getTime().compareTo(shift.getStartTime()) >= 0 &&
+                    delivery.getTime().compareTo(shift.getEndTime()) <= 0) {
+                return shift;
+            }
+        }
+        throw new DeliveryWithoutShiftException("Delivery doesn't occur within a shift");
     }
 
 }

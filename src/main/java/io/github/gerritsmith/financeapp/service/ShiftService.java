@@ -1,7 +1,9 @@
 package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.data.ShiftRepository;
+import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.exception.ShiftExistsException;
+import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,9 @@ public class ShiftService {
 
     // Update
     @Transactional
-    public Shift updateShift(long shiftId, Shift updatedShift) throws ShiftExistsException {
+    public Shift updateShift(long shiftId,
+                             Shift updatedShift) throws ShiftExistsException,
+                                                        DeliveryWithoutShiftException {
         Shift shiftToUpdate = shiftRepository.findByIdAndUser(shiftId, updatedShift.getUser());
         List<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
                 updatedShift.getDate());
@@ -65,6 +69,14 @@ public class ShiftService {
                         existingShift.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")) +
                         " from " + existingShift.getStartTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
                         " to " + existingShift.getEndTime().format(DateTimeFormatter.ofPattern("h:mm a")));
+            }
+        }
+        for (Delivery delivery : shiftToUpdate.getDeliveries()) {
+            if (!delivery.getDate().equals(updatedShift.getDate()) ||
+                    delivery.getTime().compareTo(updatedShift.getStartTime()) < 0 ||
+                    delivery.getTime().compareTo(updatedShift.getEndTime()) > 0) {
+                throw new DeliveryWithoutShiftException("Shift edits which result in " +
+                        "deliveries occurring outside of shift are not allowed.");
             }
         }
         shiftToUpdate.update(updatedShift);
