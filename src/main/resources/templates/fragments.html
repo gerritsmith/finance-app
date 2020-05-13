@@ -33,15 +33,15 @@
                     Home
                     <span th:if="${#request.requestURI.startsWith('/user')}" class="sr-only">(current)</span>
                 </a>
-                <a class="nav-item nav-link" th:href="@{/deliveries}"
-                   th:classappend="${#request.requestURI.startsWith('/deliver') ? 'active' : ''}">
-                    Deliveries
-                    <span th:if="${#request.requestURI.startsWith('/deliver')}" class="sr-only">(current)</span>
-                </a>
                 <a class="nav-item nav-link" th:href="@{/shifts}"
                    th:classappend="${#request.requestURI.startsWith('/shift') ? 'active' : ''}">
                     Shifts
                     <span th:if="${#request.requestURI.startsWith('/shift')}" class="sr-only">(current)</span>
+                </a>
+                <a class="nav-item nav-link" th:href="@{/deliveries}"
+                   th:classappend="${#request.requestURI.startsWith('/deliver') ? 'active' : ''}">
+                    Deliveries
+                    <span th:if="${#request.requestURI.startsWith('/deliver')}" class="sr-only">(current)</span>
                 </a>
                 <a class="nav-item nav-link" th:href="@{/expenses}"
                    th:classappend="${#request.requestURI.startsWith('/expense') ? 'active' : ''}">
@@ -60,6 +60,19 @@
                         <a class="dropdown-item" th:href="@{/report/by-day}">By Day</a>
                         <a class="dropdown-item disabled" th:href="@{/report/by-month}">By Month</a>
                         <a class="dropdown-item disabled" th:href="@{/report/by-year}">By Year</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" th:href="@{/more}"
+                       id="moreDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                       th:classappend="${#request.requestURI.startsWith('/location') ? 'active' : ''}">
+                        More
+                        <span th:if="${#request.requestURI.startsWith('/location')}" class="sr-only">(current)</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportsDropdown">
+                        <a class="dropdown-item" th:href="@{/locations}">Locations</a>
+                        <a class="dropdown-item disabled" th:href="@{/bonuses}">Bonuses</a>
+                        <a class="dropdown-item disabled" th:href="@{/deposits}">Deposits</a>
                     </div>
                 </div>
             </div>
