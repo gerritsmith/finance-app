@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+</head>
+<body>
+
+<table th:fragment="table" class="table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Type</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="location : *{locations}" th:object="${location}">
+            <td th:text="*{name}">Place Name</td>
+            <td th:text="*{address}">123 Fake St. City ST, 12345</td>
+            <td th:text="*{type}">Pickup</td>
+            <td><a th:href="@{/location/{locationId}(locationId=*{id})}"
+                   class="btn btn-sm btn-info">View</a></td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

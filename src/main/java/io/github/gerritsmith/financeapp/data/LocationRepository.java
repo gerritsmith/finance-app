@@ -5,9 +5,13 @@ import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface LocationRepository extends CrudRepository<Location, Long> {
 
     Location findByUserAndNameAndType(User user, String name, String type);
+
+    List<Location> findAllByUser(User user);
 
 }

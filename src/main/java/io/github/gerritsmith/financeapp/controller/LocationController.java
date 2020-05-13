@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class LocationController {
@@ -27,7 +28,21 @@ public class LocationController {
     UserService userService;
 
     @GetMapping("/locations")
-    public String displayLocationsHome() {
+    public String displayLocationsHome(Model model,
+                                       Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        List<Location> locations = locationService.findAllLocationsByUser(user);
+        locations.sort((o1, o2) -> {
+            if (o1.getType().compareTo(o2.getType()) > 0) {
+                return -1;
+            } else if (o1.getType().equals(o2.getType())) {
+                if (o1.getName().compareTo(o2.getName()) < 0) {
+                    return -1;
+                }
+            }
+            return 1;
+        });
+        model.addAttribute("locations", locations);
         return "location/home";
     }
 

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class LocationService {
 
@@ -22,6 +24,10 @@ public class LocationService {
     // Read
     public Location findByUserAndNameAndType(User user, String name, String type) {
         return locationRepository.findByUserAndNameAndType(user, name, type);
+    }
+
+    public List<Location> findAllLocationsByUser(User user) {
+        return locationRepository.findAllByUser(user);
     }
 
     // Create
