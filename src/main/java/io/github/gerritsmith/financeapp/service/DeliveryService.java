@@ -52,7 +52,8 @@ public class DeliveryService {
 
     // Create
     @Transactional
-    public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException, DeliveryWithoutShiftException {
+    public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException,
+                                                          DeliveryWithoutShiftException {
         delivery.setShift(findShiftForDelivery(delivery));
         Delivery deliveryExists = findByUserAndDateAndTime(delivery.getUser(), delivery.getDate(), delivery.getTime());
         if (deliveryExists != null) {
@@ -65,7 +66,9 @@ public class DeliveryService {
 
     // Update
     @Transactional
-    public Delivery updateDelivery(long deliveryId, Delivery updatedDelivery) throws DeliveryExistsException {
+    public Delivery updateDelivery(long deliveryId,
+                                   Delivery updatedDelivery) throws DeliveryExistsException,
+                                                                    DeliveryWithoutShiftException {
         Delivery deliveryToUpdate = findByIdAsUser(deliveryId, updatedDelivery.getUser());
         Delivery deliveryExistsAtDateTime = findByUserAndDateAndTime(updatedDelivery.getUser(),
                 updatedDelivery.getDate(),
@@ -75,6 +78,7 @@ public class DeliveryService {
                     deliveryExistsAtDateTime.displayTime() +
                     " on " + deliveryExistsAtDateTime.getDate().format(DateTimeFormatter.ofPattern("MMM dd yyyy")));
         }
+        updatedDelivery.setShift(findShiftForDelivery(updatedDelivery));
         transferDeliveryFields(deliveryToUpdate, updatedDelivery);
         return deliveryRepository.save(deliveryToUpdate);
     }
@@ -102,6 +106,7 @@ public class DeliveryService {
             int lastIndex = deliveryToUpdate.getLegs().size() - 1;
             deliveryLegService.deleteDeliveryLeg(deliveryToUpdate.getLegs().remove(lastIndex));
         }
+        deliveryToUpdate.setShift(updatedDelivery.getShift());
     }
 
     private Shift findShiftForDelivery(Delivery delivery) throws DeliveryWithoutShiftException {

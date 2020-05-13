@@ -101,6 +101,9 @@ public class DeliveryController {
             User user = userService.findUserByUsername(principal.getName());
             Delivery updatedDelivery = new Delivery(user, deliveryFormDTO);
             deliveryService.updateDelivery(deliveryId, updatedDelivery);
+        } catch (DeliveryWithoutShiftException e) {
+            errors.reject("delivery.withoutShift", e.getMessage());
+            return "delivery/form";
         } catch (DeliveryExistsException e) {
             errors.reject("delivery.alreadyExists", e.getMessage());
             return "delivery/form";
