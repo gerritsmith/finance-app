@@ -107,7 +107,7 @@ public class Location extends AbstractEntity {
     // Equals, hash, toString
     @Override
     public String toString() {
-        return type + " location :" + name;
+        return type + " location: " + name + " at " + address;
     }
 
 }

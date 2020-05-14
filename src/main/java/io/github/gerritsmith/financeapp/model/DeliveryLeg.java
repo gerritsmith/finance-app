@@ -13,8 +13,13 @@ public class DeliveryLeg extends AbstractEntity {
 
     private Double foodTotal;
     private Double tip;
-    private String pickup;
-    private String dropoff;
+
+    @ManyToOne
+    private Location pickup;
+
+    @ManyToOne
+    private Location dropoff;
+
     private String note;
 
     // Constructors
@@ -65,19 +70,19 @@ public class DeliveryLeg extends AbstractEntity {
         this.tip = tip;
     }
 
-    public String getPickup() {
+    public Location getPickup() {
         return pickup;
     }
 
-    public void setPickup(String pickup) {
+    public void setPickup(Location pickup) {
         this.pickup = pickup;
     }
 
-    public String getDropoff() {
+    public Location getDropoff() {
         return dropoff;
     }
 
-    public void setDropoff(String dropoff) {
+    public void setDropoff(Location dropoff) {
         this.dropoff = dropoff;
     }
 
