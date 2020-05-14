@@ -13,3 +13,13 @@ function changeEditState() {
   saveButton.disabled = !saveButton.disabled;
   saveButton.parentElement.hidden = !saveButton.parentElement.hidden;
 }
+
+function locationFormChangeEditState() {
+  let radioInputs = document.querySelectorAll("input[type=radio]");
+  for (let input of radioInputs) {
+    if (input.getAttribute("checked") == null) {
+      input.disabled = !input.disabled;
+    }
+  }
+  changeEditState();
+}

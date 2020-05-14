@@ -85,4 +85,23 @@ public class LocationController {
         return "location/form";
     }
 
+    @PostMapping("/location/{locationId}")
+    public String processLocationUpdateForm(@PathVariable long locationId,
+                                            @ModelAttribute @Valid LocationFormDTO locationFormDTO,
+                                            Errors errors,
+                                            Principal principal) {
+        if (errors.hasErrors()) {
+            return "location/form";
+        }
+        try {
+            User user = userService.findUserByUsername(principal.getName());
+            Location updatedLocation = new Location(user, locationFormDTO);
+            locationService.updateLocation(locationId, updatedLocation);
+        } catch (LocationExistsException e) {
+            errors.reject("location.alreadyExists", e.getMessage());
+            return "location/form";
+        }
+        return "redirect:/locations";
+    }
+
 }

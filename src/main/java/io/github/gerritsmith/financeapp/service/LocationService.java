@@ -3,7 +3,6 @@ package io.github.gerritsmith.financeapp.service;
 import io.github.gerritsmith.financeapp.data.LocationRepository;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.model.Location;
-import io.github.gerritsmith.financeapp.model.LocationType;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +22,8 @@ public class LocationService {
     }
 
     // Read
-    public Location findByUserAndNameAndType(User user, String name, LocationType type) {
-        return locationRepository.findByUserAndNameAndType(user, name, type);
+    public Location findByUserAndNameAndAddressAndApt(User user, String name, String address, String apt) {
+        return locationRepository.findByUserAndNameAndAddressAndApt(user, name, address, apt);
     }
 
     public List<Location> findAllLocationsByUser(User user) {
@@ -38,14 +37,37 @@ public class LocationService {
     // Create
     @Transactional
     public Location addLocation(Location location) throws LocationExistsException {
-        Location locationExists = findByUserAndNameAndType(location.getUser(),
-                                                           location.getName(),
-                                                           location.getType());
+        Location locationExists = findByUserAndNameAndAddressAndApt(location.getUser(),
+                                                                    location.getName(),
+                                                                    location.getAddress(),
+                                                                    location.getApt());
         if (locationExists != null) {
             throw new LocationExistsException("Already have " +
-                    location.getType() + " location " + location.getName());
+                    location.getName() + " location at " +
+                    location.getAddress() + " in apt " +
+                    location.getApt());
         }
         return locationRepository.save(location);
+    }
+
+    // Update
+    @Transactional
+    public Location updateLocation(long locationId,
+                                   Location updatedLocation) throws LocationExistsException {
+        Location locationToUpdate = findByIdAsUser(locationId, updatedLocation.getUser());
+        Location locationExistsWithNameAtAddress = findByUserAndNameAndAddressAndApt(updatedLocation.getUser(),
+                                                                                     updatedLocation.getName(),
+                                                                                     updatedLocation.getAddress(),
+                                                                                     updatedLocation.getApt());
+        if (locationExistsWithNameAtAddress != null &&
+                !locationToUpdate.equals(locationExistsWithNameAtAddress)) {
+            throw new LocationExistsException("Already have " +
+                    locationExistsWithNameAtAddress.getName() + " location at " +
+                    locationExistsWithNameAtAddress.getAddress() + " in apt " +
+                    locationExistsWithNameAtAddress.getApt());
+        }
+        locationToUpdate.update(updatedLocation);
+        return locationRepository.save(locationToUpdate);
     }
 
 }

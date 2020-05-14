@@ -45,7 +45,7 @@
             <label>Type of Location</label>
             <div class="form-check" th:each="locationType : *{locationTypes}">
                 <input type="radio" th:field="*{type}" th:value="${locationType}" class="form-check-input"
-                       th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}" required="required"/>
+                       th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new')) && locationType != locationFormDTO.type}" required="required"/>
                 <label th:for="${#ids.prev('type')}" th:text="${locationType.displayName}"
                        class="form-check-label">Location Type</label>
             </div>
@@ -57,8 +57,8 @@
         </div>
 
         <div class="form-group" th:unless="${#request.requestURI.endsWith('new')}">
-            <button id="editButton" type="button" onclick="changeEditState();" class="btn btn-primary">Edit</button>
-            <button id="cancelButton" type="reset" onclick="changeEditState();" class="btn btn-warning"
+            <button id="editButton" type="button" onclick="locationFormChangeEditState();" class="btn btn-primary">Edit</button>
+            <button id="cancelButton" type="reset" onclick="locationFormChangeEditState();" class="btn btn-warning"
                     hidden="true" disabled="true">Cancel Edit</button>
         </div>
 
