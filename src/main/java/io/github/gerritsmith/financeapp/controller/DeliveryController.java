@@ -5,7 +5,6 @@ import io.github.gerritsmith.financeapp.dto.form.DeliveryLegFormDTO;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
 import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.model.Delivery;
-import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.DeliveryService;
 import io.github.gerritsmith.financeapp.service.LocationService;
@@ -68,22 +67,7 @@ public class DeliveryController {
     public String processNewDeliveryForm(@ModelAttribute @Valid DeliveryFormDTO deliveryFormDTO,
                                          Errors errors,
                                          Principal principal) {
-
-        System.out.println("Begin Form Processing");
-        System.out.println(deliveryFormDTO);
-        System.out.println(deliveryFormDTO.getLegs().size());
-        for (DeliveryLegFormDTO deliveryLegFormDTO : deliveryFormDTO.getLegs()) {
-            System.out.println("A Delivery Leg");
-            System.out.println(deliveryLegFormDTO);
-            System.out.println(deliveryLegFormDTO.getPickup());
-            System.out.println(deliveryLegFormDTO.getDropoff());
-        }
-
-
         if (errors.hasErrors()) {
-
-            System.out.println("Errors found");
-
             return "delivery/form";
         }
         try {

@@ -10,9 +10,9 @@ function addRow() {
   let tipCell = row.insertCell();
   tipCell.innerHTML = `<input id="legs${rowNumber}.tip" class="form-control" type="text" name="legs[${rowNumber}].tip"/>`;
   let pickupCell = row.insertCell();
-  pickupCell.innerHTML = `<input id="legs${rowNumber}.pickup" class="form-control" type="text" name="legs[${rowNumber}].pickup"/>`;
+  pickupCell.innerHTML = `<select id="legs${rowNumber}.pickup" name="legs[${rowNumber}].pickup" class="form-control">${tbody.rows[0].cells[2].firstElementChild.innerHTML}</select>`;
   let dropoffCell = row.insertCell();
-  dropoffCell.innerHTML = `<input id="legs${rowNumber}.dropoff" class="form-control" type="text" name="legs[${rowNumber}].dropoff"/>`;
+  dropoffCell.innerHTML = `<select id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff" class="form-control">${tbody.rows[0].cells[3].firstElementChild.innerHTML}</select>`;
   let noteCell = row.insertCell();
   noteCell.innerHTML = `<input id="legs${rowNumber}.note" class="form-control" type="text" name="legs[${rowNumber}].note"/>`;
 }
