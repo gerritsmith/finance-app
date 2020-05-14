@@ -3,6 +3,7 @@ package io.github.gerritsmith.financeapp.service;
 import io.github.gerritsmith.financeapp.data.LocationRepository;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.model.Location;
+import io.github.gerritsmith.financeapp.model.LocationType;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,20 @@ public class LocationService {
         return locationRepository.findByUserAndNameAndAddressAndApt(user, name, address, apt);
     }
 
+    public Location findByIdAsUser(long id, User user) {
+        return locationRepository.findByIdAndUser(id, user);
+    }
+
     public List<Location> findAllLocationsByUser(User user) {
         return locationRepository.findAllByUser(user);
     }
 
-    public Location findByIdAsUser(long id, User user) {
-        return locationRepository.findByIdAndUser(id, user);
+    public List<Location> findAllPickupLocationsByUser(User user) {
+        return locationRepository.findAllByUserAndType(user, LocationType.PICKUP);
+    }
+
+    public List<Location> findAllDropoffLocationsByUser(User user) {
+        return locationRepository.findAllByUserAndType(user, LocationType.DROPOFF);
     }
 
     // Create

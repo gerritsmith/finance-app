@@ -10,9 +10,9 @@ function addRow() {
   let tipCell = row.insertCell();
   tipCell.innerHTML = `<input id="legs${rowNumber}.tip" class="form-control" type="text" name="legs[${rowNumber}].tip"/>`;
   let pickupCell = row.insertCell();
-  pickupCell.innerHTML = `<input id="legs${rowNumber}.pickup" class="form-control" type="text" name="legs[${rowNumber}].pickup"/>`;
+  pickupCell.innerHTML = `<select id="legs${rowNumber}.pickup" name="legs[${rowNumber}].pickup" class="form-control">${tbody.rows[0].cells[2].firstElementChild.innerHTML}</select>`;
   let dropoffCell = row.insertCell();
-  dropoffCell.innerHTML = `<input id="legs${rowNumber}.dropoff" class="form-control" type="text" name="legs[${rowNumber}].dropoff"/>`;
+  dropoffCell.innerHTML = `<select id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff" class="form-control">${tbody.rows[0].cells[3].firstElementChild.innerHTML}</select>`;
   let noteCell = row.insertCell();
   noteCell.innerHTML = `<input id="legs${rowNumber}.note" class="form-control" type="text" name="legs[${rowNumber}].note"/>`;
 }
@@ -21,6 +21,24 @@ function removeRow() {
   if (tbody.rows.length > 1) {
     tbody.deleteRow(-1);
   }
+}
+
+function changeDeliveryEditState() {
+  let addRowButton = document.getElementById("addRowButton");
+  let removeRowButton = document.getElementById("removeRowButton");
+  if (addRowButton.disabled) {
+    makeEditable();
+  } else {
+    cancelEdit();
+  }
+  addRowButton.parentElement.hidden = !addRowButton.parentElement.hidden;
+  addRowButton.disabled = !addRowButton.disabled;
+  removeRowButton.disabled = !removeRowButton.disabled;
+  let selectInputs = document.querySelectorAll("select");
+  for (let input of selectInputs) {
+    input.disabled = !input.disabled;
+  }
+  changeEditState();
 }
 
 function makeEditable() {
@@ -37,27 +55,17 @@ function cancelEdit() {
       let row = tbody.insertRow(-1);
       row.innerHTML = originalRowState[i];
       for (let cell of row.children) {
-        cell.children[0].readOnly = false;
+        if (cell.children[0].tagName == "INPUT") {
+          cell.children[0].readOnly = false;
+        } else if (cell.children[0].tagName == "SELECT") {
+          cell.children[0].disabled = false;
+        }
       }
     }
   } else {
     for (let i = 0; i < currentNumberOfRows - originalNumberOfRows; i++) {
       tbody.deleteRow(-1);
     }
-    originalRowState = [];
   }
-}
-
-function changeDeliveryEditState() {
-  let addRowButton = document.getElementById("addRowButton");
-  let removeRowButton = document.getElementById("removeRowButton");
-  if (addRowButton.disabled) {
-    makeEditable();
-  } else {
-    cancelEdit();
-  }
-  addRowButton.parentElement.hidden = !addRowButton.parentElement.hidden;
-  addRowButton.disabled = !addRowButton.disabled;
-  removeRowButton.disabled = !removeRowButton.disabled;
-  changeEditState();
+  originalRowState = [];
 }

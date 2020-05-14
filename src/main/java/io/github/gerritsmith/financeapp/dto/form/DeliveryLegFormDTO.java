@@ -1,8 +1,9 @@
 package io.github.gerritsmith.financeapp.dto.form;
 
 import io.github.gerritsmith.financeapp.model.DeliveryLeg;
+import io.github.gerritsmith.financeapp.model.Location;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 public class DeliveryLegFormDTO {
@@ -13,10 +14,10 @@ public class DeliveryLegFormDTO {
     @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "tip must be in the form 0.00")
     private String tip;
 
-    @NotBlank(message = "pickup location is required")
-    private String pickup;
+    @NotNull(message = "pickup location is required")
+    private Location pickup;
 
-    private String dropoff;
+    private Location dropoff;
     private String note;
 
     // Constructors
@@ -47,19 +48,19 @@ public class DeliveryLegFormDTO {
         this.tip = tip;
     }
 
-    public String getPickup() {
+    public Location getPickup() {
         return pickup;
     }
 
-    public void setPickup(String pickup) {
+    public void setPickup(Location pickup) {
         this.pickup = pickup;
     }
 
-    public String getDropoff() {
+    public Location getDropoff() {
         return dropoff;
     }
 
-    public void setDropoff(String dropoff) {
+    public void setDropoff(Location dropoff) {
         this.dropoff = dropoff;
     }
 

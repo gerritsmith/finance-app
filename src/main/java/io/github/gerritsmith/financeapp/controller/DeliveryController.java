@@ -6,6 +6,7 @@ import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.DeliveryService;
+import io.github.gerritsmith.financeapp.service.LocationService;
 import io.github.gerritsmith.financeapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ public class DeliveryController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    LocationService locationService;
+
     @GetMapping("/deliveries")
     public String displayDeliveriesHome(Model model,
                                         Principal principal) {
@@ -49,8 +53,12 @@ public class DeliveryController {
     }
 
     @GetMapping("/delivery/new")
-    public String displayNewDeliveryForm(Model model) {
-        model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
+    public String displayNewDeliveryForm(Model model,
+                                         Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(locationService.findAllPickupLocationsByUser(user),
+                                                              locationService.findAllDropoffLocationsByUser(user));
+        model.addAttribute("deliveryFormDTO", deliveryFormDTO);
         return "delivery/form";
     }
 
@@ -84,7 +92,9 @@ public class DeliveryController {
         if (delivery == null) {
             return "error/404";
         }
-        DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(delivery);
+        DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(delivery,
+                                                              locationService.findAllPickupLocationsByUser(user),
+                                                              locationService.findAllDropoffLocationsByUser(user));
         model.addAttribute("deliveryFormDTO", deliveryFormDTO);
         return "delivery/form";
     }
