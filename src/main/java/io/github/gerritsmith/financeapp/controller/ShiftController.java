@@ -29,10 +29,14 @@ public class ShiftController {
     @Autowired
     ShiftService shiftService;
 
-    @GetMapping("/shifts")
-    public String displayShiftsHome(Model model,
-                                    Principal principal) {
+    @ModelAttribute
+    public void addControllerWideModelAttributes(Model model, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
+        model.addAttribute("user", user);
+    }
+
+    @GetMapping("/shifts")
+    public String displayShiftsHome(Model model, @ModelAttribute User user) {
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         shifts.sort((o1, o2) -> {
             if (o1.getDate().isAfter(o2.getDate())) {
@@ -57,7 +61,7 @@ public class ShiftController {
     @PostMapping("/shift/new")
     public String processNewShiftForm(@ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
                                       Errors errors,
-                                      Principal principal) {
+                                      @ModelAttribute User user) {
         if (!shiftFormDTO.getStartTime().isBefore(shiftFormDTO.getEndTime())) {
             errors.reject("shift.timeInterval", "The start time must be before the end time");
         }
@@ -65,7 +69,6 @@ public class ShiftController {
             return "shift/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Shift newShift = new Shift(user, shiftFormDTO);
             shiftService.addShift(newShift);
         } catch (ShiftExistsException e) {
@@ -77,9 +80,8 @@ public class ShiftController {
 
     @GetMapping("/shift/{shiftId}")
     public String displayShiftDetails(@PathVariable long shiftId,
-                                      Principal principal,
-                                      Model model) {
-        User user = userService.findUserByUsername(principal.getName());
+                                      Model model,
+                                      @ModelAttribute User user) {
         Shift shift = shiftService.findByIdAsUser(shiftId, user);
         if (shift == null) {
             return "error/404";
@@ -94,8 +96,7 @@ public class ShiftController {
     public String processShiftUpdateForm(@PathVariable long shiftId,
                                          @ModelAttribute @Valid ShiftFormDTO shiftFormDTO,
                                          Errors errors,
-                                         Principal principal) {
-        User user = userService.findUserByUsername(principal.getName());
+                                         @ModelAttribute User user) {
         Shift shiftToUpdate = shiftService.findByIdAsUser(shiftId, user);
         shiftFormDTO.setDeliveries(shiftToUpdate.getDeliveries());
         if (!shiftFormDTO.getStartTime().isBefore(shiftFormDTO.getEndTime())) {

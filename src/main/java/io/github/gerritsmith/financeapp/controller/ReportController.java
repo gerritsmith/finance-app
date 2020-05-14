@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
@@ -25,6 +26,12 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
+    @ModelAttribute
+    public void addControllerWideModelAttributes(Model model, Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        model.addAttribute("user", user);
+    }
+
     @GetMapping("/reports")
     public String displayReportsHome() {
         return "report/home";
@@ -34,8 +41,7 @@ public class ReportController {
     public String displayDayReport(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")
                                                LocalDate date,
                                    Model model,
-                                   Principal principal) {
-        User user = userService.findUserByUsername(principal.getName());
+                                   @ModelAttribute User user) {
         DayReportDTO dayReportDTO = reportService.getDayReport(user, date);
         model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
@@ -43,8 +49,7 @@ public class ReportController {
 
     @GetMapping("/report/by-day")
     public String displayReportByDay(Model model,
-                                     Principal principal) {
-        User user = userService.findUserByUsername(principal.getName());
+                                     @ModelAttribute User user) {
         ReportByDayDTO reportByDayDTO = reportService.getReportByDay(user);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
 

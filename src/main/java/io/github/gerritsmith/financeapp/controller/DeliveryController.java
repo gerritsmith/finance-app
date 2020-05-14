@@ -31,7 +31,7 @@ public class DeliveryController {
     LocationService locationService;
 
     @ModelAttribute
-    public void addLocationLists(Model model, Principal principal) {
+    public void addControllerWideModelAttributes(Model model, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("pickupLocations", locationService.findAllPickupLocationsByUser(user));
@@ -39,8 +39,7 @@ public class DeliveryController {
     }
 
     @GetMapping("/deliveries")
-    public String displayDeliveriesHome(Model model,
-                                        @ModelAttribute User user) {
+    public String displayDeliveriesHome(Model model, @ModelAttribute User user) {
         List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
         deliveries.sort((o1, o2) -> {
             if (o1.getDate().isAfter(o2.getDate())) {
@@ -65,12 +64,11 @@ public class DeliveryController {
     @PostMapping("/delivery/new")
     public String processNewDeliveryForm(@ModelAttribute @Valid DeliveryFormDTO deliveryFormDTO,
                                          Errors errors,
-                                         Principal principal) {
+                                         @ModelAttribute User user) {
         if (errors.hasErrors()) {
             return "delivery/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Delivery newDelivery = new Delivery(user, deliveryFormDTO);
             deliveryService.addDelivery(newDelivery);
         } catch (DeliveryWithoutShiftException e) {
@@ -85,9 +83,8 @@ public class DeliveryController {
 
     @GetMapping("/delivery/{deliveryId}")
     public String displayDeliveryDetails(@PathVariable long deliveryId,
-                                         Principal principal,
-                                         Model model) {
-        User user = userService.findUserByUsername(principal.getName());
+                                         Model model,
+                                         @ModelAttribute User user) {
         Delivery delivery = deliveryService.findByIdAsUser(deliveryId, user);
         if (delivery == null) {
             return "error/404";
@@ -101,12 +98,11 @@ public class DeliveryController {
     public String processDeliveryUpdateForm(@PathVariable long deliveryId,
                                             @ModelAttribute @Valid DeliveryFormDTO deliveryFormDTO,
                                             Errors errors,
-                                            Principal principal) {
+                                            @ModelAttribute User user) {
         if (errors.hasErrors()) {
             return "delivery/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Delivery updatedDelivery = new Delivery(user, deliveryFormDTO);
             deliveryService.updateDelivery(deliveryId, updatedDelivery);
         } catch (DeliveryWithoutShiftException e) {

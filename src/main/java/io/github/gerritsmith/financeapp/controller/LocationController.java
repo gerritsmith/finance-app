@@ -28,10 +28,14 @@ public class LocationController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/locations")
-    public String displayLocationsHome(Model model,
-                                       Principal principal) {
+    @ModelAttribute
+    public void addControllerWideModelAttributes(Model model, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
+        model.addAttribute("user", user);
+    }
+
+    @GetMapping("/locations")
+    public String displayLocationsHome(Model model, @ModelAttribute User user) {
         List<Location> locations = locationService.findAllLocationsByUser(user);
         locations.sort((o1, o2) -> {
             if (o1.getType().compareTo(o2.getType()) > 0) {
@@ -56,12 +60,11 @@ public class LocationController {
     @PostMapping("/location/new")
     public String processNewLocationForm(@ModelAttribute @Valid LocationFormDTO locationFormDTO,
                                          Errors errors,
-                                         Principal principal) {
+                                         @ModelAttribute User user) {
         if (errors.hasErrors()) {
             return "location/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Location newLocation = new Location(user, locationFormDTO);
             locationService.addLocation(newLocation);
         } catch (LocationExistsException e) {
@@ -73,9 +76,8 @@ public class LocationController {
 
     @GetMapping("/location/{locationId}")
     public String displayLocationDetails(@PathVariable long locationId,
-                                         Principal principal,
-                                         Model model) {
-        User user = userService.findUserByUsername(principal.getName());
+                                         Model model,
+                                         @ModelAttribute User user) {
         Location location = locationService.findByIdAsUser(locationId, user);
         if (location == null) {
             return "error/404";
@@ -89,12 +91,11 @@ public class LocationController {
     public String processLocationUpdateForm(@PathVariable long locationId,
                                             @ModelAttribute @Valid LocationFormDTO locationFormDTO,
                                             Errors errors,
-                                            Principal principal) {
+                                            @ModelAttribute User user) {
         if (errors.hasErrors()) {
             return "location/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Location updatedLocation = new Location(user, locationFormDTO);
             locationService.updateLocation(locationId, updatedLocation);
         } catch (LocationExistsException e) {
