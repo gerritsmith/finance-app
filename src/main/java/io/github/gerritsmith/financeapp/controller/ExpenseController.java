@@ -28,9 +28,14 @@ public class ExpenseController {
     @Autowired
     ExpenseService expenseService;
 
-    @GetMapping("/expenses")
-    public String displayExpensesHome(Model model, Principal principal) {
+    @ModelAttribute
+    public void addControllerWideModelAttributes(Model model, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
+        model.addAttribute("user", user);
+    }
+
+    @GetMapping("/expenses")
+    public String displayExpensesHome(Model model, @ModelAttribute User user) {
         List<Expense> expenses = expenseService.findAllExpensesByUser(user);
         expenses.sort((o1, o2) -> {
             if (o1.getDate().isAfter(o2.getDate())) {
@@ -55,12 +60,11 @@ public class ExpenseController {
     @PostMapping("/expense/new")
     public String processNewExpenseForm(@ModelAttribute @Valid ExpenseFormDTO expenseFormDTO,
                                         Errors errors,
-                                        Principal principal) {
+                                        @ModelAttribute User user) {
         if (errors.hasErrors()) {
             return "expense/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Expense newExpense = new Expense(user, expenseFormDTO);
             expenseService.addExpense(newExpense);
         } catch (ExpenseExistsException e) {
@@ -72,9 +76,8 @@ public class ExpenseController {
 
     @GetMapping("/expense/{expenseId}")
     public String displayExpenseDetails(@PathVariable long expenseId,
-                                        Principal principal,
-                                        Model model) {
-        User user = userService.findUserByUsername(principal.getName());
+                                        Model model,
+                                        @ModelAttribute User user) {
         Expense expense = expenseService.findByIdAsUser(expenseId, user);
         if (expense == null) {
             return "error/404";
@@ -88,12 +91,11 @@ public class ExpenseController {
     public String processExpenseUpdateForm(@PathVariable long expenseId,
                                            @ModelAttribute @Valid ExpenseFormDTO expenseFormDTO,
                                            Errors errors,
-                                           Principal principal) {
+                                           @ModelAttribute User user) {
         if (errors.hasErrors()) {
             return "expense/form";
         }
         try {
-            User user = userService.findUserByUsername(principal.getName());
             Expense updatedExpense = new Expense(user, expenseFormDTO);
             expenseService.updateExpense(expenseId, updatedExpense);
         } catch (ExpenseExistsException e) {
