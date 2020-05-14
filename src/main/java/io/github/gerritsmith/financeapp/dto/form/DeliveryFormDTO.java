@@ -2,7 +2,6 @@ package io.github.gerritsmith.financeapp.dto.form;
 
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.DeliveryLeg;
-import io.github.gerritsmith.financeapp.model.Location;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -42,22 +41,11 @@ public class DeliveryFormDTO {
 
     private List<@Valid DeliveryLegFormDTO> legs = new ArrayList<>();
 
-    private List<Location> pickupLocations;
-    private List<Location> dropoffLocations;
-
 
     // Constructors
     public DeliveryFormDTO() {}
 
-    public DeliveryFormDTO(List<Location> pickupLocations, List<Location> dropoffLocations) {
-        this.pickupLocations = pickupLocations;
-        this.dropoffLocations = dropoffLocations;
-    }
-
-    public DeliveryFormDTO(Delivery delivery,
-                           List<Location> pickupLocations,
-                           List<Location> dropoffLocations) {
-        this(pickupLocations, dropoffLocations);
+    public DeliveryFormDTO(Delivery delivery) {
         date = delivery.getDate();
         time = delivery.getTime();
         total = Double.toString(delivery.getTotal());
@@ -133,22 +121,6 @@ public class DeliveryFormDTO {
 
     public void setLegs(List<DeliveryLegFormDTO> legs) {
         this.legs = legs;
-    }
-
-    public List<Location> getPickupLocations() {
-        return pickupLocations;
-    }
-
-    public void setPickupLocations(List<Location> pickupLocations) {
-        this.pickupLocations = pickupLocations;
-    }
-
-    public List<Location> getDropoffLocations() {
-        return dropoffLocations;
-    }
-
-    public void setDropoffLocations(List<Location> dropoffLocations) {
-        this.dropoffLocations = dropoffLocations;
     }
 
 }

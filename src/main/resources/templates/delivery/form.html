@@ -9,7 +9,7 @@
 
     <form th:action="@{${#request.requestURI}}" method="post"
           th:object="${deliveryFormDTO}"
-          onsubmit="return submitDelivery();">
+          onsubmit="submitDelivery();">
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
             <p class="error" th:text="${error}"></p>
@@ -107,7 +107,7 @@
                                     th:errorclass="delivery-leg-error"
                                     th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
                                 <option value="-1">Select a pickup location</option>
-                                <option th:each="pickupLocation : *{pickupLocations}"
+                                <option th:each="pickupLocation : ${pickupLocations}"
                                         th:value="${pickupLocation.id}"
                                         th:text="${pickupLocation.name}">Pickup Location Option</option>
                             </select>
@@ -140,7 +140,7 @@
 
         <datalist id="dropoffOptions">
             <option data-value="-1">Select a dropoff location</option>
-            <option th:each="dropoffLocation : *{dropoffLocations}"
+            <option th:each="dropoffLocation : ${dropoffLocations}"
                     th:data-value="${dropoffLocation.id}"
                     th:text="${dropoffLocation.address}">Dropoff Location Option</option>
         </datalist>
