@@ -37,6 +37,16 @@ public class Location extends AbstractEntity {
         this.type = locationFormDTO.getType();
     }
 
+    // Methods
+    public void update(Location location) {
+        name = location.getName();
+        address = location.getAddress();
+        apt = location.getApt();
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        type = location.getType();
+    }
+
     // Getters and Setters
     public User getUser() {
         return user;
