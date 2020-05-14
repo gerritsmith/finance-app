@@ -12,7 +12,7 @@ function addRow() {
   let pickupCell = row.insertCell();
   pickupCell.innerHTML = `<select id="legs${rowNumber}.pickup" name="legs[${rowNumber}].pickup" class="form-control">${tbody.rows[0].cells[2].firstElementChild.innerHTML}</select>`;
   let dropoffCell = row.insertCell();
-  dropoffCell.innerHTML = `<select id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff" class="form-control">${tbody.rows[0].cells[3].firstElementChild.innerHTML}</select>`;
+  dropoffCell.innerHTML = `<input list="dropoffOptions" id="legs${rowNumber}.dropoff-text" class="form-control" placeholder="Select Dropoff Location"/><input type="hidden" id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff"/>`;
   let noteCell = row.insertCell();
   noteCell.innerHTML = `<input id="legs${rowNumber}.note" class="form-control" type="text" name="legs[${rowNumber}].note"/>`;
 }
@@ -68,4 +68,23 @@ function cancelEdit() {
     }
   }
   originalRowState = [];
+}
+
+function submitDelivery() {
+  let listInputs = document.querySelectorAll('input[list]');
+  console.log(listInputs);
+  let dropoffOptions = document.querySelectorAll('#dropoffOptions option');
+  for (let input of listInputs) {
+    // let listName = input.getAttribute('list');
+    let hiddenInput = document.getElementById(input.getAttribute('id').slice(0, -5));
+    let inputText = input.value;
+    hiddenInput.value = -1;
+    // TODO: fix bug when different dropoff locations have the same address
+    for (let option of dropoffOptions) {
+      if (option.innerText === inputText) {
+        hiddenInput.value = option.getAttribute('data-value');
+      }
+    }
+  }
+  return true;
 }
