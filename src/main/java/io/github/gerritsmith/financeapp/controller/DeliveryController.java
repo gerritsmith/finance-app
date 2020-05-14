@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -33,10 +30,17 @@ public class DeliveryController {
     @Autowired
     LocationService locationService;
 
+    @ModelAttribute
+    public void addLocationLists(Model model, Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        model.addAttribute("user", user);
+        model.addAttribute("pickupLocations", locationService.findAllPickupLocationsByUser(user));
+        model.addAttribute("dropoffLocations", locationService.findAllDropoffLocationsByUser(user));
+    }
+
     @GetMapping("/deliveries")
     public String displayDeliveriesHome(Model model,
-                                        Principal principal) {
-        User user = userService.findUserByUsername(principal.getName());
+                                        @ModelAttribute User user) {
         List<Delivery> deliveries = deliveryService.findAllDeliveriesByUser(user);
         deliveries.sort((o1, o2) -> {
             if (o1.getDate().isAfter(o2.getDate())) {
@@ -53,12 +57,8 @@ public class DeliveryController {
     }
 
     @GetMapping("/delivery/new")
-    public String displayNewDeliveryForm(Model model,
-                                         Principal principal) {
-        User user = userService.findUserByUsername(principal.getName());
-        DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(locationService.findAllPickupLocationsByUser(user),
-                                                              locationService.findAllDropoffLocationsByUser(user));
-        model.addAttribute("deliveryFormDTO", deliveryFormDTO);
+    public String displayNewDeliveryForm(Model model) {
+        model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
         return "delivery/form";
     }
 
@@ -92,9 +92,7 @@ public class DeliveryController {
         if (delivery == null) {
             return "error/404";
         }
-        DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(delivery,
-                                                              locationService.findAllPickupLocationsByUser(user),
-                                                              locationService.findAllDropoffLocationsByUser(user));
+        DeliveryFormDTO deliveryFormDTO = new DeliveryFormDTO(delivery);
         model.addAttribute("deliveryFormDTO", deliveryFormDTO);
         return "delivery/form";
     }
