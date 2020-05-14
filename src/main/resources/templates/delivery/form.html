@@ -102,26 +102,21 @@
                         </td>
                         <td>
                             <select th:field="*{legs[__${i}__].pickup}" class="form-control"
-                                    th:errorclass="delivery-leg-error">
+                                    th:errorclass="delivery-leg-error"
+                                    th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
                                 <option th:each="pickupLocation : *{pickupLocations}"
                                         th:value="${pickupLocation.id}"
                                         th:text="${pickupLocation.name}">Pickup Location Option</option>
                             </select>
-<!--                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"-->
-<!--                                   required="required"-->
-<!--                                   th:field="*{legs[__${i}__].pickup}"-->
-<!--                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>-->
                         </td>
                         <td>
                             <select th:field="*{legs[__${i}__].dropoff}" class="form-control"
-                                    th:errorclass="delivery-leg-error">
+                                    th:errorclass="delivery-leg-error"
+                                    th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
                                 <option th:each="dropoffLocation : *{dropoffLocations}"
                                         th:value="${dropoffLocation.id}"
                                         th:text="${dropoffLocation.address}">Dropoff Location Option</option>
                             </select>
-<!--                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"-->
-<!--                                   th:field="*{legs[__${i}__].dropoff}"-->
-<!--                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>-->
                         </td>
                         <td>
                             <input type="text" class="form-control" th:errorclass="delivery-leg-error"

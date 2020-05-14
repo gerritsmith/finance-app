@@ -23,6 +23,24 @@ function removeRow() {
   }
 }
 
+function changeDeliveryEditState() {
+  let addRowButton = document.getElementById("addRowButton");
+  let removeRowButton = document.getElementById("removeRowButton");
+  if (addRowButton.disabled) {
+    makeEditable();
+  } else {
+    cancelEdit();
+  }
+  addRowButton.parentElement.hidden = !addRowButton.parentElement.hidden;
+  addRowButton.disabled = !addRowButton.disabled;
+  removeRowButton.disabled = !removeRowButton.disabled;
+  let selectInputs = document.querySelectorAll("select");
+  for (let input of selectInputs) {
+    input.disabled = !input.disabled;
+  }
+  changeEditState();
+}
+
 function makeEditable() {
   for (row of tbody.rows) {
     originalRowState.push(row.innerHTML);
@@ -37,27 +55,17 @@ function cancelEdit() {
       let row = tbody.insertRow(-1);
       row.innerHTML = originalRowState[i];
       for (let cell of row.children) {
-        cell.children[0].readOnly = false;
+        if (cell.children[0].tagName == "INPUT") {
+          cell.children[0].readOnly = false;
+        } else if (cell.children[0].tagName == "SELECT") {
+          cell.children[0].disabled = false;
+        }
       }
     }
   } else {
     for (let i = 0; i < currentNumberOfRows - originalNumberOfRows; i++) {
       tbody.deleteRow(-1);
     }
-    originalRowState = [];
   }
-}
-
-function changeDeliveryEditState() {
-  let addRowButton = document.getElementById("addRowButton");
-  let removeRowButton = document.getElementById("removeRowButton");
-  if (addRowButton.disabled) {
-    makeEditable();
-  } else {
-    cancelEdit();
-  }
-  addRowButton.parentElement.hidden = !addRowButton.parentElement.hidden;
-  addRowButton.disabled = !addRowButton.disabled;
-  removeRowButton.disabled = !removeRowButton.disabled;
-  changeEditState();
+  originalRowState = [];
 }
