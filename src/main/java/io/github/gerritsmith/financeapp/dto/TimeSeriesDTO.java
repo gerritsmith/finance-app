@@ -17,12 +17,26 @@ public class TimeSeriesDTO {
             "totalExpenses"
     ));
     private final Map<String, String> columnDisplayNames = new HashMap<>(Map.ofEntries(
-            entry("deliveryCount", "Number of Deliveries"),
-            entry("deliveryGroupCount", "Number of Delivery Groups"),
-            entry("totalRevenue", "Total Revenue"),
-            entry("totalShiftHours", "Total Shift Hours"),
-            entry("totalShiftMiles", "Total Shift Miles"),
-            entry("totalExpenses", "Total Expenses")
+            entry("deliveryCount", "Deliveries"),
+            entry("deliveryGroupCount", "Delivery Groups"),
+            entry("totalRevenue", "Revenue"),
+            entry("totalShiftHours", "Shift Hours"),
+            entry("totalShiftMiles", "Shift Miles"),
+            entry("totalExpenses", "Expenses")
+    ));
+    private final List<String> denominatorNames = new ArrayList<>(Arrays.asList(
+            "one",
+            "deliveryCount",
+            "deliveryGroupCount",
+            "totalShiftHours",
+            "totalShiftMiles"
+    ));
+    private final Map<String, String> denominatorDisplayNames = new HashMap<>(Map.ofEntries(
+            entry("one", "1 (i.e. just plot total)"),
+            entry("deliveryCount", "Delivery"),
+            entry("deliveryGroupCount", "Delivery Group"),
+            entry("totalShiftHours", "Shift Hour"),
+            entry("totalShiftMiles", "Shift Mile")
     ));
 
     // 'Setter' method
@@ -53,6 +67,14 @@ public class TimeSeriesDTO {
 
     public Map<String, String> getColumnDisplayNames() {
         return columnDisplayNames;
+    }
+
+    public List<String> getDenominatorNames() {
+        return denominatorNames;
+    }
+
+    public Map<String, String> getDenominatorDisplayNames() {
+        return denominatorDisplayNames;
     }
 
     // Subclass for 'rows' of the data table

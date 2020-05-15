@@ -2,21 +2,50 @@ if (false) {
   let d3 = require('d3');
 }
 
+function checkValidChoices() {
+
+  let columnName = document.getElementById("columnName").value;
+  let denominatorName = document.getElementById("denominatorName").value;
+
+  if (columnName !== denominatorName) {
+    selectDataColumnAndDrawCharts();
+    d3.select("#choose-dependent-variable p")
+      .remove();
+  } else {
+    d3.select("#choose-dependent-variable")
+      .append("p")
+      .attr("class", "error")
+      .text("Can't plot quantity with respect to itself!");
+  }
+
+}
+
 
 function selectDataColumnAndDrawCharts() {
 
-  let select = document.getElementById("columnName");
-  let columnName = select.value;
+  let columnName = document.getElementById("columnName").value;
+  let denominatorName = document.getElementById("denominatorName").value;
 
   let columnDisplayNames = dataTable.columnDisplayNames;
+  let denominatorDisplayNames = dataTable.denominatorDisplayNames;
 
-  let data = dataTable.map(r => ({
-    date: r.date,
-    value: r[columnName]
-  }));
-  data.valueLabel = columnDisplayNames[columnName];
+  let data = dataTable.map(r => {
+    let value = r[columnName]/(denominatorName === 'one' ? 1 : r[denominatorName]);
+    value = Number.isNaN(value) || !Number.isFinite(value) ? undefined : value;
+    return {
+      date: r.date,
+      value: value
+    };
+  });
 
-  // remove old svg images if they exist
+  // Axes label string
+  if (denominatorName === 'one') {
+    data.valueLabel = columnDisplayNames[columnName];
+  } else {
+    data.valueLabel = columnDisplayNames[columnName] + ' per ' + denominatorDisplayNames[denominatorName];
+  }
+  
+  // Remove old svg images if they exist
   d3.select("#line-plot svg").remove();
   d3.select("#bar-plot svg").remove();
   d3.select("#histogram svg").remove();
@@ -165,7 +194,7 @@ function drawCharts(data) {
         .join("rect")
         .attr("x", (d, i) => x(i))
         .attr("y", d => d.value == undefined ? y(0) : y(d.value))
-        .attr("height", d => y(0) - y(d.value))
+        .attr("height", d => d.value == undefined ? 0 : y(0) - y(d.value))
         .attr("width", x.bandwidth())
         .on("touchmove mousemove", function(d) {
           highlightDataPoint(d.date, d.value);
