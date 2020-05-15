@@ -194,7 +194,7 @@ function drawCharts(data) {
     // Sort into bins
     let binDivider = d3.histogram()
                        .domain(x.domain())
-                       .thresholds(x.ticks(40));
+                       .thresholds(x.ticks(10)); // .thresholds(x.ticks(40)
     let bins = binDivider(data);
     // Make y scaler
     let y = d3.scaleLinear()
@@ -213,7 +213,7 @@ function drawCharts(data) {
                                   .text(valueLabel));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y)
-                              .ticks(height / 40))
+                              .ticks(y.domain()[1]))    // .ticks(height / 40)
                       .call(g => g.select(".tick:last-of-type text").clone()
                                   .attr("x", 4)
                                   .attr("text-anchor", "start")
@@ -260,7 +260,7 @@ ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric
       
     d3.selectAll("#histogram svg g rect")
       .attr("fill", null)
-      .filter(d => (d.x0 <= value && value <= d.x1))
+      .filter(d => (d.x0 <= value && value < d.x1))
       .attr("fill", "red");
   }
 }
