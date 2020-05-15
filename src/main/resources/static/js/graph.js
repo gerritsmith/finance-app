@@ -1,6 +1,7 @@
 if (false) {
-  let d3 = require('d3');
+  let d3 = require('./external/d3/d3.js');
 }
+
 
 function checkValidChoices() {
 
