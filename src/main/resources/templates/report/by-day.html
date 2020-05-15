@@ -9,7 +9,16 @@
 
     <div class="row">
         <div class="col-md-6">
-
+            <form class="card p-3 bg-light" th:object="${dataToPlot}">
+                <div class="form-group">
+                    <label for="columnName">Quantity To Plot:</label>
+                    <select id="columnName" class="form-control" onchange="selectDataColumnAndDrawCharts();">
+                        <option th:each="columnName : *{columnNames}"
+                                th:value="${columnName}"
+                                th:text="*{columnDisplayNames[__${columnName}__]}">Numeric Quantity</option>
+                    </select>
+                </div>
+            </form>
         </div>
         <div class="col-md-6">
             <div id="line-plot" class="m-3"></div>
@@ -59,9 +68,8 @@
     <script th:src="@{/js/graph.js}"></script>
     <script th:inline="javascript">
         let dataTable = [[${dataToPlot.data}]];
-        dataTable.columnNames = [[${dataToPlot.columnNames}]];
-        console.log(dataTable);
-        drawCharts(dataTable);
+        dataTable.columnDisplayNames = [[${dataToPlot.columnDisplayNames}]];
+        selectDataColumnAndDrawCharts();
     </script>
 </footer>
 </body>

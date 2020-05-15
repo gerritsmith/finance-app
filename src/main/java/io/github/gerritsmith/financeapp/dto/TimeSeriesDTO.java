@@ -8,13 +8,21 @@ import static java.util.Map.entry;
 public class TimeSeriesDTO {
 
     private final List<DataPoint> data = new ArrayList<>();
-    private final Map<String, String> columnNames = new HashMap<>(Map.ofEntries(
-            entry("Number of Deliveries", "deliveryCount"),
-            entry("Number of Delivery Groups", "deliveryGroupCount"),
-            entry("Total Revenue", "totalRevenue"),
-            entry("Total Shift Hours", "totalShiftHours"),
-            entry("Total Shift Miles", "totalShiftMiles"),
-            entry("Total Expenses", "totalExpenses")
+    private final List<String> columnNames = new ArrayList<>(Arrays.asList(
+            "deliveryCount",
+            "deliveryGroupCount",
+            "totalRevenue",
+            "totalShiftHours",
+            "totalShiftMiles",
+            "totalExpenses"
+    ));
+    private final Map<String, String> columnDisplayNames = new HashMap<>(Map.ofEntries(
+            entry("deliveryCount", "Number of Deliveries"),
+            entry("deliveryGroupCount", "Number of Delivery Groups"),
+            entry("totalRevenue", "Total Revenue"),
+            entry("totalShiftHours", "Total Shift Hours"),
+            entry("totalShiftMiles", "Total Shift Miles"),
+            entry("totalExpenses", "Total Expenses")
     ));
 
     // 'Setter' method
@@ -39,8 +47,12 @@ public class TimeSeriesDTO {
         return data;
     }
 
-    public Map<String, String> getColumnNames() {
+    public List<String> getColumnNames() {
         return columnNames;
+    }
+
+    public Map<String, String> getColumnDisplayNames() {
+        return columnDisplayNames;
     }
 
     // Subclass for 'rows' of the data table

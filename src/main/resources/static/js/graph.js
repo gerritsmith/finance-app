@@ -1,20 +1,26 @@
+function selectDataColumnAndDrawCharts() {
 
+  let select = document.getElementById("columnName");
+  console.log(select.value);
+  let columnName = select.value;
 
-function drawCharts(dataTable) {
-
-
-  let columnNames = dataTable.columnNames;
-  // Dependent Variable Name
-  let valueLabel = "Number of Deliveries";
-  console.log(valueLabel);
-
+  let columnDisplayNames = dataTable.columnDisplayNames;
 
   let data = dataTable.map(r => ({
     date: r.date,
-    value: r[columnNames[valueLabel]]
+    value: r[columnName]
   }));
-  console.log(data);
+  data.valueLabel = columnDisplayNames[columnName];
+  drawCharts(data);
 
+}
+
+
+
+function drawCharts(data) {
+
+  // Dependent Variable Name
+  let valueLabel = data.valueLabel;
 
   // Parse date string, sort by date, remove extra fields
   data = parseInputDateStrings(data);
