@@ -36,11 +36,15 @@ public class DeliveryFormDTO {
     @Pattern(regexp = "\\d*", message = "total time must a non-negative integer")
     private String totalTime;
 
-    @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "amount must be in the form 0000.00")
-    private String total;
+    @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "base pay must be in the form 0.00")
+    private String basePay;
+
+    @Pattern(regexp = "-?(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "adjustments must be in the form 0.00")
+    private String adjustments;
 
     private List<@Valid DeliveryLegFormDTO> legs = new ArrayList<>();
 
+    private double total;
 
     // Constructors
     public DeliveryFormDTO() {}
@@ -48,14 +52,16 @@ public class DeliveryFormDTO {
     public DeliveryFormDTO(Delivery delivery) {
         date = delivery.getDate();
         time = delivery.getTime();
-        total = Double.toString(delivery.getTotal());
         appMiles = (delivery.getAppMiles() == null) ? "" : Double.toString(delivery.getAppMiles());
         appWaitTime = (delivery.getAppWaitTime() == null) ? "" : Double.toString(delivery.getAppWaitTime());
         totalMiles = (delivery.getTotalMiles() == null) ? "" : Double.toString(delivery.getTotalMiles());
         totalTime = (delivery.getTotalTime() == null) ? "" : Long.toString(delivery.getTotalTime().toMinutes());
+        basePay = (delivery.getBasePay() == null) ? "" : Double.toString(delivery.getBasePay());
+        adjustments = (delivery.getAdjustments() == null) ? "" : Double.toString(delivery.getAdjustments());
         for (DeliveryLeg deliveryLeg : delivery.getLegs()) {
             legs.add(new DeliveryLegFormDTO(deliveryLeg));
         }
+        total = delivery.getTotal();
     }
 
     // Getters and Setters
@@ -107,12 +113,20 @@ public class DeliveryFormDTO {
         this.totalTime = totalTime;
     }
 
-    public String getTotal() {
-        return total;
+    public String getBasePay() {
+        return basePay;
     }
 
-    public void setTotal(String total) {
-        this.total = total;
+    public void setBasePay(String basePay) {
+        this.basePay = basePay;
+    }
+
+    public String getAdjustments() {
+        return adjustments;
+    }
+
+    public void setAdjustments(String adjustments) {
+        this.adjustments = adjustments;
     }
 
     public List<DeliveryLegFormDTO> getLegs() {
@@ -121,6 +135,14 @@ public class DeliveryFormDTO {
 
     public void setLegs(List<DeliveryLegFormDTO> legs) {
         this.legs = legs;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
 }

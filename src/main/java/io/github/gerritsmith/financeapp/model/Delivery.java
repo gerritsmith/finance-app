@@ -22,15 +22,18 @@ public class Delivery extends AbstractEntity {
 
     private LocalDate date;
     private LocalTime time;
-    private double total;
 
     private Double appMiles;
     private Double appWaitTime;
     private Double totalMiles;
     private Duration totalTime;
+    private Double basePay;
+    private Double adjustments;
 
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL)
     private List<DeliveryLeg> legs = new ArrayList<>();
+
+    private double total;
 
     @ManyToOne
     private Shift shift;
@@ -42,8 +45,6 @@ public class Delivery extends AbstractEntity {
         this.user = user;
         date = deliveryFormDTO.getDate();
         time = deliveryFormDTO.getTime();
-        String totalString = deliveryFormDTO.getTotal();
-        total = totalString.isEmpty() ? 0 : Double.parseDouble(totalString);
         String appMilesString = deliveryFormDTO.getAppMiles();
         appMiles = appMilesString.isEmpty() ? null : Double.parseDouble(appMilesString);
         String appWaitTimeString = deliveryFormDTO.getAppWaitTime();
@@ -52,14 +53,29 @@ public class Delivery extends AbstractEntity {
         totalMiles = totalMilesString.isEmpty() ? null : Double.parseDouble(totalMilesString);
         String totalTimeString = deliveryFormDTO.getTotalTime();
         totalTime = totalTimeString.isEmpty() ? null : Duration.ofMinutes(Long.parseLong(totalTimeString));
+        String basePayString = deliveryFormDTO.getBasePay();
+        basePay = basePayString.isEmpty() ? null : Double.parseDouble(basePayString);
+        String adjustmentsString = deliveryFormDTO.getAdjustments();
+        adjustments = adjustmentsString.isEmpty() ? null : Double.parseDouble(adjustmentsString);
         for (DeliveryLegFormDTO deliveryLegFormDTO : deliveryFormDTO.getLegs()) {
             legs.add(new DeliveryLeg(this, deliveryLegFormDTO));
         }
+        total = computeTotal();
     }
 
     // Methods
     public String displayTime() {
         return time.format(DateTimeFormatter.ofPattern("h:mm a"));
+    }
+
+    private double computeTotal() {
+        double sum = 0;
+        sum += (basePay == null) ? 0 : basePay;
+        sum += (adjustments == null) ? 0 : adjustments;
+        for (DeliveryLeg deliveryLeg : legs) {
+            sum += (deliveryLeg.getTip() == null) ? 0 : deliveryLeg.getTip();
+        }
+        return sum;
     }
 
     // Getters and Setters
@@ -85,14 +101,6 @@ public class Delivery extends AbstractEntity {
 
     public void setTime(LocalTime time) {
         this.time = time;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
     }
 
     public Double getAppMiles() {
@@ -127,12 +135,36 @@ public class Delivery extends AbstractEntity {
         this.totalTime = totalTime;
     }
 
+    public Double getBasePay() {
+        return basePay;
+    }
+
+    public void setBasePay(Double basePay) {
+        this.basePay = basePay;
+    }
+
+    public Double getAdjustments() {
+        return adjustments;
+    }
+
+    public void setAdjustments(Double adjustments) {
+        this.adjustments = adjustments;
+    }
+
     public List<DeliveryLeg> getLegs() {
         return legs;
     }
 
     public void setLegs(List<DeliveryLeg> legs) {
         this.legs = legs;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public Shift getShift() {
