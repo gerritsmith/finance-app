@@ -1,13 +1,17 @@
+
+
 function drawCharts(dataTable) {
 
+
+  let columnNames = dataTable.columnNames;
   // Dependent Variable Name
-  let valueLabel = dataTable.columnNames[0];
+  let valueLabel = "Number of Deliveries";
   console.log(valueLabel);
 
 
   let data = dataTable.map(r => ({
     date: r.date,
-    value: r.deliveryCount
+    value: r[columnNames[valueLabel]]
   }));
   console.log(data);
 

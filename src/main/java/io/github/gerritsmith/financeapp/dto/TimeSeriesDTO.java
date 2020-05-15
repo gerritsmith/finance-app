@@ -1,20 +1,20 @@
 package io.github.gerritsmith.financeapp.dto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Map.entry;
 
 public class TimeSeriesDTO {
 
-    private List<DataPoint> data = new ArrayList<>();
-    private final List<String> columnNames = new ArrayList<>(Arrays.asList(
-            "Number of Deliveries",
-            "Number of Delivery Groups",
-            "Total Revenue",
-            "Total Shift Hours",
-            "Total Shift Miles",
-            "Total Expenses"
+    private final List<DataPoint> data = new ArrayList<>();
+    private final Map<String, String> columnNames = new HashMap<>(Map.ofEntries(
+            entry("Number of Deliveries", "deliveryCount"),
+            entry("Number of Delivery Groups", "deliveryGroupCount"),
+            entry("Total Revenue", "totalRevenue"),
+            entry("Total Shift Hours", "totalShiftHours"),
+            entry("Total Shift Miles", "totalShiftMiles"),
+            entry("Total Expenses", "totalExpenses")
     ));
 
     // 'Setter' method
@@ -39,7 +39,7 @@ public class TimeSeriesDTO {
         return data;
     }
 
-    public List<String> getColumnNames() {
+    public Map<String, String> getColumnNames() {
         return columnNames;
     }
 
