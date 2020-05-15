@@ -9,10 +9,10 @@
 
     <div class="row">
         <div class="col-md-6">
-            <div id="line-plot" class="m-3"></div>
+
         </div>
         <div class="col-md-6">
-            <div id="bar-plot" class="m-3"></div>
+            <div id="line-plot" class="m-3"></div>
         </div>
     </div>
     <div class="row">
@@ -20,7 +20,7 @@
             <div id="histogram" class="m-3"></div>
         </div>
         <div class="col-md-6">
-
+            <div id="bar-plot" class="m-3"></div>
         </div>
     </div>
 
@@ -58,9 +58,10 @@
     <!--  Make Visualization  -->
     <script th:src="@{/js/graph.js}"></script>
     <script th:inline="javascript">
-        let data = [[${dataToPlot.data}]];
-        data['valueLabel'] = [[${dataToPlot.name}]];
-        drawCharts(data);
+        let dataTable = [[${dataToPlot.data}]];
+        dataTable.columnNames = [[${dataToPlot.columnNames}]];
+        console.log(dataTable);
+        drawCharts(dataTable);
     </script>
 </footer>
 </body>

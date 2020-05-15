@@ -1,7 +1,16 @@
-function drawCharts(data) {
+function drawCharts(dataTable) {
 
   // Dependent Variable Name
-  let valueLabel = data.valueLabel;
+  let valueLabel = dataTable.columnNames[0];
+  console.log(valueLabel);
+
+
+  let data = dataTable.map(r => ({
+    date: r.date,
+    value: r.deliveryCount
+  }));
+  console.log(data);
+
 
   // Parse date string, sort by date, remove extra fields
   data = parseInputDateStrings(data);

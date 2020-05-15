@@ -54,9 +54,14 @@ public class ReportController {
         model.addAttribute("reportByDayDTO", reportByDayDTO);
 
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        dataToPlot.setName("$/hr");
         for (DayReportDTO dayReport : reportByDayDTO.getDailyReports()) {
-            dataToPlot.addDataPoint(dayReport.getDate(), dayReport.getRevenuePerHour());
+            dataToPlot.addDataPoint(dayReport.getDate(),
+                                    dayReport.getDeliveryCount(),
+                                    dayReport.getDeliveryGroupCount(),
+                                    dayReport.getTotalRevenue(),
+                                    dayReport.getTotalShiftHoursAsDecimal(),
+                                    dayReport.getTotalShiftMiles(),
+                                    dayReport.getTotalExpenses());
         }
         model.addAttribute("dataToPlot", dataToPlot);
 
