@@ -1,7 +1,11 @@
+if (false) {
+  let d3 = require('d3');
+}
+
+
 function selectDataColumnAndDrawCharts() {
 
   let select = document.getElementById("columnName");
-  console.log(select.value);
   let columnName = select.value;
 
   let columnDisplayNames = dataTable.columnDisplayNames;
@@ -11,6 +15,12 @@ function selectDataColumnAndDrawCharts() {
     value: r[columnName]
   }));
   data.valueLabel = columnDisplayNames[columnName];
+
+  // remove old svg images if they exist
+  d3.select("#line-plot svg").remove();
+  d3.select("#bar-plot svg").remove();
+  d3.select("#histogram svg").remove();
+
   drawCharts(data);
 
 }
