@@ -106,7 +106,7 @@
                             <select th:field="*{legs[__${i}__].pickup}" class="form-control"
                                     th:errorclass="delivery-leg-error"
                                     th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
-                                <option value="-1">Select a pickup location</option>
+                                <option value="-1">Select Pickup Location</option>
                                 <option th:each="pickupLocation : ${pickupLocations}"
                                         th:value="${pickupLocation.id}"
                                         th:text="${pickupLocation.name}">Pickup Location Option</option>
@@ -139,7 +139,7 @@
         </div>
 
         <datalist id="dropoffOptions">
-            <option data-value="-1">Select a dropoff location</option>
+            <option data-value="-1">Select Dropoff Location</option>
             <option th:each="dropoffLocation : ${dropoffLocations}"
                     th:data-value="${dropoffLocation.id}"
                     th:text="${dropoffLocation.address}">Dropoff Location Option</option>

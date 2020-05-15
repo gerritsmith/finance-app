@@ -9,10 +9,27 @@
 
     <div class="row">
         <div class="col-md-6">
-            <div id="line-plot" class="m-3"></div>
+            <form id="choose-dependent-variable" class="card p-3 bg-light" th:object="${dataToPlot}">
+                <div class="form-group">
+                    <label for="columnName">Quantity To Plot:</label>
+                    <select id="columnName" class="form-control" onchange="checkValidChoices();">
+                        <option th:each="columnName : *{columnNames}"
+                                th:value="${columnName}"
+                                th:text="*{columnDisplayNames[__${columnName}__]}">Numeric Quantity</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="denominatorName">Average Rate With Respect To:</label>
+                    <select id="denominatorName" class="form-control" onchange="checkValidChoices();">
+                        <option th:each="denominatorName : *{denominatorNames}"
+                                th:value="${denominatorName}"
+                                th:text="*{denominatorDisplayNames[__${denominatorName}__]}">Per Quantity</option>
+                    </select>
+                </div>
+            </form>
         </div>
         <div class="col-md-6">
-            <div id="bar-plot" class="m-3"></div>
+            <div id="line-plot" class="m-3"></div>
         </div>
     </div>
     <div class="row">
@@ -20,7 +37,7 @@
             <div id="histogram" class="m-3"></div>
         </div>
         <div class="col-md-6">
-
+            <div id="bar-plot" class="m-3"></div>
         </div>
     </div>
 
@@ -53,14 +70,16 @@
 <footer th:replace="fragments :: footer"></footer>
 <footer>
     <!--  D3 data visualization library  -->
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+<!--    <script src="https://d3js.org/d3.v5.min.js"></script>-->
+    <script th:src="@{/js/d3.js}"></script>
 
     <!--  Make Visualization  -->
     <script th:src="@{/js/graph.js}"></script>
     <script th:inline="javascript">
-        let data = [[${dataToPlot.data}]];
-        data['valueLabel'] = [[${dataToPlot.name}]];
-        drawCharts(data);
+        let dataTable = [[${dataToPlot.data}]];
+        dataTable.columnDisplayNames = [[${dataToPlot.columnDisplayNames}]];
+        dataTable.denominatorDisplayNames = [[${dataToPlot.denominatorDisplayNames}]];
+        selectDataColumnAndDrawCharts();
     </script>
 </footer>
 </body>
