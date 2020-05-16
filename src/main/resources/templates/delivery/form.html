@@ -10,6 +10,7 @@
 
     <form th:action="@{${#request.requestURI}}" method="post"
           th:object="${deliveryFormDTO}"
+          onchange="updateFormTotal();"
           onsubmit="submitDelivery();">
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">

@@ -90,3 +90,18 @@ function submitDelivery() {
   }
   return true;
 }
+
+function updateFormTotal() {
+  let total = 0;
+  total += Number(document.getElementById("basePay").value);
+  total += Number(document.getElementById("adjustments").value);
+  for (let i = 0; i < tbody.rows.length; i++) {
+    total += Number(document.getElementById(`legs${i}.tip`).value);
+  }
+  console.log(total);
+  let spanTotal = document.getElementById("total");
+  spanTotal.innerText = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(total);
+}
