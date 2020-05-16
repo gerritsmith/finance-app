@@ -18,6 +18,10 @@ public class DeliveryLegFormDTO {
     private Location pickup;
 
     private Location dropoff;
+
+    @Pattern(regexp = "(\\d+\\.?\\d{0,2}|\\.\\d{1,2})?", message = "tip must be in the form 0.00")
+    private String cash;
+
     private String note;
 
     // Constructors
@@ -28,6 +32,7 @@ public class DeliveryLegFormDTO {
         tip = (deliveryLeg.getTip() == null) ? "" : Double.toString(deliveryLeg.getTip());
         pickup = deliveryLeg.getPickup();
         dropoff = deliveryLeg.getDropoff();
+        cash = (deliveryLeg.getCash() == null) ? "" : Double.toString(deliveryLeg.getCash());
         note = deliveryLeg.getNote();
     }
 
@@ -62,6 +67,14 @@ public class DeliveryLegFormDTO {
 
     public void setDropoff(Location dropoff) {
         this.dropoff = dropoff;
+    }
+
+    public String getCash() {
+        return cash;
+    }
+
+    public void setCash(String cash) {
+        this.cash = cash;
     }
 
     public String getNote() {

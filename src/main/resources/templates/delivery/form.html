@@ -6,9 +6,11 @@
 
 <div class="container">
     <h1>Delivery Form</h1>
+    <h2>Total: <span id="total" th:text="${#numbers.formatCurrency(deliveryFormDTO.total)}"></span></h2>
 
     <form th:action="@{${#request.requestURI}}" method="post"
           th:object="${deliveryFormDTO}"
+          onchange="updateFormTotal();"
           onsubmit="submitDelivery();">
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
@@ -72,11 +74,23 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label th:for="total">Total</label>
-            <input type="text" th:field="*{total}" class="form-control"
-                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
-            <p class="error" th:errors="*{total}"></p>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="basePay">Base Pay</label>
+                    <input type="text" th:field="*{basePay}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{basePay}"></p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label th:for="adjustments">Adjustments</label>
+                    <input type="text" th:field="*{adjustments}" class="form-control"
+                           th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                    <p class="error" th:errors="*{adjustments}"></p>
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
@@ -87,6 +101,7 @@
                         <th>Tip</th>
                         <th>Pickup</th>
                         <th>Dropoff</th>
+                        <th>Cash</th>
                         <th>Note</th>
                     </tr>
                 </thead>
@@ -121,6 +136,11 @@
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                             <input type="hidden"
                                    th:field="*{legs[__${i}__].dropoff}"/>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
+                                   th:field="*{legs[__${i}__].cash}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
                             <input type="text" class="form-control" th:errorclass="delivery-leg-error"

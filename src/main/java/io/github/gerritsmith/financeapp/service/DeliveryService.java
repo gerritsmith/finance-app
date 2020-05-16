@@ -92,6 +92,8 @@ public class DeliveryService {
         deliveryToUpdate.setAppWaitTime(updatedDelivery.getAppWaitTime());
         deliveryToUpdate.setTotalMiles(updatedDelivery.getTotalMiles());
         deliveryToUpdate.setTotalTime(updatedDelivery.getTotalTime());
+        deliveryToUpdate.setBasePay(updatedDelivery.getBasePay());
+        deliveryToUpdate.setAdjustments(updatedDelivery.getAdjustments());
         int originalSize = deliveryToUpdate.getLegs().size();
         int newSize = updatedDelivery.getLegs().size();
         for (int i = 0; i < Math.min(originalSize, newSize); i++) {
