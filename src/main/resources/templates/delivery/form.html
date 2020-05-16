@@ -100,6 +100,7 @@
                         <th>Tip</th>
                         <th>Pickup</th>
                         <th>Dropoff</th>
+                        <th>Cash</th>
                         <th>Note</th>
                     </tr>
                 </thead>
@@ -134,6 +135,11 @@
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                             <input type="hidden"
                                    th:field="*{legs[__${i}__].dropoff}"/>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" th:errorclass="delivery-leg-error"
+                                   th:field="*{legs[__${i}__].cash}"
+                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
                             <input type="text" class="form-control" th:errorclass="delivery-leg-error"

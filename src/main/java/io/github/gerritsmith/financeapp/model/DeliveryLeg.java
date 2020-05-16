@@ -20,6 +20,8 @@ public class DeliveryLeg extends AbstractEntity {
     @ManyToOne
     private Location dropoff;
 
+    private Double cash;
+
     private String note;
 
     // Constructors
@@ -33,6 +35,8 @@ public class DeliveryLeg extends AbstractEntity {
         tip = tipString.isEmpty() ? null : Double.parseDouble(tipString);
         pickup = deliveryLegFormDTO.getPickup();
         dropoff = deliveryLegFormDTO.getDropoff();
+        String cashString = deliveryLegFormDTO.getCash();
+        cash = cashString.isEmpty() ? null : Double.parseDouble(cashString);
         note = deliveryLegFormDTO.getNote();
     }
 
@@ -42,6 +46,7 @@ public class DeliveryLeg extends AbstractEntity {
         tip = deliveryLeg.getTip();
         pickup = deliveryLeg.getPickup();
         dropoff = deliveryLeg.getDropoff();
+        cash = deliveryLeg.getCash();
         note = deliveryLeg.getNote();
     }
 
@@ -84,6 +89,14 @@ public class DeliveryLeg extends AbstractEntity {
 
     public void setDropoff(Location dropoff) {
         this.dropoff = dropoff;
+    }
+
+    public Double getCash() {
+        return cash;
+    }
+
+    public void setCash(Double cash) {
+        this.cash = cash;
     }
 
     public String getNote() {

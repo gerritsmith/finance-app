@@ -13,6 +13,8 @@ function addRow() {
   pickupCell.innerHTML = `<select id="legs${rowNumber}.pickup" name="legs[${rowNumber}].pickup" class="form-control">${tbody.rows[0].cells[2].firstElementChild.innerHTML}</select>`;
   let dropoffCell = row.insertCell();
   dropoffCell.innerHTML = `<input list="dropoffOptions" id="legs${rowNumber}.dropoff-text" class="form-control" placeholder="Select Dropoff Location"/><input type="hidden" id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff"/>`;
+  let cashCell = row.insertCell();
+  cashCell.innerHTML = `<input id="legs${rowNumber}.cash" class="form-control" type="text" name="legs[${rowNumber}].cash"/>`;
   let noteCell = row.insertCell();
   noteCell.innerHTML = `<input id="legs${rowNumber}.note" class="form-control" type="text" name="legs[${rowNumber}].note"/>`;
 }
