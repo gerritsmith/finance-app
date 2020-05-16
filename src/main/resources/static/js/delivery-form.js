@@ -98,7 +98,6 @@ function updateFormTotal() {
   for (let i = 0; i < tbody.rows.length; i++) {
     total += Number(document.getElementById(`legs${i}.tip`).value);
   }
-  console.log(total);
   let spanTotal = document.getElementById("total");
   spanTotal.innerText = new Intl.NumberFormat('en-US', {
     style: 'currency',
