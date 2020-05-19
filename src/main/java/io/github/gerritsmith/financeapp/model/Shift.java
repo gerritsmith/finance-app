@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.model;
 
 import io.github.gerritsmith.financeapp.dto.form.ShiftFormDTO;
+import io.github.gerritsmith.financeapp.dto.upload.ShiftCSVRow;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -43,6 +44,17 @@ public class Shift extends AbstractEntity {
         miles = milesString.isEmpty() ? null : Double.parseDouble(milesString);
         String mpgString = shiftFormDTO.getMpg();
         mpg = mpgString.isEmpty() ? null : Double.parseDouble(mpgString);
+    }
+
+    public Shift(User user, ShiftCSVRow row) {
+        this.user = user;
+        date = row.getDate();
+        startTime = row.getStartTime();
+        endTime = row.getEndTime();
+        startMileage = row.getStartMileage();
+        endMileage = row.getEndMileage();
+        miles = row.getMiles();
+        mpg = row.getMpg();
     }
 
     // Methods
