@@ -27,6 +27,10 @@ public class LocationService {
         return locationRepository.findByUserAndNameAndAddressAndApt(user, name, address, apt);
     }
 
+    public Location findByUserAndName(User user, String name) {
+        return locationRepository.findByUserAndName(user, name);
+    }
+
     public Location findByIdAsUser(long id, User user) {
         return locationRepository.findByIdAndUser(id, user);
     }
@@ -46,15 +50,22 @@ public class LocationService {
     // Create
     @Transactional
     public Location addLocation(Location location) throws LocationExistsException {
-        Location locationExists = findByUserAndNameAndAddressAndApt(location.getUser(),
-                                                                    location.getName(),
-                                                                    location.getAddress(),
-                                                                    location.getApt());
+        String errorMessage;
+        Location locationExists;
+        if (location.getType() == LocationType.DROPOFF) {
+            locationExists = findByUserAndNameAndAddressAndApt(location.getUser(),
+                                                                        location.getName(),
+                                                                        location.getAddress(),
+                                                                        location.getApt());
+            errorMessage = "Already have " + location.getName() + " location at "
+                    + location.getAddress() + " in apt " + location.getApt();
+        } else {
+            locationExists = findByUserAndName(location.getUser(),
+                                               location.getName());
+            errorMessage = "Already have " + location.getName() + " location";
+        }
         if (locationExists != null) {
-            throw new LocationExistsException("Already have " +
-                    location.getName() + " location at " +
-                    location.getAddress() + " in apt " +
-                    location.getApt());
+            throw new LocationExistsException(errorMessage);
         }
         return locationRepository.save(location);
     }

@@ -13,6 +13,8 @@ public interface LocationRepository extends CrudRepository<Location, Long> {
 
     Location findByIdAndUser(long id, User user);
 
+    Location findByUserAndName(User user, String name);
+
     Location findByUserAndNameAndAddressAndApt(User user, String name, String address, String apt);
 
     List<Location> findAllByUser(User user);
