@@ -55,7 +55,7 @@ public class DeliveryFormDTO {
         appMiles = (delivery.getAppMiles() == null) ? "" : Double.toString(delivery.getAppMiles());
         appWaitTime = (delivery.getAppWaitTime() == null) ? "" : Double.toString(delivery.getAppWaitTime());
         totalMiles = (delivery.getTotalMiles() == null) ? "" : Double.toString(delivery.getTotalMiles());
-        totalTime = (delivery.getTotalTime() == null) ? "" : Long.toString(delivery.getTotalTime().toMinutes());
+        totalTime = (delivery.getTotalTime() == null) ? "" : Double.toString(delivery.getTotalTime());
         basePay = (delivery.getBasePay() == null) ? "" : Double.toString(delivery.getBasePay());
         adjustments = (delivery.getAdjustments() == null) ? "" : Double.toString(delivery.getAdjustments());
         for (DeliveryLeg deliveryLeg : delivery.getLegs()) {

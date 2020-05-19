@@ -4,12 +4,11 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import io.github.gerritsmith.financeapp.dto.upload.DeliveryCSVRow;
 import io.github.gerritsmith.financeapp.dto.upload.ShiftCSVRow;
+import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
+import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.exception.ShiftExistsException;
-import io.github.gerritsmith.financeapp.model.Location;
-import io.github.gerritsmith.financeapp.model.LocationType;
-import io.github.gerritsmith.financeapp.model.Shift;
-import io.github.gerritsmith.financeapp.model.User;
+import io.github.gerritsmith.financeapp.model.*;
 import io.github.gerritsmith.financeapp.service.DeliveryService;
 import io.github.gerritsmith.financeapp.service.LocationService;
 import io.github.gerritsmith.financeapp.service.ShiftService;
@@ -28,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,11 +108,9 @@ public class UploadController {
                         .build();
 
                 List<DeliveryCSVRow> rows = csvToBean.parse();
-                int[] entityNumbersAdded = processDeliveryCSVUpload(rows, user);
+                processDeliveryCSVUpload(rows, user);
 
                 model.addAttribute("rows", rows);
-                model.addAttribute("locationsAdded", entityNumbersAdded[0]);
-                model.addAttribute("deliveriesAdded", entityNumbersAdded[1]);
                 model.addAttribute("isSuccessful", true);
             } catch (IOException e) {
                 model.addAttribute("errorMessage", "An error occurred while processing the CSV file.");
@@ -122,42 +120,76 @@ public class UploadController {
         return "/upload/deliveries";
     }
 
-    private int[] processDeliveryCSVUpload(List<DeliveryCSVRow> rows, User user) {
-        int locationsAdded = 0;
-        int deliveriesAdded = 0;
-
-        int deliveryGroupStartIndex;
+    private void processDeliveryCSVUpload(List<DeliveryCSVRow> rows, User user) {
+        int deliveryGroupStartIndex = 0;
         boolean inDeliveryGroup = false;
         for (int i = rows.size() - 1; -1 < i; i--) {
+            // TODO: speed up this loop and make this 'progress bar' visible on the front
+            System.out.println(i);
+
             DeliveryCSVRow row = rows.get(i);
-            locationsAdded += processLocationsFromDeliveryCSVRow(user, row);
-            System.out.println(i + ": " + row);
+            if (row.getTotal() != null && !inDeliveryGroup) {
+                Delivery delivery = new Delivery(user, row);
+                DeliveryLeg deliveryLeg = processDeliveryLegFromRow(user, row);
+                deliveryLeg.setDelivery(delivery);
+                delivery.addDeliveryLeg(deliveryLeg);
+                try {
+                    deliveryService.addDelivery(delivery);
+                } catch (DeliveryWithoutShiftException | DeliveryExistsException e) {
+                    row.addError(e);
+                }
+            }
 
+            if (row.getTotal() == null && !inDeliveryGroup) {
+                deliveryGroupStartIndex = i;
+                inDeliveryGroup = true;
+            }
 
-
+            if (row.getTotal() != null && inDeliveryGroup) {
+                inDeliveryGroup = false;
+                Delivery delivery = new Delivery(user, row);
+                for (int j = i; j <= deliveryGroupStartIndex; j++) {
+                    DeliveryLeg deliveryLeg = processDeliveryLegFromRow(user, rows.get(j));
+                    deliveryLeg.setDelivery(delivery);
+                    delivery.addDeliveryLeg(deliveryLeg);
+                }
+                try {
+                    deliveryService.addDelivery(delivery);
+                } catch (DeliveryWithoutShiftException | DeliveryExistsException e) {
+                    row.addError(e);
+                }
+            }
 
         }
-
-        return new int[] {locationsAdded, deliveriesAdded};
     }
 
-    private int processLocationsFromDeliveryCSVRow(User user, DeliveryCSVRow row) {
-        int locationsAdded = 0;
-        Location pickupLocation = new Location(user, LocationType.PICKUP, row);
+    private DeliveryLeg processDeliveryLegFromRow(User user, DeliveryCSVRow row) {
+        Location pickupLocation = locationService
+                .findByUserAndName(user, row.getPickupLocationName());
+        if (pickupLocation == null) {
+            pickupLocation = new Location(user, LocationType.PICKUP, row);
+            saveLocationToDatabaseFromRow(pickupLocation, row);
+        } else {
+            row.addError(new Exception(row.getPickupLocationName() + " already in database"));
+        }
+        Location dropoffLocation = locationService
+                .findByUserAndNameAndAddressAndApt(user, row.getDropoffName(),
+                        row.getDropoffLocationAddress(), row.getApt());
+        if (dropoffLocation == null) {
+            dropoffLocation = new Location(user, LocationType.DROPOFF, row);
+            saveLocationToDatabaseFromRow(dropoffLocation, row);
+        } else {
+            row.addError(new Exception(row.getDropoffLocationAddress() + " with name and apt # already in database"));
+        }
+        return new DeliveryLeg(row, pickupLocation, dropoffLocation);
+    }
+
+    private void saveLocationToDatabaseFromRow(Location location, DeliveryCSVRow row) {
         try {
-            locationService.addLocation(pickupLocation);
-            locationsAdded += 1;
+            locationService.addLocation(location);
         } catch (LocationExistsException e) {
             row.addError(e);
         }
-        Location dropoffLocation = new Location(user, LocationType.DROPOFF, row);
-        try {
-            locationService.addLocation(dropoffLocation);
-            locationsAdded += 1;
-        } catch (LocationExistsException e) {
-            row.addError(e);
-        }
-        return locationsAdded;
     }
 
 }

@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.model;
 
 import io.github.gerritsmith.financeapp.dto.form.DeliveryLegFormDTO;
+import io.github.gerritsmith.financeapp.dto.upload.DeliveryCSVRow;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -38,6 +39,17 @@ public class DeliveryLeg extends AbstractEntity {
         String cashString = deliveryLegFormDTO.getCash();
         cash = cashString.isEmpty() ? null : Double.parseDouble(cashString);
         note = deliveryLegFormDTO.getNote();
+    }
+
+    public DeliveryLeg(DeliveryCSVRow deliveryCSVRow,
+                       Location pickup,
+                       Location dropoff) {
+        foodTotal = deliveryCSVRow.getFoodTotal();
+        tip = deliveryCSVRow.getTip();
+        cash = deliveryCSVRow.getCash();
+        note = deliveryCSVRow.getNote();
+        this.pickup = pickup;
+        this.dropoff = dropoff;
     }
 
     // Methods

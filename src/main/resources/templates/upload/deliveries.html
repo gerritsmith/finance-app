@@ -12,15 +12,6 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
-    <div th:if="${isSuccessful}">
-        <strong>Number of Locations Added:</strong>
-        <span th:text="${locationsAdded}"></span>
-    </div>
-    <div th:if="${isSuccessful}">
-        <strong>Number of Deliveries Added:</strong>
-        <span th:text="${deliveriesAdded}"></span>
-    </div>
-
     <table th:fragment="table" class="table table-dark table-striped" th:if="${isSuccessful}">
         <thead>
         <tr>

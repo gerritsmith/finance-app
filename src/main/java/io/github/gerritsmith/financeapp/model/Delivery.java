@@ -2,12 +2,12 @@ package io.github.gerritsmith.financeapp.model;
 
 import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
 import io.github.gerritsmith.financeapp.dto.form.DeliveryLegFormDTO;
+import io.github.gerritsmith.financeapp.dto.upload.DeliveryCSVRow;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +26,7 @@ public class Delivery extends AbstractEntity {
     private Double appMiles;
     private Double appWaitTime;
     private Double totalMiles;
-    private Duration totalTime;
+    private Double totalTime;
     private Double basePay;
     private Double adjustments;
 
@@ -52,7 +52,7 @@ public class Delivery extends AbstractEntity {
         String totalMilesString = deliveryFormDTO.getTotalMiles();
         totalMiles = totalMilesString.isEmpty() ? null : Double.parseDouble(totalMilesString);
         String totalTimeString = deliveryFormDTO.getTotalTime();
-        totalTime = totalTimeString.isEmpty() ? null : Duration.ofMinutes(Long.parseLong(totalTimeString));
+        totalTime = totalTimeString.isEmpty() ? null : Double.parseDouble(totalTimeString);
         String basePayString = deliveryFormDTO.getBasePay();
         basePay = basePayString.isEmpty() ? null : Double.parseDouble(basePayString);
         String adjustmentsString = deliveryFormDTO.getAdjustments();
@@ -63,9 +63,26 @@ public class Delivery extends AbstractEntity {
         total = computeTotal();
     }
 
+    public Delivery(User user, DeliveryCSVRow deliveryCSVRow) {
+        this.user = user;
+        date = deliveryCSVRow.getDate();
+        time = deliveryCSVRow.getTime();
+        appMiles = deliveryCSVRow.getAppMiles();
+        appWaitTime = deliveryCSVRow.getAppWaitTime();
+        totalMiles = deliveryCSVRow.getTotalMiles();
+        totalTime = deliveryCSVRow.getTotalTime();
+        basePay = deliveryCSVRow.getBasePay();
+        adjustments = deliveryCSVRow.getAdjustments();
+    }
+
     // Methods
     public String displayTime() {
         return time.format(DateTimeFormatter.ofPattern("h:mm a"));
+    }
+
+    public void addDeliveryLeg(DeliveryLeg deliveryLeg) {
+        legs.add(deliveryLeg);
+        total = computeTotal();
     }
 
     private double computeTotal() {
@@ -127,11 +144,11 @@ public class Delivery extends AbstractEntity {
         this.totalMiles = totalMiles;
     }
 
-    public Duration getTotalTime() {
+    public Double getTotalTime() {
         return totalTime;
     }
 
-    public void setTotalTime(Duration totalTime) {
+    public void setTotalTime(Double totalTime) {
         this.totalTime = totalTime;
     }
 
@@ -160,6 +177,7 @@ public class Delivery extends AbstractEntity {
     }
 
     public double getTotal() {
+        total = computeTotal();
         return total;
     }
 
