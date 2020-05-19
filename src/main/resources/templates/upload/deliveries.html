@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+<header th:replace="fragments :: header"></header>
+
+<div class="container">
+    <h1>Rows Uploaded From Delivery CSV File</h1>
+
+    <div class="alert alert-danger" role="alert" th:if="${!isSuccessful}">
+        <strong>Error:</strong>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <table th:fragment="table" class="table table-dark table-striped" th:if="${isSuccessful}">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Accept Time</th>
+            <th>Food Total</th>
+            <th>Duration (min)</th>
+            <th>Total Miles</th>
+            <th>App Miles</th>
+            <th>App Wait (min)</th>
+            <th>Adjustments</th>
+            <th>Base Pay</th>
+            <th>Tip</th>
+            <th>Total Pay</th>
+            <th>Pick Up Location</th>
+            <th>Drop Off Location</th>
+            <th>Lat, Long</th>
+            <th>Name</th>
+            <th>Apt #</th>
+            <th>Notes</th>
+            <th>Cash</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${rows}" th:object="${row}">
+            <td th:text="*{#temporals.format(date,'MMM dd')}">MMM dd</td>
+            <td th:text="*{#temporals.format(time, 'h:mm a')}">hh:mm a</td>
+            <td th:text="*{foodTotal}"></td>
+            <td th:text="*{totalTime}"></td>
+            <td th:text="*{totalMiles}"></td>
+            <td th:text="*{appMiles}"></td>
+            <td th:text="*{appWaitTime}"></td>
+            <td th:text="*{adjustments}"></td>
+            <td th:text="*{basePay}"></td>
+            <td th:text="*{tip}"></td>
+            <td th:text="*{total}"></td>
+            <td th:text="*{pickupLocationName}"></td>
+            <td th:text="*{dropoffLocationAddress}"></td>
+            <td th:text="*{latLong}"></td>
+            <td th:text="*{dropoffName}"></td>
+            <td th:text="*{apt}"></td>
+            <td th:text="*{note}"></td>
+            <td th:text="*{cash}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>

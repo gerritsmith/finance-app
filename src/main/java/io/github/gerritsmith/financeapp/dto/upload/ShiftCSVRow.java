@@ -9,15 +9,15 @@ import java.time.LocalTime;
 public class ShiftCSVRow {
 
     @CsvDate(value = "M/d/yy")
-    @CsvBindByName(column = "Date")
+    @CsvBindByName(column = "Date", required = true)
     private LocalDate date;
 
     @CsvDate(value = "h:mm a")
-    @CsvBindByName(column = "Start Time")
+    @CsvBindByName(column = "Start Time", required = true)
     private LocalTime startTime;
 
     @CsvDate(value = "h:mm a")
-    @CsvBindByName(column = "End Time")
+    @CsvBindByName(column = "End Time", required = true)
     private LocalTime endTime;
 
     @CsvBindByName(column = "Start Mileage")
