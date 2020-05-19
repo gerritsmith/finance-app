@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.model;
 
 import io.github.gerritsmith.financeapp.dto.form.LocationFormDTO;
+import io.github.gerritsmith.financeapp.dto.upload.DeliveryCSVRow;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -26,15 +27,21 @@ public class Location extends AbstractEntity {
         this.name = locationFormDTO.getName();
         this.address = locationFormDTO.getAddress();
         this.apt = locationFormDTO.getApt();
-        String[] latLongParts = locationFormDTO.getLatLong().split("\\s*,\\s*");
-        if (latLongParts.length == 2) {
-            this.latitude = latLongParts[0].isEmpty() ? null : Double.parseDouble(latLongParts[0]);
-            this.longitude = latLongParts[1].isEmpty() ? null : Double.parseDouble(latLongParts[1]);
-        } else {
-            this.latitude = null;
-            this.longitude = null;
-        }
+        parseLatLongString(locationFormDTO.getLatLong());
         this.type = locationFormDTO.getType();
+    }
+
+    public Location(User user, LocationType type, DeliveryCSVRow row) {
+        this.user = user;
+        this.type = type;
+        if (type == LocationType.PICKUP) {
+            name = row.getPickupLocationName();
+        } else {
+            name = row.getDropoffName();
+            address = row.getDropoffLocationAddress();
+            apt = row.getApt();
+            parseLatLongString(row.getLatLong());
+        }
     }
 
     // Methods
@@ -45,6 +52,17 @@ public class Location extends AbstractEntity {
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         type = location.getType();
+    }
+
+    private void parseLatLongString(String latLong) {
+        String[] latLongParts = latLong.split("\\s*,\\s*");
+        if (latLongParts.length == 2) {
+            this.latitude = latLongParts[0].isEmpty() ? null : Double.parseDouble(latLongParts[0]);
+            this.longitude = latLongParts[1].isEmpty() ? null : Double.parseDouble(latLongParts[1]);
+        } else {
+            this.latitude = null;
+            this.longitude = null;
+        }
     }
 
     // Getters and Setters

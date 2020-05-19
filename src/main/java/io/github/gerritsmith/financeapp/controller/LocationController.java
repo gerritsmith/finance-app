@@ -3,6 +3,7 @@ package io.github.gerritsmith.financeapp.controller;
 import io.github.gerritsmith.financeapp.dto.form.LocationFormDTO;
 import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.model.Location;
+import io.github.gerritsmith.financeapp.model.LocationType;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.LocationService;
 import io.github.gerritsmith.financeapp.service.UserService;
@@ -41,8 +42,16 @@ public class LocationController {
             if (o1.getType().compareTo(o2.getType()) > 0) {
                 return -1;
             } else if (o1.getType().equals(o2.getType())) {
-                if (o1.getName().compareTo(o2.getName()) < 0) {
-                    return -1;
+                if (o1.getType() == LocationType.PICKUP) {
+                    if (o1.getName().compareTo(o2.getName()) < 0) {
+                        return -1;
+                    } else if (o1.getName().equals(o2.getName())) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                } else {
+                    return 0;
                 }
             }
             return 1;

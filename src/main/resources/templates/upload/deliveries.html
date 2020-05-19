@@ -12,6 +12,15 @@
         <span th:text="${errorMessage}"></span>
     </div>
 
+    <div th:if="${isSuccessful}">
+        <strong>Number of Locations Added:</strong>
+        <span th:text="${locationsAdded}"></span>
+    </div>
+    <div th:if="${isSuccessful}">
+        <strong>Number of Deliveries Added:</strong>
+        <span th:text="${deliveriesAdded}"></span>
+    </div>
+
     <table th:fragment="table" class="table table-dark table-striped" th:if="${isSuccessful}">
         <thead>
         <tr>
@@ -33,6 +42,7 @@
             <th>Apt #</th>
             <th>Notes</th>
             <th>Cash</th>
+            <th>Errors</th>
         </tr>
         </thead>
         <tbody>
@@ -55,6 +65,11 @@
             <td th:text="*{apt}"></td>
             <td th:text="*{note}"></td>
             <td th:text="*{cash}"></td>
+            <td>
+                <ul th:each="error : *{errors}" th:object="${error}">
+                    <li th:text="*{message}"></li>
+                </ul>
+            </td>
         </tr>
         </tbody>
     </table>

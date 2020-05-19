@@ -5,6 +5,8 @@ import com.opencsv.bean.CsvDate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DeliveryCSVRow {
 
@@ -64,8 +66,18 @@ public class DeliveryCSVRow {
     @CsvBindByName(column = "Cash")
     private Double cash;
 
+    private final List<Exception> errors = new ArrayList<>();
+    private boolean isAddedToDatabase = false;
+
+    // Constructor
     public DeliveryCSVRow() {}
 
+    // Methods
+    public void addError(Exception e) {
+        errors.add(e);
+    }
+
+    // Getters and Setters
     public LocalDate getDate() {
         return date;
     }
@@ -208,6 +220,28 @@ public class DeliveryCSVRow {
 
     public void setCash(Double cash) {
         this.cash = cash;
+    }
+
+    public List<Exception> getErrors() {
+        return errors;
+    }
+
+    public boolean isAddedToDatabase() {
+        return isAddedToDatabase;
+    }
+
+    public void setAddedToDatabase(boolean addedToDatabase) {
+        isAddedToDatabase = addedToDatabase;
+    }
+
+    // Equals, hash, toString
+    @Override
+    public String toString() {
+        return "DeliveryCSVRow{" +
+                "date=" + date +
+                ", time=" + time +
+                ", total=" + total +
+                '}';
     }
 
 }
