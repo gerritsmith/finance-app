@@ -22,6 +22,7 @@
             <th>End Mileage</th>
             <th>Miles</th>
             <th>MPG</th>
+            <th>Errors</th>
         </tr>
         </thead>
         <tbody>
@@ -33,6 +34,11 @@
             <td th:text="*{endMileage}">12385</td>
             <td th:text="*{miles}">40.2</td>
             <td th:text="*{mpg}">36.7</td>
+            <td>
+                <ul th:each="error : *{errors}" th:object="${error}">
+                    <li th:text="*{message}"></li>
+                </ul>
+            </td>
         </tr>
         </tbody>
     </table>

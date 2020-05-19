@@ -5,6 +5,8 @@ import com.opencsv.bean.CsvDate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShiftCSVRow {
 
@@ -32,8 +34,18 @@ public class ShiftCSVRow {
     @CsvBindByName(column = "MPG")
     private Double mpg;
 
+    private final List<Exception> errors = new ArrayList<>();
+    private boolean isAddedToDatabase = false;
+
+    // Constructor
     public ShiftCSVRow() {}
 
+    // Methods
+    public void addError(Exception e) {
+        errors.add(e);
+    }
+
+    // Getters and Setters
     public LocalDate getDate() {
         return date;
     }
@@ -88,6 +100,18 @@ public class ShiftCSVRow {
 
     public void setMpg(Double mpg) {
         this.mpg = mpg;
+    }
+
+    public List<Exception> getErrors() {
+        return errors;
+    }
+
+    public boolean isAddedToDatabase() {
+        return isAddedToDatabase;
+    }
+
+    public void setAddedToDatabase(boolean addedToDatabase) {
+        isAddedToDatabase = addedToDatabase;
     }
 
 }
