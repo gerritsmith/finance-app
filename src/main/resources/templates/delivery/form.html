@@ -162,7 +162,7 @@
             <option data-value="-1">Select Dropoff Location</option>
             <option th:each="dropoffLocation : ${dropoffLocations}"
                     th:data-value="${dropoffLocation.id}"
-                    th:text="${dropoffLocation.address}">Dropoff Location Option</option>
+                    th:text="${dropoffLocation.address + ' ' + dropoffLocation.name + ' ' + dropoffLocation.apt}">Dropoff Location Option</option>
         </datalist>
 
         <div class="form-group" th:unless="${#request.requestURI.endsWith('new')}">
