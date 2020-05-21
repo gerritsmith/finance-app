@@ -29,7 +29,7 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
-    private List<String> months = new ArrayList<>(Arrays.asList(
+    private static final List<String> months = new ArrayList<>(Arrays.asList(
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ));
 

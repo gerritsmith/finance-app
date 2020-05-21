@@ -70,19 +70,15 @@ public class ReportService {
 
     public ReportByDayDTO getReportByDay(User user) {
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
-        List<LocalDate> dates = shifts.stream().map(Shift::getDate).distinct().collect(Collectors.toList());
+        List<LocalDate> dates = shifts.stream()
+                .map(Shift::getDate)
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
         List<DayReportDTO> dailyReports = new ArrayList<>();
         for (LocalDate date : dates) {
             dailyReports.add(getDayReport(user, date));
         }
-        dailyReports.sort((o1, o2) -> {
-            if (o1.getDate().isAfter(o2.getDate())) {
-                return -1;
-            } else if (o1.getDate().equals(o2.getDate())) {
-                return 0;
-            }
-            return 1;
-        });
         ReportByDayDTO reportByDayDTO = new ReportByDayDTO();
         reportByDayDTO.setDailyReports(dailyReports);
         return reportByDayDTO;
