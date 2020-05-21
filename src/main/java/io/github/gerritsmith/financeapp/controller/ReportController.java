@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class ReportController {
@@ -26,6 +29,10 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
+    private List<String> months = new ArrayList<>(Arrays.asList(
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ));
+
     @ModelAttribute
     public void addControllerWideModelAttributes(Model model, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
@@ -33,7 +40,9 @@ public class ReportController {
     }
 
     @GetMapping("/reports")
-    public String displayReportsHome() {
+    public String displayReportsHome(Model model, @ModelAttribute User user) {
+        model.addAttribute("months", months);
+        model.addAttribute("years", reportService.getYearsSpanningRecords(user));
         return "report/home";
     }
 

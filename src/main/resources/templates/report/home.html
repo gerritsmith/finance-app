@@ -20,7 +20,27 @@
             </form>
         </div>
         <div class="col-md-4">
-
+            <form class="card p-3 bg-light" th:action="@{/reports/by-month}" method="get">
+                <div class="form-group">
+                    <label for="month">Select a Month</label>
+                    <select id="month" class="form-control" name="month" required="required">
+                        <option th:each="month, i : ${months}"
+                                th:value="${i.count}"
+                                th:text="${month}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="monthYear">Select a Year</label>
+                    <select id="monthYear" class="form-control" name="monthYear" required="required">
+                        <option th:each="year : ${years}"
+                                th:value="${year}"
+                                th:text="${year}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Generate Month Report" class="btn btn-success"/>
+                </div>
+            </form>
         </div>
         <div class="col-md-4">
 

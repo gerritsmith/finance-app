@@ -83,4 +83,20 @@ public class ReportService {
         return reportByDayDTO;
     }
 
+    public List<Integer> getYearsSpanningRecords(User user) {
+        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
+        List<Integer> yearsFound = shifts.stream()
+                .map(Shift::getDate)
+                .map(LocalDate::getYear)
+                .collect(Collectors.toSet())
+                .stream()
+                .sorted()
+                .collect(Collectors.toList());
+        List<Integer> years = new ArrayList<>();
+        for (int year = yearsFound.get(yearsFound.size() - 1); yearsFound.get(0) <= year; year--) {
+            years.add(year);
+        }
+        return years;
+    }
+
 }
