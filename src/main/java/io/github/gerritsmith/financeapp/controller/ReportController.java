@@ -1,8 +1,6 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.DayReportDTO;
-import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
-import io.github.gerritsmith.financeapp.dto.TimeSeriesDTO;
+import io.github.gerritsmith.financeapp.dto.*;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.ReportService;
 import io.github.gerritsmith.financeapp.service.UserService;
@@ -16,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.Year;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class ReportController {
@@ -26,6 +29,10 @@ public class ReportController {
     @Autowired
     ReportService reportService;
 
+    private static final List<String> months = new ArrayList<>(Arrays.asList(
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ));
+
     @ModelAttribute
     public void addControllerWideModelAttributes(Model model, Principal principal) {
         User user = userService.findUserByUsername(principal.getName());
@@ -33,7 +40,9 @@ public class ReportController {
     }
 
     @GetMapping("/reports")
-    public String displayReportsHome() {
+    public String displayReportsHome(Model model, @ModelAttribute User user) {
+        model.addAttribute("months", months);
+        model.addAttribute("years", reportService.getYearsSpanningRecords(user));
         return "report/home";
     }
 
@@ -66,6 +75,38 @@ public class ReportController {
         model.addAttribute("dataToPlot", dataToPlot);
 
         return "report/by-day";
+    }
+
+    @GetMapping("/reports/by-month")
+    public String displayMonthReport(@RequestParam int month,
+                                     @RequestParam Year inYear,
+                                     Model model,
+                                     @ModelAttribute User user) {
+        YearMonth yearMonth = inYear.atMonth(month);
+        MonthReportDTO monthReportDTO = reportService.getMonthReport(user, yearMonth);
+        model.addAttribute("monthReportDTO", monthReportDTO);
+        return "report/month";
+    }
+
+    @GetMapping("/report/by-month")
+    public String displayReportByMonth(Model model,
+                                       @ModelAttribute User user) {
+        ReportByMonthDTO reportByMonthDTO = reportService.getReportByMonth(user);
+        model.addAttribute("reportByMonthDTO", reportByMonthDTO);
+
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
+        for (MonthReportDTO monthReport : reportByMonthDTO.getMonthlyReports()) {
+            dataToPlot.addDataPoint(monthReport.getYearMonth().atDay(1),
+                    monthReport.getDeliveryCount(),
+                    monthReport.getDeliveryGroupCount(),
+                    monthReport.getTotalRevenue(),
+                    monthReport.getTotalShiftHoursAsDecimal(),
+                    monthReport.getTotalShiftMiles(),
+                    monthReport.getTotalExpenses());
+        }
+        model.addAttribute("dataToPlot", dataToPlot);
+
+        return "report/by-month";
     }
 
 }
