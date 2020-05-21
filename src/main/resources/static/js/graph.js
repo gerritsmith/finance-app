@@ -70,9 +70,9 @@ function drawCharts(data) {
   let height = 500;
   let margin = {
     top: 20,
-    right: 30,
-    bottom: 30,
-    left: 40
+    right: 20,
+    bottom: 50,
+    left: 60
   };
 
   drawLineGraph(data.slice());
@@ -102,9 +102,14 @@ function drawCharts(data) {
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y))
-                      .call(g => g.select(".tick:last-of-type text").clone()
-                                  .attr("x", 3)
-                                  .attr("text-anchor", "start")
+                      .call(g => g.append("g")
+                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
+                                  .attr("class", "axis-label")
+                                  .append("text")
+                                  .attr("fill", "currentColor")
+                                  .attr("y", -20)
+                                  .attr("dy", "-0.71em")
+                                  .attr("text-anchor", "middle")
                                   .attr("font-weight", "bold")
                                   .text(valueLabel));
 
@@ -179,9 +184,14 @@ function drawCharts(data) {
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y))
-                      .call(g => g.select(".tick:last-of-type text").clone()
-                                  .attr("x", 3)
-                                  .attr("text-anchor", "start")
+                      .call(g => g.append("g")
+                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
+                                  .attr("class", "axis-label")
+                                  .append("text")
+                                  .attr("fill", "currentColor")
+                                  .attr("y", -20)
+                                  .attr("dy", "-0.71em")
+                                  .attr("text-anchor", "middle")
                                   .attr("font-weight", "bold")
                                   .text(valueLabel));
 
@@ -236,17 +246,28 @@ function drawCharts(data) {
                       .call(d3.axisBottom(x)
                               .ticks(width / 80)
                               .tickSizeOuter(0))
-                      .call(g => g.select(".tick:last-of-type text").clone()
-                                  .attr("y", -20)
+                      .call(g => g.append("g")
+                                  .attr("transform", `translate(${width / 2},0)`)
+                                  .attr("class", "axis-label")
+                                  .append("text")
+                                  .attr("fill", "currentColor")
+                                  .attr("y", 25)
+                                  .attr("dy", "0.71em")
                                   .attr("text-anchor", "middle")
                                   .attr("font-weight", "bold")
                                   .text(valueLabel));
+    
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y)
                               .ticks(y.domain()[1]))    // .ticks(height / 40)
-                      .call(g => g.select(".tick:last-of-type text").clone()
-                                  .attr("x", 4)
-                                  .attr("text-anchor", "start")
+                      .call(g => g.append("g")
+                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
+                                  .attr("class", "axis-label")
+                                  .append("text")
+                                  .attr("fill", "currentColor")
+                                  .attr("y", -20)
+                                  .attr("dy", "-0.71em")
+                                  .attr("text-anchor", "middle")
                                   .attr("font-weight", "bold")
                                   .text("Count"));
 
