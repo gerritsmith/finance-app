@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShiftService {
@@ -28,6 +30,13 @@ public class ShiftService {
     // Read
     public List<Shift> findByUserAndDate(User user, LocalDate date) {
         return shiftRepository.findByUserAndDate(user, date);
+    }
+
+    public List<Shift> findByUserAndYearMonth(User user, YearMonth yearMonth) {
+        return shiftRepository.findAllByUser(user)
+                .stream()
+                .filter(s -> YearMonth.from(s.getDate()).equals(yearMonth))
+                .collect(Collectors.toList());
     }
 
     public List<Shift> findAllShiftsByUser(User user) {

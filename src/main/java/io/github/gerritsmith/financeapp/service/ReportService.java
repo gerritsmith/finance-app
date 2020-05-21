@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
+import io.github.gerritsmith.financeapp.dto.MonthReportDTO;
 import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Expense;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +61,8 @@ public class ReportService {
                         shifts.stream().map(s -> Duration.between(s.getStartTime(), s.getEndTime()))))
                 .setTotalShiftMiles(statsService.sumDoubles(
                         shifts.stream().map(Shift::getMiles)))
-                .setTotalExpenses(statsService.sumDoubles(expenses.stream().map(Expense::getAmount)));
+                .setTotalExpenses(statsService.sumDoubles(
+                        expenses.stream().map(Expense::getAmount)));
         return dayReportDTO;
     }
 
@@ -81,6 +84,33 @@ public class ReportService {
         ReportByDayDTO reportByDayDTO = new ReportByDayDTO();
         reportByDayDTO.setDailyReports(dailyReports);
         return reportByDayDTO;
+    }
+
+    public MonthReportDTO getMonthReport(User user, YearMonth yearMonth) {
+        List<Delivery> deliveries = deliveryService.findByUserAndYearMonth(user, yearMonth);
+        List<Shift> shifts = shiftService.findByUserAndYearMonth(user, yearMonth);
+        List<Expense> expenses = expenseService.findByUserAndYearMonth(user, yearMonth);
+
+        int deliveryCount = 0;
+        for (Delivery delivery : deliveries) {
+            deliveryCount += delivery.getLegs().size();
+        }
+
+        MonthReportDTO monthReportDTO = new MonthReportDTO();
+        monthReportDTO.setYearMonth(yearMonth)
+                .setDeliveries(deliveries)
+                .setShifts(shifts)
+                .setExpenses(expenses)
+                .setDeliveryCount(deliveryCount)
+                .setTotalRevenue(statsService.sumDoubles(
+                        deliveries.stream().map(Delivery::getTotal)))
+                .setTotalShiftHours(statsService.sumDurations(
+                        shifts.stream().map(s -> Duration.between(s.getStartTime(), s.getEndTime()))))
+                .setTotalShiftMiles(statsService.sumDoubles(
+                        shifts.stream().map(Shift::getMiles)))
+                .setTotalExpenses(statsService.sumDoubles(
+                        expenses.stream().map(Expense::getAmount)));
+        return monthReportDTO;
     }
 
     public List<Integer> getYearsSpanningRecords(User user) {

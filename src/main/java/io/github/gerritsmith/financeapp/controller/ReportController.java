@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
+import io.github.gerritsmith.financeapp.dto.MonthReportDTO;
 import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
 import io.github.gerritsmith.financeapp.dto.TimeSeriesDTO;
 import io.github.gerritsmith.financeapp.model.User;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,6 +79,17 @@ public class ReportController {
         model.addAttribute("dataToPlot", dataToPlot);
 
         return "report/by-day";
+    }
+
+    @GetMapping("/reports/by-month")
+    public String displayMonthReport(@RequestParam int month,
+                                     @RequestParam Year inYear,
+                                     Model model,
+                                     @ModelAttribute User user) {
+        YearMonth yearMonth = inYear.atMonth(month);
+        MonthReportDTO monthReportDTO = reportService.getMonthReport(user, yearMonth);
+        model.addAttribute("monthReportDTO", monthReportDTO);
+        return "report/month";
     }
 
 }

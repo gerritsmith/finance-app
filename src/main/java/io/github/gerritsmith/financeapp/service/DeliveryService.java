@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DeliveryService {
@@ -40,6 +42,13 @@ public class DeliveryService {
 
     public List<Delivery> findByUserAndDate(User user, LocalDate date) {
         return deliveryRepository.findByUserAndDate(user, date);
+    }
+
+    public List<Delivery> findByUserAndYearMonth(User user, YearMonth yearMonth) {
+        return deliveryRepository.findAllByUser(user)
+                .stream()
+                .filter(d -> YearMonth.from(d.getDate()).equals(yearMonth))
+                .collect(Collectors.toList());
     }
 
     public List<Delivery> findAllDeliveriesByUser(User user) {

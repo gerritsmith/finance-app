@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
@@ -31,6 +33,13 @@ public class ExpenseService {
 
     public List<Expense> findByUserAndDate(User user, LocalDate date) {
         return expenseRepository.findByUserAndDate(user, date);
+    }
+
+    public List<Expense> findByUserAndYearMonth(User user, YearMonth yearMonth) {
+        return expenseRepository.findAllByUser(user)
+                .stream()
+                .filter(e -> YearMonth.from(e.getDate()).equals(yearMonth))
+                .collect(Collectors.toList());
     }
 
     public List<Expense> findAllExpensesByUser(User user) {
