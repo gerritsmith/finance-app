@@ -3,6 +3,7 @@ package io.github.gerritsmith.financeapp.service;
 import io.github.gerritsmith.financeapp.dto.DayReportDTO;
 import io.github.gerritsmith.financeapp.dto.MonthReportDTO;
 import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
+import io.github.gerritsmith.financeapp.dto.ReportByMonthDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.Shift;
@@ -14,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,13 +115,29 @@ public class ReportService {
         return monthReportDTO;
     }
 
+    public ReportByMonthDTO getReportByMonth(User user) {
+        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
+        List<YearMonth> yearMonths = shifts.stream()
+                .map(Shift::getDate)
+                .map(d -> YearMonth.of(d.getYear(), d.getMonth()))
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
+        List<MonthReportDTO> monthlyReports = new ArrayList<>();
+        for (YearMonth yearMonth : yearMonths) {
+            monthlyReports.add(getMonthReport(user, yearMonth));
+        }
+        ReportByMonthDTO reportByMonthDTO = new ReportByMonthDTO();
+        reportByMonthDTO.setMonthlyReports(monthlyReports);
+        return reportByMonthDTO;
+    }
+
     public List<Integer> getYearsSpanningRecords(User user) {
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         List<Integer> yearsFound = shifts.stream()
                 .map(Shift::getDate)
                 .map(LocalDate::getYear)
-                .collect(Collectors.toSet())
-                .stream()
+                .distinct()
                 .sorted()
                 .collect(Collectors.toList());
         List<Integer> years = new ArrayList<>();
