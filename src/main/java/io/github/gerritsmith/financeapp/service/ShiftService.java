@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,15 +30,17 @@ public class ShiftService {
     }
 
     // Read
-    public List<Shift> findByUserAndDate(User user, LocalDate date) {
-        return shiftRepository.findByUserAndDate(user, date);
-    }
-
-    public List<Shift> findByUserAndYearMonth(User user, YearMonth yearMonth) {
-        return shiftRepository.findAllByUser(user)
-                .stream()
-                .filter(s -> YearMonth.from(s.getDate()).equals(yearMonth))
-                .collect(Collectors.toList());
+    public List<Shift> findAllByUserInTemporal(User user, Temporal temporal) {
+        if (temporal.getClass().equals(LocalDate.class)) {
+            return shiftRepository.findByUserAndDate(user, (LocalDate) temporal);
+        } else if (temporal.getClass().equals(YearMonth.class)) {
+            return shiftRepository.findAllByUser(user)
+                    .stream()
+                    .filter(s -> YearMonth.from(s.getDate()).equals(temporal))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public List<Shift> findAllShiftsByUser(User user) {
@@ -50,7 +54,7 @@ public class ShiftService {
     // Create
     @Transactional
     public Shift addShift(Shift shift) throws ShiftExistsException {
-        List<Shift> shiftsOnDate = findByUserAndDate(shift.getUser(), shift.getDate());
+        List<Shift> shiftsOnDate = findAllByUserInTemporal(shift.getUser(), shift.getDate());
         if (shiftsOnDate != null) {
             for (Shift existingShift : shiftsOnDate) {
                 if (hasOverlap(shift, existingShift)) {
@@ -70,7 +74,7 @@ public class ShiftService {
                              Shift updatedShift) throws ShiftExistsException,
                                                         DeliveryWithoutShiftException {
         Shift shiftToUpdate = shiftRepository.findByIdAndUser(shiftId, updatedShift.getUser());
-        List<Shift> shiftsExistingOnDate = findByUserAndDate(updatedShift.getUser(),
+        List<Shift> shiftsExistingOnDate = findAllByUserInTemporal(updatedShift.getUser(),
                 updatedShift.getDate());
         for (Shift existingShift : shiftsExistingOnDate) {
             if (hasOverlap(updatedShift, existingShift) && !shiftToUpdate.equals(existingShift)) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -38,15 +39,15 @@ public class ReportService {
     }
 
     // Methods
-    public TemporalReportDTO getDayReport(User user, LocalDate date) {
-        List<Delivery> deliveries = deliveryService.findByUserAndDate(user, date);
-        List<Shift> shifts = shiftService.findByUserAndDate(user, date);
-        List<Expense> expenses = expenseService.findByUserAndDate(user, date);
+    public TemporalReportDTO getTemporalReport(User user, Temporal temporal) {
+        List<Delivery> deliveries = deliveryService.findAllByUserInTemporal(user, temporal);
+        List<Shift> shifts = shiftService.findAllByUserInTemporal(user, temporal);
+        List<Expense> expenses = expenseService.findAllByUserInTemporal(user, temporal);
 
         int deliveryCount = statsService.countDeliveries(deliveries);
 
-        TemporalReportDTO dayReportDTO = new TemporalReportDTO();
-        dayReportDTO.setTemporal(date)
+        TemporalReportDTO temporalReportDTO = new TemporalReportDTO();
+        temporalReportDTO.setTemporal(temporal)
                 .setDeliveries(deliveries)
                 .setShifts(shifts)
                 .setExpenses(expenses)
@@ -59,7 +60,7 @@ public class ReportService {
                         shifts.stream().map(Shift::getMiles)))
                 .setTotalExpenses(statsService.sumDoubles(
                         expenses.stream().map(Expense::getAmount)));
-        return dayReportDTO;
+        return temporalReportDTO;
     }
 
     public ReportByTemporalDTO getReportByDay(User user) {
@@ -71,33 +72,9 @@ public class ReportService {
                 .collect(Collectors.toList());
         ReportByTemporalDTO reportByDayDTO = new ReportByTemporalDTO();
         for (LocalDate date : dates) {
-            reportByDayDTO.addTemporalReport(getDayReport(user, date));
+            reportByDayDTO.addTemporalReport(getTemporalReport(user, date));
         }
         return reportByDayDTO;
-    }
-
-    public TemporalReportDTO getMonthReport(User user, YearMonth yearMonth) {
-        List<Delivery> deliveries = deliveryService.findByUserAndYearMonth(user, yearMonth);
-        List<Shift> shifts = shiftService.findByUserAndYearMonth(user, yearMonth);
-        List<Expense> expenses = expenseService.findByUserAndYearMonth(user, yearMonth);
-
-        int deliveryCount = statsService.countDeliveries(deliveries);
-
-        TemporalReportDTO monthReportDTO = new TemporalReportDTO();
-        monthReportDTO.setTemporal(yearMonth)
-                .setDeliveries(deliveries)
-                .setShifts(shifts)
-                .setExpenses(expenses)
-                .setDeliveryCount(deliveryCount)
-                .setTotalRevenue(statsService.sumDoubles(
-                        deliveries.stream().map(Delivery::getTotal)))
-                .setTotalShiftHours(statsService.sumDurations(
-                        shifts.stream().map(s -> Duration.between(s.getStartTime(), s.getEndTime()))))
-                .setTotalShiftMiles(statsService.sumDoubles(
-                        shifts.stream().map(Shift::getMiles)))
-                .setTotalExpenses(statsService.sumDoubles(
-                        expenses.stream().map(Expense::getAmount)));
-        return monthReportDTO;
     }
 
     public ReportByTemporalDTO getReportByMonth(User user) {
@@ -110,7 +87,7 @@ public class ReportService {
                 .collect(Collectors.toList());
         ReportByTemporalDTO reportByMonthDTO = new ReportByTemporalDTO();
         for (YearMonth yearMonth : yearMonths) {
-            reportByMonthDTO.addTemporalReport(getMonthReport(user, yearMonth));
+            reportByMonthDTO.addTemporalReport(getTemporalReport(user, yearMonth));
         }
         return reportByMonthDTO;
     }

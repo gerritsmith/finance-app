@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,15 +33,17 @@ public class ExpenseService {
         return expenseRepository.findByUserAndDateAndTimeAndDescription(user, date, time, description);
     }
 
-    public List<Expense> findByUserAndDate(User user, LocalDate date) {
-        return expenseRepository.findByUserAndDate(user, date);
-    }
-
-    public List<Expense> findByUserAndYearMonth(User user, YearMonth yearMonth) {
-        return expenseRepository.findAllByUser(user)
-                .stream()
-                .filter(e -> YearMonth.from(e.getDate()).equals(yearMonth))
-                .collect(Collectors.toList());
+    public List<Expense> findAllByUserInTemporal(User user, Temporal temporal) {
+        if (temporal.getClass().equals(LocalDate.class)) {
+            return expenseRepository.findByUserAndDate(user, (LocalDate) temporal);
+        } else if (temporal.getClass().equals(YearMonth.class)) {
+            return expenseRepository.findAllByUser(user)
+                    .stream()
+                    .filter(e -> YearMonth.from(e.getDate()).equals(temporal))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public List<Expense> findAllExpensesByUser(User user) {

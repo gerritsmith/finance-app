@@ -52,7 +52,7 @@ public class ReportController {
                                                LocalDate date,
                                    Model model,
                                    @ModelAttribute User user) {
-        TemporalReportDTO dayReportDTO = reportService.getDayReport(user, date);
+        TemporalReportDTO dayReportDTO = reportService.getTemporalReport(user, date);
         model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
     }
@@ -83,7 +83,7 @@ public class ReportController {
                                                  YearMonth month,
                                      Model model,
                                      @ModelAttribute User user) {
-        TemporalReportDTO monthReportDTO = reportService.getMonthReport(user, month);
+        TemporalReportDTO monthReportDTO = reportService.getTemporalReport(user, month);
         model.addAttribute("monthReportDTO", monthReportDTO);
         return "report/month";
     }
