@@ -137,6 +137,10 @@ public class ReportService {
                 .sorted()
                 .collect(Collectors.toList());
         List<Integer> years = new ArrayList<>();
+        if (yearsFound.size() == 0) {
+            years.add(LocalDate.now().getYear());
+            return years;
+        }
         for (int year = yearsFound.get(yearsFound.size() - 1); yearsFound.get(0) <= year; year--) {
             years.add(year);
         }
