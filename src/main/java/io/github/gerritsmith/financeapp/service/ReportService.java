@@ -1,9 +1,6 @@
 package io.github.gerritsmith.financeapp.service;
 
-import io.github.gerritsmith.financeapp.dto.DayReportDTO;
-import io.github.gerritsmith.financeapp.dto.MonthReportDTO;
-import io.github.gerritsmith.financeapp.dto.ReportByDayDTO;
-import io.github.gerritsmith.financeapp.dto.ReportByMonthDTO;
+import io.github.gerritsmith.financeapp.dto.*;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.Shift;
@@ -41,15 +38,15 @@ public class ReportService {
     }
 
     // Methods
-    public DayReportDTO getDayReport(User user, LocalDate date) {
+    public TemporalReportDTO getDayReport(User user, LocalDate date) {
         List<Delivery> deliveries = deliveryService.findByUserAndDate(user, date);
         List<Shift> shifts = shiftService.findByUserAndDate(user, date);
         List<Expense> expenses = expenseService.findByUserAndDate(user, date);
 
         int deliveryCount = statsService.countDeliveries(deliveries);
 
-        DayReportDTO dayReportDTO = new DayReportDTO();
-        dayReportDTO.setDate(date)
+        TemporalReportDTO dayReportDTO = new TemporalReportDTO();
+        dayReportDTO.setTemporal(date)
                 .setDeliveries(deliveries)
                 .setShifts(shifts)
                 .setExpenses(expenses)
@@ -65,31 +62,31 @@ public class ReportService {
         return dayReportDTO;
     }
 
-    public ReportByDayDTO getReportByDay(User user) {
+    public ReportByTemporalDTO getReportByDay(User user) {
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         List<LocalDate> dates = shifts.stream()
                 .map(Shift::getDate)
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
-        List<DayReportDTO> dailyReports = new ArrayList<>();
+        List<TemporalReportDTO> dailyReports = new ArrayList<>();
         for (LocalDate date : dates) {
             dailyReports.add(getDayReport(user, date));
         }
-        ReportByDayDTO reportByDayDTO = new ReportByDayDTO();
-        reportByDayDTO.setDailyReports(dailyReports);
+        ReportByTemporalDTO reportByDayDTO = new ReportByTemporalDTO();
+        reportByDayDTO.setTemporalReports(dailyReports);
         return reportByDayDTO;
     }
 
-    public MonthReportDTO getMonthReport(User user, YearMonth yearMonth) {
+    public TemporalReportDTO getMonthReport(User user, YearMonth yearMonth) {
         List<Delivery> deliveries = deliveryService.findByUserAndYearMonth(user, yearMonth);
         List<Shift> shifts = shiftService.findByUserAndYearMonth(user, yearMonth);
         List<Expense> expenses = expenseService.findByUserAndYearMonth(user, yearMonth);
 
         int deliveryCount = statsService.countDeliveries(deliveries);
 
-        MonthReportDTO monthReportDTO = new MonthReportDTO();
-        monthReportDTO.setYearMonth(yearMonth)
+        TemporalReportDTO monthReportDTO = new TemporalReportDTO();
+        monthReportDTO.setTemporal(yearMonth)
                 .setDeliveries(deliveries)
                 .setShifts(shifts)
                 .setExpenses(expenses)
@@ -105,7 +102,7 @@ public class ReportService {
         return monthReportDTO;
     }
 
-    public ReportByMonthDTO getReportByMonth(User user) {
+    public ReportByTemporalDTO getReportByMonth(User user) {
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         List<YearMonth> yearMonths = shifts.stream()
                 .map(Shift::getDate)
@@ -113,12 +110,12 @@ public class ReportService {
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
-        List<MonthReportDTO> monthlyReports = new ArrayList<>();
+        List<TemporalReportDTO> monthlyReports = new ArrayList<>();
         for (YearMonth yearMonth : yearMonths) {
             monthlyReports.add(getMonthReport(user, yearMonth));
         }
-        ReportByMonthDTO reportByMonthDTO = new ReportByMonthDTO();
-        reportByMonthDTO.setMonthlyReports(monthlyReports);
+        ReportByTemporalDTO reportByMonthDTO = new ReportByTemporalDTO();
+        reportByMonthDTO.setTemporalReports(monthlyReports);
         return reportByMonthDTO;
     }
 

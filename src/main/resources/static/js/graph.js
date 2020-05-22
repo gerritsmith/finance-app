@@ -34,7 +34,7 @@ function selectDataColumnAndDrawCharts() {
     let value = r[columnName]/(denominatorName === 'one' ? 1 : r[denominatorName]);
     value = Number.isNaN(value) || !Number.isFinite(value) ? undefined : value;
     return {
-      date: r.date,
+      date: r.temporal,
       value: value
     };
   });

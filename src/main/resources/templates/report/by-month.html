@@ -53,13 +53,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="monthReport : *{monthlyReports}" th:object="${monthReport}">
-            <td th:text="*{#temporals.format(yearMonth,'MMM yyyy')}">MMM yyyy</td>
+        <tr th:each="monthReport : *{temporalReports}" th:object="${monthReport}">
+            <td th:text="*{#temporals.format(temporal,'MMM yyyy')}">MMM yyyy</td>
             <td th:text="*{deliveryCount}">948</td>
             <td th:text="*{#numbers.formatCurrency(totalRevenue)}">$54.63</td>
             <td th:text="*{totalShiftHoursString}">H hr MM min</td>
             <td th:text="*{#numbers.formatDecimal(totalShiftMiles,1,1)}">35.8</td>
-            <td th:object="${monthReport.yearMonth}">
+            <td th:object="${monthReport.temporal}">
                 <a th:href="@{/reports/by-month(month=*{monthValue},inYear=*{year})}"
                    class="btn btn-sm btn-info">View</a>
             </td>

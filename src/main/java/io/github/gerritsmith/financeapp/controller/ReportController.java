@@ -51,7 +51,7 @@ public class ReportController {
                                                LocalDate date,
                                    Model model,
                                    @ModelAttribute User user) {
-        DayReportDTO dayReportDTO = reportService.getDayReport(user, date);
+        TemporalReportDTO dayReportDTO = reportService.getDayReport(user, date);
         model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
     }
@@ -59,12 +59,12 @@ public class ReportController {
     @GetMapping("/report/by-day")
     public String displayReportByDay(Model model,
                                      @ModelAttribute User user) {
-        ReportByDayDTO reportByDayDTO = reportService.getReportByDay(user);
+        ReportByTemporalDTO reportByDayDTO = reportService.getReportByDay(user);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
 
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        for (DayReportDTO dayReport : reportByDayDTO.getDailyReports()) {
-            dataToPlot.addDataPoint(dayReport.getDate(),
+        for (TemporalReportDTO dayReport : reportByDayDTO.getTemporalReports()) {
+            dataToPlot.addDataPoint(dayReport.getTemporal(),
                                     dayReport.getDeliveryCount(),
                                     dayReport.getDeliveryGroupCount(),
                                     dayReport.getTotalRevenue(),
@@ -83,7 +83,7 @@ public class ReportController {
                                      Model model,
                                      @ModelAttribute User user) {
         YearMonth yearMonth = inYear.atMonth(month);
-        MonthReportDTO monthReportDTO = reportService.getMonthReport(user, yearMonth);
+        TemporalReportDTO monthReportDTO = reportService.getMonthReport(user, yearMonth);
         model.addAttribute("monthReportDTO", monthReportDTO);
         return "report/month";
     }
@@ -91,12 +91,12 @@ public class ReportController {
     @GetMapping("/report/by-month")
     public String displayReportByMonth(Model model,
                                        @ModelAttribute User user) {
-        ReportByMonthDTO reportByMonthDTO = reportService.getReportByMonth(user);
+        ReportByTemporalDTO reportByMonthDTO = reportService.getReportByMonth(user);
         model.addAttribute("reportByMonthDTO", reportByMonthDTO);
 
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        for (MonthReportDTO monthReport : reportByMonthDTO.getMonthlyReports()) {
-            dataToPlot.addDataPoint(monthReport.getYearMonth().atDay(1),
+        for (TemporalReportDTO monthReport : reportByMonthDTO.getTemporalReports()) {
+            dataToPlot.addDataPoint(((YearMonth) monthReport.getTemporal()).atDay(1),
                     monthReport.getDeliveryCount(),
                     monthReport.getDeliveryGroupCount(),
                     monthReport.getTotalRevenue(),

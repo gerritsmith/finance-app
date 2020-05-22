@@ -1,6 +1,6 @@
 package io.github.gerritsmith.financeapp.dto;
 
-import java.time.LocalDate;
+import java.time.temporal.Temporal;
 import java.util.*;
 
 import static java.util.Map.entry;
@@ -40,14 +40,14 @@ public class TimeSeriesDTO {
     ));
 
     // 'Setter' method
-    public void addDataPoint(LocalDate date,
+    public void addDataPoint(Temporal temporal,
                              int deliveryCount,
                              int deliveryGroupCount,
                              double totalRevenue,
                              double totalShiftHours,
                              double totalShiftMiles,
                              double totalExpenses) {
-        data.add(new DataPoint(date,
+        data.add(new DataPoint(temporal,
                                deliveryCount,
                                deliveryGroupCount,
                                totalRevenue,
@@ -79,7 +79,7 @@ public class TimeSeriesDTO {
 
     // Subclass for 'rows' of the data table
     private class DataPoint {
-        private LocalDate date;
+        private Temporal temporal;
         private int deliveryCount;
         private int deliveryGroupCount;
         private double totalRevenue;
@@ -88,14 +88,14 @@ public class TimeSeriesDTO {
         private double totalExpenses;
 
         // Constructor
-        public DataPoint(LocalDate date,
+        public DataPoint(Temporal temporal,
                          int deliveryCount,
                          int deliveryGroupCount,
                          double totalRevenue,
                          double totalShiftHours,
                          double totalShiftMiles,
                          double totalExpenses) {
-            this.date = date;
+            this.temporal = temporal;
             this.deliveryCount = deliveryCount;
             this.deliveryGroupCount = deliveryGroupCount;
             this.totalRevenue = totalRevenue;
@@ -105,8 +105,8 @@ public class TimeSeriesDTO {
         }
 
         // Getters
-        public LocalDate getDate() {
-            return date;
+        public Temporal getTemporal() {
+            return temporal;
         }
 
         public int getDeliveryCount() {
