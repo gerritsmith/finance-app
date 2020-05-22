@@ -69,7 +69,7 @@ function drawCharts(data) {
   let width = 1000;
   let height = 500;
   let margin = {
-    top: 20,
+    top: 40,
     right: 20,
     bottom: 50,
     left: 60
@@ -101,17 +101,8 @@ function drawCharts(data) {
                               .ticks(width / 80)
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
-                      .call(d3.axisLeft(y))
-                      .call(g => g.append("g")
-                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
-                                  .attr("class", "axis-label")
-                                  .append("text")
-                                  .attr("fill", "currentColor")
-                                  .attr("y", -20)
-                                  .attr("dy", "-0.71em")
-                                  .attr("text-anchor", "middle")
-                                  .attr("font-weight", "bold")
-                                  .text(valueLabel));
+                      .call(d3.axisLeft(y));
+
 
     // Make path builder
     let line = d3.line()
@@ -120,7 +111,7 @@ function drawCharts(data) {
                  .y(d => y(d.value));
 
     // Make chart
-    const svg = addSVGToElement("#line-plot", width, height, xAxis, yAxis);
+    const svg = addSVGToElement("#line-plot", width, height, xAxis, yAxis, valueLabel);
 
     svg.append("path")
        .datum(data)
@@ -183,20 +174,10 @@ function drawCharts(data) {
                               .tickFormat(i => format(data[i].date))
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
-                      .call(d3.axisLeft(y))
-                      .call(g => g.append("g")
-                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
-                                  .attr("class", "axis-label")
-                                  .append("text")
-                                  .attr("fill", "currentColor")
-                                  .attr("y", -20)
-                                  .attr("dy", "-0.71em")
-                                  .attr("text-anchor", "middle")
-                                  .attr("font-weight", "bold")
-                                  .text(valueLabel));
+                      .call(d3.axisLeft(y));
 
     // Make chart
-    const svg = addSVGToElement("#bar-plot", width, height, xAxis, yAxis);
+    const svg = addSVGToElement("#bar-plot", width, height, xAxis, yAxis, valueLabel);
 
     svg.append("g")
       .attr("fill", "steelblue")
@@ -394,12 +375,23 @@ let bisect = (mouseX, xScale, data) => {
  * Add SVG element with given x axis group and y axis group
  *  to the element with the given id
  */
-function addSVGToElement(id, width, height, xAxis, yAxis) {
+function addSVGToElement(id, width, height, xAxis, yAxis, title) {
   const svg = d3.select(id)
                 .append("svg")
                 .attr("viewBox", [0, 0, width, height]);
   svg.append("g").call(xAxis);
   svg.append("g").call(yAxis);
+  if (title != undefined) {
+    svg.append("g")
+    .attr("transform", `translate(${width / 2},0)`)
+    .attr("class", "axis-label")
+    .append("text")
+    .attr("fill", "currentColor")
+    .attr("dy", "0.75em")
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text(title);
+  }
   return svg;
 }
 
