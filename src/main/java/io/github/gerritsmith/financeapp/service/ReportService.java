@@ -1,6 +1,7 @@
 package io.github.gerritsmith.financeapp.service;
 
-import io.github.gerritsmith.financeapp.dto.*;
+import io.github.gerritsmith.financeapp.dto.ReportByTemporalDTO;
+import io.github.gerritsmith.financeapp.dto.TemporalReportDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.Shift;
@@ -10,12 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ReportService {
@@ -63,52 +65,34 @@ public class ReportService {
         return temporalReportDTO;
     }
 
-    public ReportByTemporalDTO getReportByDay(User user) {
-        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
-        List<LocalDate> dates = shifts.stream()
-                .map(Shift::getDate)
-                .distinct()
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList());
-        ReportByTemporalDTO reportByDayDTO = new ReportByTemporalDTO();
-        for (LocalDate date : dates) {
-            reportByDayDTO.addTemporalReport(getTemporalReport(user, date));
+    public ReportByTemporalDTO getReportByTemporal(User user,
+                                                   Class<? extends Temporal> temporalClass) {
+        List<Temporal> temporals = getTemporalsWithRecords(user, temporalClass);
+        ReportByTemporalDTO reportByTemporalDTO = new ReportByTemporalDTO();
+        for (Temporal temporal : temporals) {
+            reportByTemporalDTO.addTemporalReport(getTemporalReport(user, temporal));
         }
-        return reportByDayDTO;
+        return reportByTemporalDTO;
     }
 
-    public ReportByTemporalDTO getReportByMonth(User user) {
-        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
-        List<YearMonth> yearMonths = shifts.stream()
-                .map(Shift::getDate)
-                .map(d -> YearMonth.of(d.getYear(), d.getMonth()))
-                .distinct()
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.toList());
-        ReportByTemporalDTO reportByMonthDTO = new ReportByTemporalDTO();
-        for (YearMonth yearMonth : yearMonths) {
-            reportByMonthDTO.addTemporalReport(getTemporalReport(user, yearMonth));
+    public List<Temporal> getTemporalsWithRecords(User user,
+                                                   Class<? extends Temporal> temporalClass) {
+        Stream<LocalDate> dates = shiftService.findAllShiftsByUser(user).stream().map(Shift::getDate);
+        if (temporalClass.equals(YearMonth.class)) {
+            return dates.map(d -> YearMonth.of(d.getYear(), d.getMonth()))
+                    .distinct()
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.toList());
+        } else if (temporalClass.equals(Year.class)) {
+            return dates.map(d -> Year.of(d.getYear()))
+                    .distinct()
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.toList());
+        } else {
+            return dates.distinct()
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.toList());
         }
-        return reportByMonthDTO;
-    }
-
-    public List<Integer> getYearsSpanningRecords(User user) {
-        List<Shift> shifts = shiftService.findAllShiftsByUser(user);
-        List<Integer> yearsFound = shifts.stream()
-                .map(Shift::getDate)
-                .map(LocalDate::getYear)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-        List<Integer> years = new ArrayList<>();
-        if (yearsFound.size() == 0) {
-            years.add(LocalDate.now().getYear());
-            return years;
-        }
-        for (int year = yearsFound.get(yearsFound.size() - 1); yearsFound.get(0) <= year; year--) {
-            years.add(year);
-        }
-        return years;
     }
 
 }

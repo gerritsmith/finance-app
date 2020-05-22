@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class ReportController {
     @GetMapping("/reports")
     public String displayReportsHome(Model model, @ModelAttribute User user) {
         model.addAttribute("months", months);
-        model.addAttribute("years", reportService.getYearsSpanningRecords(user));
+        model.addAttribute("years", reportService.getTemporalsWithRecords(user, Year.class));
         return "report/home";
     }
 
@@ -60,7 +61,7 @@ public class ReportController {
     @GetMapping("/report/by-day")
     public String displayReportByDay(Model model,
                                      @ModelAttribute User user) {
-        ReportByTemporalDTO reportByDayDTO = reportService.getReportByDay(user);
+        ReportByTemporalDTO reportByDayDTO = reportService.getReportByTemporal(user, LocalDate.class);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
 
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
@@ -91,7 +92,7 @@ public class ReportController {
     @GetMapping("/report/by-month")
     public String displayReportByMonth(Model model,
                                        @ModelAttribute User user) {
-        ReportByTemporalDTO reportByMonthDTO = reportService.getReportByMonth(user);
+        ReportByTemporalDTO reportByMonthDTO = reportService.getReportByTemporal(user, YearMonth.class);
         model.addAttribute("reportByMonthDTO", reportByMonthDTO);
 
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
