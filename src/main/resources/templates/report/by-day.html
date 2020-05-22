@@ -7,39 +7,7 @@
 <div class="container" th:object="${reportByDayDTO}">
     <h1>Report By Day</h1>
 
-    <div class="row">
-        <div class="col-md-6">
-            <form id="choose-dependent-variable" class="card p-3 bg-light" th:object="${dataToPlot}">
-                <div class="form-group">
-                    <label for="columnName">Quantity To Plot:</label>
-                    <select id="columnName" class="form-control" onchange="checkValidChoices();">
-                        <option th:each="columnName : *{columnNames}"
-                                th:value="${columnName}"
-                                th:text="*{columnDisplayNames[__${columnName}__]}">Numeric Quantity</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="denominatorName">Average Rate With Respect To:</label>
-                    <select id="denominatorName" class="form-control" onchange="checkValidChoices();">
-                        <option th:each="denominatorName : *{denominatorNames}"
-                                th:value="${denominatorName}"
-                                th:text="*{denominatorDisplayNames[__${denominatorName}__]}">Per Quantity</option>
-                    </select>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-6">
-            <div id="line-plot" class="m-3"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div id="histogram" class="m-3"></div>
-        </div>
-        <div class="col-md-6">
-            <div id="bar-plot" class="m-3"></div>
-        </div>
-    </div>
+    <th:block th:replace="/report/fragments :: plots"></th:block>
 
     <table class="table table-dark table-striped">
         <thead>
