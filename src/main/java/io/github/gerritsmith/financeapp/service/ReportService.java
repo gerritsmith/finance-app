@@ -61,7 +61,8 @@ public class ReportService {
                 .setTotalShiftMiles(statsService.sumDoubles(
                         shifts.stream().map(Shift::getMiles)))
                 .setTotalExpenses(statsService.sumDoubles(
-                        expenses.stream().map(Expense::getAmount)));
+                        expenses.stream().map(Expense::getAmount)))
+                .setDeliveryStatsDTO(statsService.getDeliveryStats(deliveries));
         return temporalReportDTO;
     }
 

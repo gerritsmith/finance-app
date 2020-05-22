@@ -20,6 +20,8 @@ public abstract class AbstractReportDTO {
     private double totalShiftMiles;
     private double totalExpenses;
 
+    private DeliveryStatsDTO deliveryStatsDTO;
+
     // Computed fields
     public int getDeliveryGroupCount() {
         return deliveries.size();
@@ -131,6 +133,15 @@ public abstract class AbstractReportDTO {
 
     public AbstractReportDTO setTotalExpenses(double totalExpenses) {
         this.totalExpenses = totalExpenses;
+        return this;
+    }
+
+    public DeliveryStatsDTO getDeliveryStatsDTO() {
+        return deliveryStatsDTO;
+    }
+
+    public AbstractReportDTO setDeliveryStatsDTO(DeliveryStatsDTO deliveryStatsDTO) {
+        this.deliveryStatsDTO = deliveryStatsDTO;
         return this;
     }
 

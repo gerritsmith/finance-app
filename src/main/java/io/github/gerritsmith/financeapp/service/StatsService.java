@@ -1,7 +1,9 @@
 package io.github.gerritsmith.financeapp.service;
 
+import io.github.gerritsmith.financeapp.dto.DeliveryStatsDTO;
 import io.github.gerritsmith.financeapp.dto.UserStatsDTO;
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,32 @@ public class StatsService {
                 .setShiftTotalDuration(shiftTotalDuration)
                 .setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
         return userStatsDTO;
+    }
+
+    public DeliveryStatsDTO getDeliveryStats(List<Delivery> deliveries) {
+         return deliveries.stream().reduce(
+                 new DeliveryStatsDTO(),
+                 (s, d) -> DeliveryStatsDTO.sum(
+                        s,
+                        new DeliveryStatsDTO(
+                                d.getLegs().size(),
+                                d.getAppMiles(),
+                                d.getAppWaitTime(),
+                                d.getTotalMiles(),
+                                d.getTotalTime(),
+                                d.getBasePay(),
+                                d.getLegs().stream()
+                                        .map(DeliveryLeg::getTip)
+                                        .filter(Objects::nonNull)
+                                        .reduce(0.0, Double::sum),
+                                d.getLegs().stream()
+                                        .map(DeliveryLeg::getCash)
+                                        .filter(Objects::nonNull)
+                                        .reduce(0.0, Double::sum)
+                        )
+                 ),
+                 DeliveryStatsDTO::sum
+         );
     }
 
     public int countDeliveries(List<Delivery> deliveries) {
