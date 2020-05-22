@@ -27,8 +27,8 @@
             <td th:text="*{#numbers.formatCurrency(totalRevenue)}">$54.63</td>
             <td th:text="*{totalShiftHoursString}">H hr MM min</td>
             <td th:text="*{#numbers.formatDecimal(totalShiftMiles,1,1)}">35.8</td>
-            <td th:object="${monthReport.temporal}">
-                <a th:href="@{/reports/by-month(month=*{monthValue},inYear=*{year})}"
+            <td>
+                <a th:href="@{/reports/by-month(month=*{temporal})}"
                    class="btn btn-sm btn-info">View</a>
             </td>
         </tr>
