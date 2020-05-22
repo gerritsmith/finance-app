@@ -69,7 +69,7 @@ function drawCharts(data) {
   let width = 1000;
   let height = 500;
   let margin = {
-    top: 20,
+    top: 40,
     right: 20,
     bottom: 50,
     left: 60
@@ -85,7 +85,7 @@ function drawCharts(data) {
   function drawLineGraph(data) {
 
     // Add missing dates to array with undefined values
-    data = addMissingDates(data);
+    // data = addMissingDates(data);
 
     // Make axes scale coordinate transformations
     let x = d3.scaleTime()
@@ -101,17 +101,8 @@ function drawCharts(data) {
                               .ticks(width / 80)
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
-                      .call(d3.axisLeft(y))
-                      .call(g => g.append("g")
-                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
-                                  .attr("class", "axis-label")
-                                  .append("text")
-                                  .attr("fill", "currentColor")
-                                  .attr("y", -20)
-                                  .attr("dy", "-0.71em")
-                                  .attr("text-anchor", "middle")
-                                  .attr("font-weight", "bold")
-                                  .text(valueLabel));
+                      .call(d3.axisLeft(y));
+
 
     // Make path builder
     let line = d3.line()
@@ -120,7 +111,7 @@ function drawCharts(data) {
                  .y(d => y(d.value));
 
     // Make chart
-    const svg = addSVGToElement("#line-plot", width, height, xAxis, yAxis);
+    const svg = addSVGToElement("#line-plot", width, height, xAxis, yAxis, valueLabel);
 
     svg.append("path")
        .datum(data)
@@ -179,24 +170,14 @@ function drawCharts(data) {
     let format = d3.timeFormat("%b %e")
     let xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`)
                       .call(d3.axisBottom(x)
-                              // .tickValues(x.domain().filter(i => i % 3 === 0))
+                              .tickValues(x.domain().filter(i => i % (Math.round(data.length/15)) === 0))
                               .tickFormat(i => format(data[i].date))
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
-                      .call(d3.axisLeft(y))
-                      .call(g => g.append("g")
-                                  .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
-                                  .attr("class", "axis-label")
-                                  .append("text")
-                                  .attr("fill", "currentColor")
-                                  .attr("y", -20)
-                                  .attr("dy", "-0.71em")
-                                  .attr("text-anchor", "middle")
-                                  .attr("font-weight", "bold")
-                                  .text(valueLabel));
+                      .call(d3.axisLeft(y));
 
     // Make chart
-    const svg = addSVGToElement("#bar-plot", width, height, xAxis, yAxis);
+    const svg = addSVGToElement("#bar-plot", width, height, xAxis, yAxis, valueLabel);
 
     svg.append("g")
       .attr("fill", "steelblue")
@@ -229,12 +210,14 @@ function drawCharts(data) {
     let [xMin, xMax] = d3.extent(data);
     xMax = xMax + 1;
     let x = d3.scaleLinear()
-              .domain([xMin, xMax]).nice()
+              .domain([xMin < 0 ? xMin : 0, xMax]).nice()
               .range([margin.left, width - margin.right]);
     // Sort into bins
+    let binThresholds = x.ticks(Math.pow(data.length, 0.66));  // x.ticks(40)  // x.ticks(10)
     let binDivider = d3.histogram()
                        .domain(x.domain())
-                       .thresholds(x.ticks(10)); // .thresholds(x.ticks(40)
+                       .thresholds(binThresholds);  
+
     let bins = binDivider(data);
     // Make y scaler
     let y = d3.scaleLinear()
@@ -244,7 +227,7 @@ function drawCharts(data) {
     // Make axis groups
     let xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`)
                       .call(d3.axisBottom(x)
-                              .ticks(width / 80)
+                              .ticks(Math.min(15, binThresholds.length))    // .ticks(width/80)
                               .tickSizeOuter(0))
                       .call(g => g.append("g")
                                   .attr("transform", `translate(${width / 2},0)`)
@@ -259,7 +242,7 @@ function drawCharts(data) {
     
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y)
-                              .ticks(y.domain()[1]))    // .ticks(height / 40)
+                              .ticks(Math.min(height/40, y.domain()[1])))
                       .call(g => g.append("g")
                                   .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
                                   .attr("class", "axis-label")
@@ -301,7 +284,7 @@ function highlightDataPoint(date, value) {
 
     d3.select("#tooltip")
       .attr("transform", `translate(${activeCircle.attr("cx")},${activeCircle.attr("cy")})`)
-      .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
+      .call(callout, `${value.toLocaleString(undefined, {maximumFractionDigits: 2})}
 ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
 
     d3.selectAll("#bar-plot svg g rect")
@@ -392,12 +375,23 @@ let bisect = (mouseX, xScale, data) => {
  * Add SVG element with given x axis group and y axis group
  *  to the element with the given id
  */
-function addSVGToElement(id, width, height, xAxis, yAxis) {
+function addSVGToElement(id, width, height, xAxis, yAxis, title) {
   const svg = d3.select(id)
                 .append("svg")
                 .attr("viewBox", [0, 0, width, height]);
   svg.append("g").call(xAxis);
   svg.append("g").call(yAxis);
+  if (title != undefined) {
+    svg.append("g")
+    .attr("transform", `translate(${width / 2},0)`)
+    .attr("class", "axis-label")
+    .append("text")
+    .attr("fill", "currentColor")
+    .attr("dy", "0.75em")
+    .attr("text-anchor", "middle")
+    .attr("font-weight", "bold")
+    .text(title);
+  }
   return svg;
 }
 
