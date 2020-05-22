@@ -46,10 +46,7 @@ public class ReportService {
         List<Shift> shifts = shiftService.findByUserAndDate(user, date);
         List<Expense> expenses = expenseService.findByUserAndDate(user, date);
 
-        int deliveryCount = 0;
-        for (Delivery delivery : deliveries) {
-            deliveryCount += delivery.getLegs().size();
-        }
+        int deliveryCount = statsService.countDeliveries(deliveries);
 
         DayReportDTO dayReportDTO = new DayReportDTO();
         dayReportDTO.setDate(date)
@@ -89,10 +86,7 @@ public class ReportService {
         List<Shift> shifts = shiftService.findByUserAndYearMonth(user, yearMonth);
         List<Expense> expenses = expenseService.findByUserAndYearMonth(user, yearMonth);
 
-        int deliveryCount = 0;
-        for (Delivery delivery : deliveries) {
-            deliveryCount += delivery.getLegs().size();
-        }
+        int deliveryCount = statsService.countDeliveries(deliveries);
 
         MonthReportDTO monthReportDTO = new MonthReportDTO();
         monthReportDTO.setYearMonth(yearMonth)

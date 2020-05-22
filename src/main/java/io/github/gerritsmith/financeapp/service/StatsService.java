@@ -37,6 +37,8 @@ public class StatsService {
                 .mapToDouble(Delivery::getTotal)
                 .summaryStatistics();
 
+        int deliveryCount = countDeliveries(deliveries);
+
         List<Shift> shifts = shiftService.findAllShiftsByUser(user);
         Duration shiftTotalDuration = shifts.stream()
                 .map(s -> Duration.between(s.getStartTime(), s.getEndTime()))
@@ -44,13 +46,21 @@ public class StatsService {
         double decimalTotalHours = shiftTotalDuration.toHours() + shiftTotalDuration.toMinutesPart()/60.0;
 
         UserStatsDTO userStatsDTO = new UserStatsDTO();
-        userStatsDTO.setDeliveryCount(deliveryTotalStats.getCount())
+        userStatsDTO.setDeliveryCount(deliveryCount)
                 .setDeliveryTotalRevenue(deliveryTotalStats.getSum())
-                .setRevenuePerDelivery(deliveryTotalStats.getSum()/deliveryTotalStats.getCount())
+                .setRevenuePerDelivery(deliveryTotalStats.getSum()/deliveryCount)
                 .setShiftCount(shifts.size())
                 .setShiftTotalDuration(shiftTotalDuration)
                 .setRevenuePerHour(deliveryTotalStats.getSum()/decimalTotalHours);
         return userStatsDTO;
+    }
+
+    public int countDeliveries(List<Delivery> deliveries) {
+        int deliveryCount = 0;
+        for (Delivery delivery : deliveries) {
+            deliveryCount += delivery.getLegs().size();
+        }
+        return deliveryCount;
     }
 
     public Double sumDoubles(Stream<Double> numbers) {
