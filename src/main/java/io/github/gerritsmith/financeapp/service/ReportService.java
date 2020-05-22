@@ -69,12 +69,10 @@ public class ReportService {
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
-        List<TemporalReportDTO> dailyReports = new ArrayList<>();
-        for (LocalDate date : dates) {
-            dailyReports.add(getDayReport(user, date));
-        }
         ReportByTemporalDTO reportByDayDTO = new ReportByTemporalDTO();
-        reportByDayDTO.setTemporalReports(dailyReports);
+        for (LocalDate date : dates) {
+            reportByDayDTO.addTemporalReport(getDayReport(user, date));
+        }
         return reportByDayDTO;
     }
 
@@ -110,12 +108,10 @@ public class ReportService {
                 .distinct()
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.toList());
-        List<TemporalReportDTO> monthlyReports = new ArrayList<>();
-        for (YearMonth yearMonth : yearMonths) {
-            monthlyReports.add(getMonthReport(user, yearMonth));
-        }
         ReportByTemporalDTO reportByMonthDTO = new ReportByTemporalDTO();
-        reportByMonthDTO.setTemporalReports(monthlyReports);
+        for (YearMonth yearMonth : yearMonths) {
+            reportByMonthDTO.addTemporalReport(getMonthReport(user, yearMonth));
+        }
         return reportByMonthDTO;
     }
 
