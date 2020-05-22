@@ -284,7 +284,7 @@ function highlightDataPoint(date, value) {
 
     d3.select("#tooltip")
       .attr("transform", `translate(${activeCircle.attr("cx")},${activeCircle.attr("cy")})`)
-      .call(callout, `${value.toLocaleString(undefined, {style: "currency", currency: "USD"})}
+      .call(callout, `${value.toLocaleString(undefined, {maximumFractionDigits: 2})}
 ${date.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric"})}`);
 
     d3.selectAll("#bar-plot svg g rect")
