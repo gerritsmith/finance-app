@@ -179,7 +179,7 @@ function drawCharts(data) {
     let format = d3.timeFormat("%b %e")
     let xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`)
                       .call(d3.axisBottom(x)
-                              // .tickValues(x.domain().filter(i => i % 3 === 0))
+                              .tickValues(x.domain().filter(i => i % (Math.round(data.length/15)) === 0))
                               .tickFormat(i => format(data[i].date))
                               .tickSizeOuter(0));
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
@@ -229,12 +229,14 @@ function drawCharts(data) {
     let [xMin, xMax] = d3.extent(data);
     xMax = xMax + 1;
     let x = d3.scaleLinear()
-              .domain([xMin, xMax]).nice()
+              .domain([xMin < 0 ? xMin : 0, xMax]).nice()
               .range([margin.left, width - margin.right]);
     // Sort into bins
+    let binThresholds = x.ticks(Math.pow(data.length, 0.66));  // x.ticks(40)  // x.ticks(10)
     let binDivider = d3.histogram()
                        .domain(x.domain())
-                       .thresholds(x.ticks(10)); // .thresholds(x.ticks(40)
+                       .thresholds(binThresholds);  
+
     let bins = binDivider(data);
     // Make y scaler
     let y = d3.scaleLinear()
@@ -244,7 +246,7 @@ function drawCharts(data) {
     // Make axis groups
     let xAxis = g => g.attr("transform", `translate(0,${height - margin.bottom})`)
                       .call(d3.axisBottom(x)
-                              .ticks(width / 80)
+                              .ticks(Math.min(15, binThresholds.length))    // .ticks(width/80)
                               .tickSizeOuter(0))
                       .call(g => g.append("g")
                                   .attr("transform", `translate(${width / 2},0)`)
@@ -259,7 +261,7 @@ function drawCharts(data) {
     
     let yAxis = g => g.attr("transform", `translate(${margin.left},0)`)
                       .call(d3.axisLeft(y)
-                              .ticks(y.domain()[1]))    // .ticks(height / 40)
+                              .ticks(Math.min(height/40, y.domain()[1])))
                       .call(g => g.append("g")
                                   .attr("transform", `translate(0,${height / 2}) rotate(-90)`)
                                   .attr("class", "axis-label")
