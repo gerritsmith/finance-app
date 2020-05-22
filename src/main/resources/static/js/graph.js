@@ -85,7 +85,7 @@ function drawCharts(data) {
   function drawLineGraph(data) {
 
     // Add missing dates to array with undefined values
-    data = addMissingDates(data);
+    // data = addMissingDates(data);
 
     // Make axes scale coordinate transformations
     let x = d3.scaleTime()
