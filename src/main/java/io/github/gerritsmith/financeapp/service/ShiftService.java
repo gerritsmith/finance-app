@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
@@ -37,6 +38,11 @@ public class ShiftService {
             return shiftRepository.findAllByUser(user)
                     .stream()
                     .filter(s -> YearMonth.from(s.getDate()).equals(temporal))
+                    .collect(Collectors.toList());
+        } else if (temporal.getClass().equals(Year.class)) {
+            return shiftRepository.findAllByUser(user)
+                    .stream()
+                    .filter(d -> Year.from(d.getDate()).equals(temporal))
                     .collect(Collectors.toList());
         } else {
             return new ArrayList<>();

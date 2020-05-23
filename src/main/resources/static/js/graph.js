@@ -414,6 +414,11 @@ function parseInputDateStrings(data) {
         date: new Date(p[0], p[1]-1),
         value: d.value
       };
+    } else if (p.length === 1) {
+      return {
+        date: new Date(p[0], 0),
+        value: d.value
+      };
     }
 
   }).sort((a, b) => d3.ascending(a.date, b.date));
