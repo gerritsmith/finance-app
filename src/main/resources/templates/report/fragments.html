@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+</head>
+<body>
+
+<th:block th:fragment="plots">
+    <div class="row">
+        <div class="col-md-6">
+            <form id="choose-dependent-variable" class="card p-3 bg-light" th:object="${dataToPlot}">
+                <div class="form-group">
+                    <label for="columnName">Quantity To Plot:</label>
+                    <select id="columnName" class="form-control" onchange="checkValidChoices();">
+                        <option th:each="columnName : *{columnNames}"
+                                th:value="${columnName}"
+                                th:text="*{columnDisplayNames[__${columnName}__]}">Numeric Quantity</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="denominatorName">Average Rate With Respect To:</label>
+                    <select id="denominatorName" class="form-control" onchange="checkValidChoices();">
+                        <option th:each="denominatorName : *{denominatorNames}"
+                                th:value="${denominatorName}"
+                                th:text="*{denominatorDisplayNames[__${denominatorName}__]}">Per Quantity</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div id="line-plot" class="m-3"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="histogram" class="m-3"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="bar-plot" class="m-3"></div>
+        </div>
+    </div>
+</th:block>
+
+
+<th:block th:fragment="temporalReport">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <tr>
+                    <th>Number of Deliveries</th>
+                    <td th:text="*{deliveryStatsDTO.deliveryCount}">10</td>
+                </tr>
+                <tr>
+                    <th>Number of Delivery Groups</th>
+                    <td th:text="*{deliveryGroupCount}">4</td>
+                </tr>
+                <tr>
+                    <th>Total Revenue</th>
+                    <td th:text="*{#numbers.formatCurrency(totalRevenue)}">$60.12</td>
+                </tr>
+                <tr>
+                    <th>Total Expenses</th>
+                    <td th:text="*{#numbers.formatCurrency(totalExpenses)}">$3.21</td>
+                </tr>
+                <tr>
+                    <th>Total Shift Hours</th>
+                    <td><span th:text="*{totalShiftHoursString}">HHH hr MM min</span> (<span th:text="*{#numbers.formatDecimal(totalShiftHoursAsDecimal, 1, 2)}">HHH.HH</span> hr)</td>
+                </tr>
+                <tr>
+                    <th>Total Shift Miles</th>
+                    <td th:text="*{#numbers.formatDecimal(totalShiftMiles,1,1)}">42.0</td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <tr>
+                    <th>Deliveries Per Group</th>
+                    <td th:text="*{#numbers.formatDecimal(deliveriesPerGroup, 1, 1)}">2.5</td>
+                </tr>
+                <tr>
+                    <th>Deliveries Per Hour</th>
+                    <td th:text="*{#numbers.formatDecimal(deliveriesPerHour, 1, 1)}">2.3</td>
+                </tr>
+                <tr>
+                    <th>Revenue Per Hour</th>
+                    <td th:text="*{#numbers.formatCurrency(revenuePerHour)}">$14.11</td>
+                </tr>
+                <tr>
+                    <th>Miles Per Hour</th>
+                    <td th:text="*{#numbers.formatDecimal(shiftMilesPerHour, 1, 1)}">11.1</td>
+                </tr>
+                <tr>
+                    <th>Revenue Per Delivery</th>
+                    <td th:text="*{#numbers.formatCurrency(revenuePerDelivery)}">$7.43</td>
+                </tr>
+                <tr>
+                    <th>Miles Per Delivery</th>
+                    <td th:text="*{#numbers.formatDecimal(shiftMilesPerDelivery, 1, 2)}">6.45</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-dark table-striped">
+                <tr>
+                    <th>Total App Miles</th>
+                    <td th:text="*{#numbers.formatDecimal(deliveryStatsDTO.totalAppMiles,1,2)}"></td>
+                </tr>
+                <tr>
+                    <th>Total App Wait Time (min)</th>
+                    <td th:text="*{#numbers.formatDecimal(deliveryStatsDTO.totalAppWaitTime,1,2)}"></td>
+                </tr>
+                <tr>
+                    <th>Total Delivery Miles</th>
+                    <td th:text="*{#numbers.formatDecimal(deliveryStatsDTO.totalDeliveryMiles,1,1)}"></td>
+                </tr>
+                <tr>
+                    <th>Total Delivery Time (min)</th>
+                    <td th:text="*{#numbers.formatDecimal(deliveryStatsDTO.totalDeliveryTime,1,1)}"></td>
+                </tr>
+                <tr>
+                    <th>Total Base Pay</th>
+                    <td th:text="*{#numbers.formatCurrency(deliveryStatsDTO.totalBasePay)}"></td>
+                </tr>
+                <tr>
+                    <th>Total Tips</th>
+                    <td th:text="*{#numbers.formatCurrency(deliveryStatsDTO.totalTip)}"></td>
+                </tr>
+                <tr>
+                    <th>Total Cash</th>
+                    <td th:text="*{#numbers.formatCurrency(deliveryStatsDTO.totalCash)}"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+
+</th:block>
+
+
+</body>
+</html>

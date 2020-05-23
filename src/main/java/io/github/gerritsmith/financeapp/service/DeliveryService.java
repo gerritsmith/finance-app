@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,15 +42,17 @@ public class DeliveryService {
         return deliveryRepository.findByUserAndDateAndTime(user, date, time);
     }
 
-    public List<Delivery> findByUserAndDate(User user, LocalDate date) {
-        return deliveryRepository.findByUserAndDate(user, date);
-    }
-
-    public List<Delivery> findByUserAndYearMonth(User user, YearMonth yearMonth) {
-        return deliveryRepository.findAllByUser(user)
-                .stream()
-                .filter(d -> YearMonth.from(d.getDate()).equals(yearMonth))
-                .collect(Collectors.toList());
+    public List<Delivery> findAllByUserInTemporal(User user, Temporal temporal) {
+        if (temporal.getClass().equals(LocalDate.class)) {
+            return deliveryRepository.findByUserAndDate(user, (LocalDate) temporal);
+        } else if (temporal.getClass().equals(YearMonth.class)) {
+            return deliveryRepository.findAllByUser(user)
+                    .stream()
+                    .filter(d -> YearMonth.from(d.getDate()).equals(temporal))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public List<Delivery> findAllDeliveriesByUser(User user) {
@@ -121,7 +125,7 @@ public class DeliveryService {
     }
 
     private Shift findShiftForDelivery(Delivery delivery) throws DeliveryWithoutShiftException {
-        List<Shift> shiftsOnDate = shiftService.findByUserAndDate(delivery.getUser(), delivery.getDate());
+        List<Shift> shiftsOnDate = shiftService.findAllByUserInTemporal(delivery.getUser(), delivery.getDate());
         for (Shift shift : shiftsOnDate) {
             if (delivery.getTime().compareTo(shift.getStartTime()) >= 0 &&
                     delivery.getTime().compareTo(shift.getEndTime()) <= 0) {

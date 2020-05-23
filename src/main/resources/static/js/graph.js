@@ -34,7 +34,7 @@ function selectDataColumnAndDrawCharts() {
     let value = r[columnName]/(denominatorName === 'one' ? 1 : r[denominatorName]);
     value = Number.isNaN(value) || !Number.isFinite(value) ? undefined : value;
     return {
-      date: r.date,
+      date: r.temporal,
       value: value
     };
   });
@@ -404,10 +404,18 @@ function addSVGToElement(id, width, height, xAxis, yAxis, title) {
 function parseInputDateStrings(data) {
   return data.map(d => {
     let p = d.date.split("-");
-    return {
-      date: new Date(p[0], p[1]-1, p[2]),
-      value: d.value
-    };
+    if (p.length === 3) {
+      return {
+        date: new Date(p[0], p[1]-1, p[2]),
+        value: d.value
+      };
+    } else if (p.length === 2) {
+      return {
+        date: new Date(p[0], p[1]-1),
+        value: d.value
+      };
+    }
+
   }).sort((a, b) => d3.ascending(a.date, b.date));
 }
 

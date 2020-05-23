@@ -20,12 +20,14 @@
             </form>
         </div>
         <div class="col-md-4 mb-3">
-            <form class="card p-3 bg-light" th:action="@{/reports/by-month}" method="get">
+            <form class="card p-3 bg-light"
+                  onsubmit="submitMonth();"
+                  th:action="@{/reports/by-month}" method="get">
                 <div class="row">
                     <div class="col">
                         <div class="form-group">
-                            <label for="month">Select a Month</label>
-                            <select id="month" class="form-control" name="month" required="required">
+                            <label for="monthName">Select a Month</label>
+                            <select id="monthName" class="form-control" required="required">
                                 <option th:each="month, i : ${months}"
                                         th:value="${i.count}"
                                         th:text="${month}"></option>
@@ -35,7 +37,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label for="inYear">Select a Year</label>
-                            <select id="inYear" class="form-control" name="inYear" required="required">
+                            <select id="inYear" class="form-control" required="required">
                                 <option th:each="year : ${years}"
                                         th:value="${year}"
                                         th:text="${year}"></option>
@@ -44,6 +46,7 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <input id="month" type="hidden" name="month" value=""/>
                     <input type="submit" value="Generate Month Report" class="btn btn-success"/>
                 </div>
             </form>
@@ -54,6 +57,16 @@
     </div>
 
 </div>
+
+
+<script>
+  function submitMonth() {
+    let monthInput = document.getElementById("month");
+    let monthNameInput = document.getElementById("monthName").value;
+    let inYearInput = document.getElementById("inYear").value;
+    monthInput.value = inYearInput + '-' + monthNameInput.padStart(2, '0')
+  }
+</script>
 
 <footer th:replace="fragments :: footer"></footer>
 </body>

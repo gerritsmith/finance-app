@@ -5,23 +5,20 @@ import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.Shift;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.List;
 
-public class DayReportDTO {
-
-    private LocalDate date;
+public abstract class AbstractReportDTO {
 
     private List<Delivery> deliveries;
     private List<Shift> shifts;
     private List<Expense> expenses;
 
-    private int deliveryCount;
-
     private double totalRevenue;
     private Duration totalShiftHours;
     private double totalShiftMiles;
     private double totalExpenses;
+
+    private DeliveryStatsDTO deliveryStatsDTO;
 
     // Computed fields
     public int getDeliveryGroupCount() {
@@ -29,7 +26,7 @@ public class DayReportDTO {
     }
 
     public double getDeliveriesPerGroup() {
-        return deliveryCount / (double) getDeliveryGroupCount();
+        return deliveryStatsDTO.getDeliveryCount() / (double) getDeliveryGroupCount();
     }
 
     public double getTotalShiftHoursAsDecimal() {
@@ -37,7 +34,7 @@ public class DayReportDTO {
     }
 
     public double getDeliveriesPerHour() {
-        return deliveryCount/getTotalShiftHoursAsDecimal();
+        return deliveryStatsDTO.getDeliveryCount()/getTotalShiftHoursAsDecimal();
     }
 
     public double getRevenuePerHour() {
@@ -49,11 +46,11 @@ public class DayReportDTO {
     }
 
     public double getRevenuePerDelivery() {
-        return totalRevenue/deliveryCount;
+        return totalRevenue/deliveryStatsDTO.getDeliveryCount();
     }
 
     public double getShiftMilesPerDelivery() {
-        return totalShiftMiles/deliveryCount;
+        return totalShiftMiles/deliveryStatsDTO.getDeliveryCount();
     }
 
     public String getTotalShiftHoursString() {
@@ -61,26 +58,15 @@ public class DayReportDTO {
                 totalShiftHours.toMinutesPart() + " min";
     }
 
-
-    // Constructors
-    public DayReportDTO() {}
-
+    // Constructor
+    public AbstractReportDTO() {}
 
     // Getters and Builder Setters
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public DayReportDTO setDate(LocalDate date) {
-        this.date = date;
-        return this;
-    }
-
     public List<Delivery> getDeliveries() {
         return deliveries;
     }
 
-    public DayReportDTO setDeliveries(List<Delivery> deliveries) {
+    public AbstractReportDTO setDeliveries(List<Delivery> deliveries) {
         this.deliveries = deliveries;
         return this;
     }
@@ -89,7 +75,7 @@ public class DayReportDTO {
         return shifts;
     }
 
-    public DayReportDTO setShifts(List<Shift> shifts) {
+    public AbstractReportDTO setShifts(List<Shift> shifts) {
         this.shifts = shifts;
         return this;
     }
@@ -98,17 +84,8 @@ public class DayReportDTO {
         return expenses;
     }
 
-    public DayReportDTO setExpenses(List<Expense> expenses) {
+    public AbstractReportDTO setExpenses(List<Expense> expenses) {
         this.expenses = expenses;
-        return this;
-    }
-
-    public int getDeliveryCount() {
-        return deliveryCount;
-    }
-
-    public DayReportDTO setDeliveryCount(int deliveryCount) {
-        this.deliveryCount = deliveryCount;
         return this;
     }
 
@@ -116,7 +93,7 @@ public class DayReportDTO {
         return totalRevenue;
     }
 
-    public DayReportDTO setTotalRevenue(double totalRevenue) {
+    public AbstractReportDTO setTotalRevenue(double totalRevenue) {
         this.totalRevenue = totalRevenue;
         return this;
     }
@@ -125,7 +102,7 @@ public class DayReportDTO {
         return totalShiftHours;
     }
 
-    public DayReportDTO setTotalShiftHours(Duration totalShiftHours) {
+    public AbstractReportDTO setTotalShiftHours(Duration totalShiftHours) {
         this.totalShiftHours = totalShiftHours;
         return this;
     }
@@ -134,7 +111,7 @@ public class DayReportDTO {
         return totalShiftMiles;
     }
 
-    public DayReportDTO setTotalShiftMiles(double totalShiftMiles) {
+    public AbstractReportDTO setTotalShiftMiles(double totalShiftMiles) {
         this.totalShiftMiles = totalShiftMiles;
         return this;
     }
@@ -143,8 +120,17 @@ public class DayReportDTO {
         return totalExpenses;
     }
 
-    public DayReportDTO setTotalExpenses(double totalExpenses) {
+    public AbstractReportDTO setTotalExpenses(double totalExpenses) {
         this.totalExpenses = totalExpenses;
+        return this;
+    }
+
+    public DeliveryStatsDTO getDeliveryStatsDTO() {
+        return deliveryStatsDTO;
+    }
+
+    public AbstractReportDTO setDeliveryStatsDTO(DeliveryStatsDTO deliveryStatsDTO) {
+        this.deliveryStatsDTO = deliveryStatsDTO;
         return this;
     }
 

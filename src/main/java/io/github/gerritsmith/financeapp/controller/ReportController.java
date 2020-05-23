@@ -1,6 +1,8 @@
 package io.github.gerritsmith.financeapp.controller;
 
-import io.github.gerritsmith.financeapp.dto.*;
+import io.github.gerritsmith.financeapp.dto.ReportByTemporalDTO;
+import io.github.gerritsmith.financeapp.dto.TemporalReportDTO;
+import io.github.gerritsmith.financeapp.dto.TimeSeriesDTO;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.ReportService;
 import io.github.gerritsmith.financeapp.service.UserService;
@@ -42,7 +44,7 @@ public class ReportController {
     @GetMapping("/reports")
     public String displayReportsHome(Model model, @ModelAttribute User user) {
         model.addAttribute("months", months);
-        model.addAttribute("years", reportService.getYearsSpanningRecords(user));
+        model.addAttribute("years", reportService.getTemporalsWithRecords(user, Year.class));
         return "report/home";
     }
 
@@ -51,7 +53,7 @@ public class ReportController {
                                                LocalDate date,
                                    Model model,
                                    @ModelAttribute User user) {
-        DayReportDTO dayReportDTO = reportService.getDayReport(user, date);
+        TemporalReportDTO dayReportDTO = reportService.getTemporalReport(user, date);
         model.addAttribute("dayReportDTO", dayReportDTO);
         return "report/day";
     }
@@ -59,31 +61,19 @@ public class ReportController {
     @GetMapping("/report/by-day")
     public String displayReportByDay(Model model,
                                      @ModelAttribute User user) {
-        ReportByDayDTO reportByDayDTO = reportService.getReportByDay(user);
+        ReportByTemporalDTO reportByDayDTO = reportService.getReportByTemporal(user, LocalDate.class);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
-
-        TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        for (DayReportDTO dayReport : reportByDayDTO.getDailyReports()) {
-            dataToPlot.addDataPoint(dayReport.getDate(),
-                                    dayReport.getDeliveryCount(),
-                                    dayReport.getDeliveryGroupCount(),
-                                    dayReport.getTotalRevenue(),
-                                    dayReport.getTotalShiftHoursAsDecimal(),
-                                    dayReport.getTotalShiftMiles(),
-                                    dayReport.getTotalExpenses());
-        }
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO(reportByDayDTO);
         model.addAttribute("dataToPlot", dataToPlot);
-
         return "report/by-day";
     }
 
     @GetMapping("/reports/by-month")
-    public String displayMonthReport(@RequestParam int month,
-                                     @RequestParam Year inYear,
+    public String displayMonthReport(@RequestParam @DateTimeFormat(pattern = "yyyy-MM")
+                                                 YearMonth month,
                                      Model model,
                                      @ModelAttribute User user) {
-        YearMonth yearMonth = inYear.atMonth(month);
-        MonthReportDTO monthReportDTO = reportService.getMonthReport(user, yearMonth);
+        TemporalReportDTO monthReportDTO = reportService.getTemporalReport(user, month);
         model.addAttribute("monthReportDTO", monthReportDTO);
         return "report/month";
     }
@@ -91,21 +81,10 @@ public class ReportController {
     @GetMapping("/report/by-month")
     public String displayReportByMonth(Model model,
                                        @ModelAttribute User user) {
-        ReportByMonthDTO reportByMonthDTO = reportService.getReportByMonth(user);
+        ReportByTemporalDTO reportByMonthDTO = reportService.getReportByTemporal(user, YearMonth.class);
         model.addAttribute("reportByMonthDTO", reportByMonthDTO);
-
-        TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        for (MonthReportDTO monthReport : reportByMonthDTO.getMonthlyReports()) {
-            dataToPlot.addDataPoint(monthReport.getYearMonth().atDay(1),
-                    monthReport.getDeliveryCount(),
-                    monthReport.getDeliveryGroupCount(),
-                    monthReport.getTotalRevenue(),
-                    monthReport.getTotalShiftHoursAsDecimal(),
-                    monthReport.getTotalShiftMiles(),
-                    monthReport.getTotalExpenses());
-        }
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO(reportByMonthDTO);
         model.addAttribute("dataToPlot", dataToPlot);
-
         return "report/by-month";
     }
 
