@@ -98,4 +98,14 @@ public class ReportController {
         return "report/year";
     }
 
+    @GetMapping("/report/by-year")
+    public String displayReportByYear(Model model,
+                                      @ModelAttribute User user) {
+        ReportByTemporalDTO reportByYearDTO = reportService.getReportByTemporal(user, Year.class);
+        model.addAttribute("reportByYearDTO", reportByYearDTO);
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO(reportByYearDTO);
+        model.addAttribute("dataToPlot", dataToPlot);
+        return "report/by-year";
+    }
+
 }

@@ -74,7 +74,7 @@ public class ReportService {
     }
 
     public List<Temporal> getTemporalsWithRecords(User user,
-                                                   Class<? extends Temporal> temporalClass) {
+                                                  Class<? extends Temporal> temporalClass) {
         Stream<LocalDate> dates = shiftService.findAllShiftsByUser(user).stream().map(Shift::getDate);
         if (temporalClass.equals(YearMonth.class)) {
             return dates.map(d -> YearMonth.of(d.getYear(), d.getMonth()))
