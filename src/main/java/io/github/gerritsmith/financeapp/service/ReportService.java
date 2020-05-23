@@ -53,7 +53,6 @@ public class ReportService {
                 .setDeliveries(deliveries)
                 .setShifts(shifts)
                 .setExpenses(expenses)
-                .setDeliveryCount(deliveryCount)
                 .setTotalRevenue(statsService.sumDoubles(
                         deliveries.stream().map(Delivery::getTotal)))
                 .setTotalShiftHours(statsService.sumDurations(

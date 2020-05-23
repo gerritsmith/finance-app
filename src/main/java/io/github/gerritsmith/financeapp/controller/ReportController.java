@@ -67,7 +67,7 @@ public class ReportController {
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
         for (TemporalReportDTO dayReport : reportByDayDTO.getTemporalReports()) {
             dataToPlot.addDataPoint(dayReport.getTemporal(),
-                                    dayReport.getDeliveryCount(),
+                                    dayReport.getDeliveryStatsDTO().getDeliveryCount(),
                                     dayReport.getDeliveryGroupCount(),
                                     dayReport.getTotalRevenue(),
                                     dayReport.getTotalShiftHoursAsDecimal(),
@@ -98,7 +98,7 @@ public class ReportController {
         TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
         for (TemporalReportDTO monthReport : reportByMonthDTO.getTemporalReports()) {
             dataToPlot.addDataPoint(((YearMonth) monthReport.getTemporal()).atDay(1),
-                    monthReport.getDeliveryCount(),
+                    monthReport.getDeliveryStatsDTO().getDeliveryCount(),
                     monthReport.getDeliveryGroupCount(),
                     monthReport.getTotalRevenue(),
                     monthReport.getTotalShiftHoursAsDecimal(),

@@ -13,8 +13,6 @@ public abstract class AbstractReportDTO {
     private List<Shift> shifts;
     private List<Expense> expenses;
 
-    private int deliveryCount;
-
     private double totalRevenue;
     private Duration totalShiftHours;
     private double totalShiftMiles;
@@ -28,7 +26,7 @@ public abstract class AbstractReportDTO {
     }
 
     public double getDeliveriesPerGroup() {
-        return deliveryCount / (double) getDeliveryGroupCount();
+        return deliveryStatsDTO.getDeliveryCount() / (double) getDeliveryGroupCount();
     }
 
     public double getTotalShiftHoursAsDecimal() {
@@ -36,7 +34,7 @@ public abstract class AbstractReportDTO {
     }
 
     public double getDeliveriesPerHour() {
-        return deliveryCount/getTotalShiftHoursAsDecimal();
+        return deliveryStatsDTO.getDeliveryCount()/getTotalShiftHoursAsDecimal();
     }
 
     public double getRevenuePerHour() {
@@ -48,11 +46,11 @@ public abstract class AbstractReportDTO {
     }
 
     public double getRevenuePerDelivery() {
-        return totalRevenue/deliveryCount;
+        return totalRevenue/deliveryStatsDTO.getDeliveryCount();
     }
 
     public double getShiftMilesPerDelivery() {
-        return totalShiftMiles/deliveryCount;
+        return totalShiftMiles/deliveryStatsDTO.getDeliveryCount();
     }
 
     public String getTotalShiftHoursString() {
@@ -88,15 +86,6 @@ public abstract class AbstractReportDTO {
 
     public AbstractReportDTO setExpenses(List<Expense> expenses) {
         this.expenses = expenses;
-        return this;
-    }
-
-    public int getDeliveryCount() {
-        return deliveryCount;
-    }
-
-    public AbstractReportDTO setDeliveryCount(int deliveryCount) {
-        this.deliveryCount = deliveryCount;
         return this;
     }
 
