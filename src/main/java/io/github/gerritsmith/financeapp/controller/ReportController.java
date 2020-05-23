@@ -88,4 +88,14 @@ public class ReportController {
         return "report/by-month";
     }
 
+    @GetMapping("/reports/by-year")
+    public String displayYearReport(@RequestParam @DateTimeFormat(pattern = "yyyy")
+                                                Year year,
+                                     Model model,
+                                     @ModelAttribute User user) {
+        TemporalReportDTO yearReportDTO = reportService.getTemporalReport(user, year);
+        model.addAttribute("yearReportDTO", yearReportDTO);
+        return "report/year";
+    }
+
 }

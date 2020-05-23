@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
@@ -40,6 +41,11 @@ public class ExpenseService {
             return expenseRepository.findAllByUser(user)
                     .stream()
                     .filter(e -> YearMonth.from(e.getDate()).equals(temporal))
+                    .collect(Collectors.toList());
+        } else if (temporal.getClass().equals(Year.class)) {
+            return expenseRepository.findAllByUser(user)
+                    .stream()
+                    .filter(d -> Year.from(d.getDate()).equals(temporal))
                     .collect(Collectors.toList());
         } else {
             return new ArrayList<>();
