@@ -39,6 +39,22 @@ public class TimeSeriesDTO {
             entry("totalShiftMiles", "Shift Mile")
     ));
 
+    // Constructors
+    public TimeSeriesDTO() {}
+
+    public TimeSeriesDTO(ReportByTemporalDTO reportByTemporalDTO) {
+        for (TemporalReportDTO temporalReport : reportByTemporalDTO.getTemporalReports()) {
+            addDataPoint(temporalReport.getTemporal(),
+                    temporalReport.getDeliveryStatsDTO().getDeliveryCount(),
+                    temporalReport.getDeliveryGroupCount(),
+                    temporalReport.getTotalRevenue(),
+                    temporalReport.getTotalShiftHoursAsDecimal(),
+                    temporalReport.getTotalShiftMiles(),
+                    temporalReport.getTotalExpenses());
+        }
+    }
+
+
     // 'Setter' method
     public void addDataPoint(Temporal temporal,
                              int deliveryCount,

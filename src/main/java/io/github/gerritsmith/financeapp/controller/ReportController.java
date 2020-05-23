@@ -63,19 +63,8 @@ public class ReportController {
                                      @ModelAttribute User user) {
         ReportByTemporalDTO reportByDayDTO = reportService.getReportByTemporal(user, LocalDate.class);
         model.addAttribute("reportByDayDTO", reportByDayDTO);
-
-        TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        for (TemporalReportDTO dayReport : reportByDayDTO.getTemporalReports()) {
-            dataToPlot.addDataPoint(dayReport.getTemporal(),
-                                    dayReport.getDeliveryStatsDTO().getDeliveryCount(),
-                                    dayReport.getDeliveryGroupCount(),
-                                    dayReport.getTotalRevenue(),
-                                    dayReport.getTotalShiftHoursAsDecimal(),
-                                    dayReport.getTotalShiftMiles(),
-                                    dayReport.getTotalExpenses());
-        }
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO(reportByDayDTO);
         model.addAttribute("dataToPlot", dataToPlot);
-
         return "report/by-day";
     }
 
@@ -94,19 +83,8 @@ public class ReportController {
                                        @ModelAttribute User user) {
         ReportByTemporalDTO reportByMonthDTO = reportService.getReportByTemporal(user, YearMonth.class);
         model.addAttribute("reportByMonthDTO", reportByMonthDTO);
-
-        TimeSeriesDTO dataToPlot = new TimeSeriesDTO();
-        for (TemporalReportDTO monthReport : reportByMonthDTO.getTemporalReports()) {
-            dataToPlot.addDataPoint(((YearMonth) monthReport.getTemporal()).atDay(1),
-                    monthReport.getDeliveryStatsDTO().getDeliveryCount(),
-                    monthReport.getDeliveryGroupCount(),
-                    monthReport.getTotalRevenue(),
-                    monthReport.getTotalShiftHoursAsDecimal(),
-                    monthReport.getTotalShiftMiles(),
-                    monthReport.getTotalExpenses());
-        }
+        TimeSeriesDTO dataToPlot = new TimeSeriesDTO(reportByMonthDTO);
         model.addAttribute("dataToPlot", dataToPlot);
-
         return "report/by-month";
     }
 
