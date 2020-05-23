@@ -14,7 +14,14 @@ public class TimeSeriesDTO {
             "totalRevenue",
             "totalShiftHours",
             "totalShiftMiles",
-            "totalExpenses"
+            "totalExpenses",
+            "totalDeliveryTime",
+            "totalDeliveryMiles",
+            "totalAppMiles",
+            "totalAppWaitTime",
+            "totalBasePay",
+            "totalTip",
+            "totalCash"
     ));
     private final Map<String, String> columnDisplayNames = new HashMap<>(Map.ofEntries(
             entry("deliveryCount", "Deliveries"),
@@ -22,21 +29,42 @@ public class TimeSeriesDTO {
             entry("totalRevenue", "Revenue"),
             entry("totalShiftHours", "Shift Hours"),
             entry("totalShiftMiles", "Shift Miles"),
-            entry("totalExpenses", "Expenses")
+            entry("totalExpenses", "Expenses"),
+            entry("totalDeliveryTime", "Delivery Time (min)"),
+            entry("totalDeliveryMiles", "Delivery Miles"),
+            entry("totalAppMiles", "App Miles"),
+            entry("totalAppWaitTime", "App Wait Time (min)"),
+            entry("totalBasePay", "Base Pay"),
+            entry("totalTip", "Tips"),
+            entry("totalCash", "Cash Tips")
     ));
     private final List<String> denominatorNames = new ArrayList<>(Arrays.asList(
             "one",
             "deliveryCount",
+            "totalRevenue",
             "deliveryGroupCount",
             "totalShiftHours",
-            "totalShiftMiles"
+            "totalShiftMiles",
+            "totalDeliveryTime",
+            "totalDeliveryMiles",
+            "totalAppMiles",
+            "totalAppWaitTime",
+            "totalBasePay",
+            "totalTip"
     ));
     private final Map<String, String> denominatorDisplayNames = new HashMap<>(Map.ofEntries(
             entry("one", "1 (i.e. just plot total)"),
             entry("deliveryCount", "Delivery"),
             entry("deliveryGroupCount", "Delivery Group"),
+            entry("totalRevenue", "Revenue Dollar"),
             entry("totalShiftHours", "Shift Hour"),
-            entry("totalShiftMiles", "Shift Mile")
+            entry("totalShiftMiles", "Shift Mile"),
+            entry("totalDeliveryTime", "Delivery Minute"),
+            entry("totalDeliveryMiles", "Delivery Mile"),
+            entry("totalAppMiles", "App Mile"),
+            entry("totalAppWaitTime", "App Wait Minute"),
+            entry("totalBasePay", "Base Pay Dollar"),
+            entry("totalTip", "Tip Dollar")
     ));
 
     // Constructors
@@ -50,7 +78,14 @@ public class TimeSeriesDTO {
                     temporalReport.getTotalRevenue(),
                     temporalReport.getTotalShiftHoursAsDecimal(),
                     temporalReport.getTotalShiftMiles(),
-                    temporalReport.getTotalExpenses());
+                    temporalReport.getTotalExpenses(),
+                    temporalReport.getDeliveryStatsDTO().getTotalDeliveryTime(),
+                    temporalReport.getDeliveryStatsDTO().getTotalDeliveryMiles(),
+                    temporalReport.getDeliveryStatsDTO().getTotalAppMiles(),
+                    temporalReport.getDeliveryStatsDTO().getTotalAppWaitTime(),
+                    temporalReport.getDeliveryStatsDTO().getTotalBasePay(),
+                    temporalReport.getDeliveryStatsDTO().getTotalTip(),
+                    temporalReport.getDeliveryStatsDTO().getTotalCash());
         }
     }
 
@@ -62,14 +97,29 @@ public class TimeSeriesDTO {
                              double totalRevenue,
                              double totalShiftHours,
                              double totalShiftMiles,
-                             double totalExpenses) {
+                             double totalExpenses,
+                             double totalDeliveryTime,
+                             double totalDeliveryMiles,
+                             double totalAppMiles,
+                             double totalAppWaitTime,
+                             double totalBasePay,
+                             double totalTip,
+                             double totalCash) {
         data.add(new DataPoint(temporal,
-                               deliveryCount,
-                               deliveryGroupCount,
-                               totalRevenue,
-                               totalShiftHours,
-                               totalShiftMiles,
-                               totalExpenses));
+                deliveryCount,
+                deliveryGroupCount,
+                totalRevenue,
+                totalShiftHours,
+                totalShiftMiles,
+                totalExpenses,
+                totalDeliveryTime,
+                totalDeliveryMiles,
+                totalAppMiles,
+                totalAppWaitTime,
+                totalBasePay,
+                totalTip,
+                totalCash
+        ));
     }
 
     // Getters
@@ -103,6 +153,15 @@ public class TimeSeriesDTO {
         private double totalShiftMiles;
         private double totalExpenses;
 
+        private double totalDeliveryTime;
+        private double totalDeliveryMiles;
+        private double totalAppMiles;
+        private double totalAppWaitTime;
+        private double totalBasePay;
+        private double totalTip;
+        private double totalCash;
+
+
         // Constructor
         public DataPoint(Temporal temporal,
                          int deliveryCount,
@@ -110,7 +169,14 @@ public class TimeSeriesDTO {
                          double totalRevenue,
                          double totalShiftHours,
                          double totalShiftMiles,
-                         double totalExpenses) {
+                         double totalExpenses,
+                         double totalDeliveryTime,
+                         double totalDeliveryMiles,
+                         double totalAppMiles,
+                         double totalAppWaitTime,
+                         double totalBasePay,
+                         double totalTip,
+                         double totalCash) {
             this.temporal = temporal;
             this.deliveryCount = deliveryCount;
             this.deliveryGroupCount = deliveryGroupCount;
@@ -118,6 +184,13 @@ public class TimeSeriesDTO {
             this.totalShiftHours = totalShiftHours;
             this.totalShiftMiles = totalShiftMiles;
             this.totalExpenses = totalExpenses;
+            this.totalDeliveryTime = totalDeliveryTime;
+            this.totalDeliveryMiles = totalDeliveryMiles;
+            this.totalAppMiles = totalAppMiles;
+            this.totalAppWaitTime = totalAppWaitTime;
+            this.totalBasePay = totalBasePay;
+            this.totalTip = totalTip;
+            this.totalCash = totalCash;
         }
 
         // Getters
@@ -148,6 +221,35 @@ public class TimeSeriesDTO {
         public double getTotalExpenses() {
             return totalExpenses;
         }
+
+        public double getTotalDeliveryTime() {
+            return totalDeliveryTime;
+        }
+
+        public double getTotalDeliveryMiles() {
+            return totalDeliveryMiles;
+        }
+
+        public double getTotalAppMiles() {
+            return totalAppMiles;
+        }
+
+        public double getTotalAppWaitTime() {
+            return totalAppWaitTime;
+        }
+
+        public double getTotalBasePay() {
+            return totalBasePay;
+        }
+
+        public double getTotalTip() {
+            return totalTip;
+        }
+
+        public double getTotalCash() {
+            return totalCash;
+        }
+
     }
 
 }
