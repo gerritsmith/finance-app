@@ -1,9 +1,12 @@
 package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.LocationFormDTO;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
 import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
+import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.Location;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.DeliveryService;
 import io.github.gerritsmith.financeapp.service.LocationService;
@@ -19,6 +22,7 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
+@SessionAttributes("deliveryFormDTO")
 public class DeliveryController {
 
     @Autowired
@@ -52,12 +56,15 @@ public class DeliveryController {
             return 1;
         });
         model.addAttribute("deliveries", deliveries);
+        model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
         return "delivery/home";
     }
 
     @GetMapping("/delivery/new")
     public String displayNewDeliveryForm(Model model) {
-        model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
+        if (!model.containsAttribute("deliveryFormDTO")) {
+            model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
+        }
         return "delivery/form";
     }
 
@@ -113,6 +120,44 @@ public class DeliveryController {
             return "delivery/form";
         }
         return "redirect:/deliveries";
+    }
+
+    @PostMapping("/delivery-form/location/new")
+    public String displayLocationFormFromDeliveryForm(Model model,
+                                                      @ModelAttribute LocationFormDTO locationFormDTO,
+                                                      Errors errors,
+                                                      @ModelAttribute DeliveryFormDTO deliveryFormDTO,
+                                                      @ModelAttribute User user,
+                                                      @RequestParam int legIndex) {
+        if (locationFormDTO.getAddress() == null) {
+            System.out.println("Fresh adding of location to delivery");
+            System.out.println(legIndex);
+            model.addAttribute("locationFormDTO", new LocationFormDTO());
+            model.addAttribute("legIndex", legIndex);
+            return "location/form";
+        } else {
+            System.out.println("location submitted");
+            System.out.println(legIndex);
+            if (errors.hasErrors()) {
+                System.out.println("errors in submission");
+                return "location/form";
+            }
+            try {
+                System.out.println("trying to save location");
+                Location newLocation = new Location(user, locationFormDTO);
+                locationService.addLocation(newLocation);
+                deliveryFormDTO.getLegs().get(legIndex).setDropoff(newLocation);
+            } catch (LocationExistsException e) {
+                System.out.println("duplicate location");
+                Location existingLocation = locationService.findByUserAndNameAndAddressAndApt(user,
+                        locationFormDTO.getName(),
+                        locationFormDTO.getAddress(),
+                        locationFormDTO.getApt());
+                deliveryFormDTO.getLegs().get(legIndex).setDropoff(existingLocation);
+            }
+            System.out.println("location saved returning to delivery form");
+            return "redirect:/delivery/new";
+        }
     }
 
 }

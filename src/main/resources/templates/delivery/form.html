@@ -10,8 +10,9 @@
 
     <form th:action="@{${#request.requestURI}}" method="post"
           th:object="${deliveryFormDTO}"
+          id="deliveryForm"
           onchange="updateFormTotal();"
-          onsubmit="submitDelivery();">
+          onsubmit="return submitDelivery();">
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
             <p class="error" th:text="${error}"></p>
@@ -128,14 +129,20 @@
                             </select>
                         </td>
                         <td>
-                            <input list="dropoffOptions"
-                                   th:id="legs__${i}__.dropoff-text"
-                                   class="form-control"
-                                   th:value="*{legs[__${i}__].dropoff == null ? '' : legs[__${i}__].dropoff.address}"
-                                   th:placeholder="${#request.requestURI.endsWith('new') ? 'Select Dropoff Location' : null}"
-                                   th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
-                            <input type="hidden"
-                                   th:field="*{legs[__${i}__].dropoff}"/>
+                            <div class="input-group">
+                                <input list="dropoffOptions"
+                                       th:id="legs__${i}__.dropoff-text"
+                                       class="form-control"
+                                       th:value="*{legs[__${i}__].dropoff == null ? '' : legs[__${i}__].dropoff.address}"
+                                       th:placeholder="${#request.requestURI.endsWith('new') ? 'Select Dropoff Location' : null}"
+                                       th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                                <div class="input-group-append">
+                                    <button th:id="legs__${i}__.dropoff-button" class="btn btn-secondary"
+                                            type="button" onclick="addLocation(this);">+</button>
+                                </div>
+                                <input type="hidden"
+                                       th:field="*{legs[__${i}__].dropoff}"/>
+                            </div>
                         </td>
                         <td>
                             <input type="text" class="form-control" th:errorclass="delivery-leg-error"
