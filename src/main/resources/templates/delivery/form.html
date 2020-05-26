@@ -8,10 +8,12 @@
     <h1>Delivery Form</h1>
     <h2>Total: <span id="total" th:text="${#numbers.formatCurrency(deliveryFormDTO.total)}"></span></h2>
 
-    <form th:action="@{${#request.requestURI}}" method="post"
+    <form th:action="@{${updateId == null ? #request.requestURI : '/delivery/' + updateId}}"
+          method="post"
           th:object="${deliveryFormDTO}"
+          id="deliveryForm"
           onchange="updateFormTotal();"
-          onsubmit="submitDelivery();">
+          onsubmit="return submitDelivery();">
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
             <p class="error" th:text="${error}"></p>
@@ -118,24 +120,31 @@
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
-                            <select th:field="*{legs[__${i}__].pickup}" class="form-control"
-                                    th:errorclass="delivery-leg-error"
-                                    th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}">
-                                <option value="-1">Select Pickup Location</option>
-                                <option th:each="pickupLocation : ${pickupLocations}"
-                                        th:value="${pickupLocation.id}"
-                                        th:text="${pickupLocation.name}">Pickup Location Option</option>
-                            </select>
-                        </td>
-                        <td>
-                            <input list="dropoffOptions"
-                                   th:id="legs__${i}__.dropoff-text"
-                                   class="form-control"
-                                   th:value="*{legs[__${i}__].dropoff == null ? '' : legs[__${i}__].dropoff.address}"
-                                   th:placeholder="${#request.requestURI.endsWith('new') ? 'Select Dropoff Location' : null}"
+                            <input list="pickupOptions" required="required"
+                                   th:id="legs__${i}__.pickup-text" class="form-control"
+                                   th:value="*{legs[__${i}__].pickup == null ? '' : legs[__${i}__].pickup.name}"
+                                   th:placeholder="${#request.requestURI.endsWith('new') ? 'Select Pickup Location' : null}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                             <input type="hidden"
-                                   th:field="*{legs[__${i}__].dropoff}"/>
+                                   th:field="*{legs[__${i}__].pickup}"/>
+                        </td>
+                        <td>
+                            <div class="input-group">
+                                <input type="text"
+                                       th:id="legs__${i}__.dropoff-text"
+                                       class="form-control"
+                                       th:value="*{legs[__${i}__].dropoff == null ? '' : legs[__${i}__].dropoff.address}"
+                                       th:placeholder="${#request.requestURI.endsWith('new') ? 'Add Dropoff Location' : null}"
+                                       th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
+                                <div class="input-group-append">
+                                    <button th:id="legs__${i}__.dropoff-button" class="btn btn-secondary"
+                                            type="button" onclick="addLocation(this);"
+                                            th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}"
+                                            th:hidden="${#bools.isFalse(#request.requestURI.endsWith('new'))}">+</button>
+                                </div>
+                                <input type="hidden"
+                                       th:field="*{legs[__${i}__].dropoff}"/>
+                            </div>
                         </td>
                         <td>
                             <input type="text" class="form-control" th:errorclass="delivery-leg-error"
@@ -158,11 +167,11 @@
             </div>
         </div>
 
-        <datalist id="dropoffOptions">
-            <option data-value="-1">Select Dropoff Location</option>
-            <option th:each="dropoffLocation : ${dropoffLocations}"
-                    th:data-value="${dropoffLocation.id}"
-                    th:text="${dropoffLocation.address + ' ' + dropoffLocation.name + ' ' + dropoffLocation.apt}">Dropoff Location Option</option>
+        <datalist id="pickupOptions">
+            <option data-value="-1">Select Pickup Location</option>
+            <option th:each="pickupLocation : ${pickupLocations}"
+                    th:data-value="${pickupLocation.id}"
+                    th:text="${pickupLocation.name}">Pickup Location Option</option>
         </datalist>
 
         <div class="form-group" th:unless="${#request.requestURI.endsWith('new')}">

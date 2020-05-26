@@ -1,9 +1,12 @@
 package io.github.gerritsmith.financeapp.controller;
 
 import io.github.gerritsmith.financeapp.dto.form.DeliveryFormDTO;
+import io.github.gerritsmith.financeapp.dto.form.LocationFormDTO;
 import io.github.gerritsmith.financeapp.exception.DeliveryExistsException;
 import io.github.gerritsmith.financeapp.exception.DeliveryWithoutShiftException;
+import io.github.gerritsmith.financeapp.exception.LocationExistsException;
 import io.github.gerritsmith.financeapp.model.Delivery;
+import io.github.gerritsmith.financeapp.model.Location;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.service.DeliveryService;
 import io.github.gerritsmith.financeapp.service.LocationService;
@@ -19,6 +22,7 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
+@SessionAttributes("deliveryFormDTO")
 public class DeliveryController {
 
     @Autowired
@@ -35,7 +39,6 @@ public class DeliveryController {
         User user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("pickupLocations", locationService.findAllPickupLocationsByUser(user));
-        model.addAttribute("dropoffLocations", locationService.findAllDropoffLocationsByUser(user));
     }
 
     @GetMapping("/deliveries")
@@ -52,12 +55,18 @@ public class DeliveryController {
             return 1;
         });
         model.addAttribute("deliveries", deliveries);
+        model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
         return "delivery/home";
     }
 
     @GetMapping("/delivery/new")
-    public String displayNewDeliveryForm(Model model) {
-        model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
+    public String displayNewDeliveryForm(Model model,
+                                         @RequestParam(required = false) String updateId) {
+        if (!model.containsAttribute("deliveryFormDTO")) {
+            model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
+        } else {
+            model.addAttribute("updateId", updateId);
+        }
         return "delivery/form";
     }
 
@@ -113,6 +122,38 @@ public class DeliveryController {
             return "delivery/form";
         }
         return "redirect:/deliveries";
+    }
+
+    @PostMapping("/delivery-form/location/new")
+    public String displayLocationFormFromDeliveryForm(Model model,
+                                                      @ModelAttribute LocationFormDTO locationFormDTO,
+                                                      Errors errors,
+                                                      @ModelAttribute DeliveryFormDTO deliveryFormDTO,
+                                                      @ModelAttribute User user,
+                                                      @RequestParam int legIndex,
+                                                      @RequestParam String updateId) {
+        if (locationFormDTO.getAddress() == null) {
+            model.addAttribute("locationFormDTO", new LocationFormDTO());
+            model.addAttribute("legIndex", legIndex);
+            model.addAttribute("updateId", updateId);
+            return "location/form";
+        } else {
+            if (errors.hasErrors()) {
+                return "location/form";
+            }
+            try {
+                Location newLocation = new Location(user, locationFormDTO);
+                locationService.addLocation(newLocation);
+                deliveryFormDTO.getLegs().get(legIndex).setDropoff(newLocation);
+            } catch (LocationExistsException e) {
+                Location existingLocation = locationService.findByUserAndNameAndAddressAndApt(user,
+                        locationFormDTO.getName(),
+                        locationFormDTO.getAddress(),
+                        locationFormDTO.getApt());
+                deliveryFormDTO.getLegs().get(legIndex).setDropoff(existingLocation);
+            }
+            return "redirect:/delivery/new?updateId=" + updateId;
+        }
     }
 
 }
