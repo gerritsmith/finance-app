@@ -8,7 +8,8 @@
     <h1>Delivery Form</h1>
     <h2>Total: <span id="total" th:text="${#numbers.formatCurrency(deliveryFormDTO.total)}"></span></h2>
 
-    <form th:action="@{${#request.requestURI}}" method="post"
+    <form th:action="@{${updateId == null ? #request.requestURI : '/delivery/' + updateId}}"
+          method="post"
           th:object="${deliveryFormDTO}"
           id="deliveryForm"
           onchange="updateFormTotal();"
@@ -119,9 +120,8 @@
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                         </td>
                         <td>
-                            <input list="pickupOptions"
-                                   th:id="legs__${i}__.pickup-text"
-                                   class="form-control"
+                            <input list="pickupOptions" required="required"
+                                   th:id="legs__${i}__.pickup-text" class="form-control"
                                    th:value="*{legs[__${i}__].pickup == null ? '' : legs[__${i}__].pickup.name}"
                                    th:placeholder="${#request.requestURI.endsWith('new') ? 'Select Pickup Location' : null}"
                                    th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
@@ -134,7 +134,7 @@
                                        th:id="legs__${i}__.dropoff-text"
                                        class="form-control"
                                        th:value="*{legs[__${i}__].dropoff == null ? '' : legs[__${i}__].dropoff.address}"
-                                       th:placeholder="${#request.requestURI.endsWith('new') ? 'Select Dropoff Location' : null}"
+                                       th:placeholder="${#request.requestURI.endsWith('new') ? 'Add Dropoff Location' : null}"
                                        th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                                 <div class="input-group-append">
                                     <button th:id="legs__${i}__.dropoff-button" class="btn btn-secondary"

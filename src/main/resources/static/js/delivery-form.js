@@ -74,10 +74,9 @@ function cancelEdit() {
 
 function addLocation(element) {
   let form = document.querySelector("#deliveryForm");
-  let urlPath = form.getAttribute("action");
-  console.log(urlPath);
-  form.setAttribute("action", `/delivery-form/location/new?legIndex=${element.id[4]}&urlPath=${urlPath}`);
-  console.log(form);
+  let updateId = form.getAttribute("action").split('/')[2];
+  form.setAttribute("action", `/delivery-form/location/new?legIndex=${element.id[4]}&updateId=${updateId}`);
+  submitDelivery();
   form.submit();
 }
 
@@ -85,8 +84,6 @@ function submitDelivery() {
   let listInputs = document.querySelectorAll('input[list]');
   let pickupOptions = document.querySelectorAll('#pickupOptions option');
   for (let input of listInputs) {
-    let listName = input.getAttribute('list');
-    console.log(listName);
     let hiddenInput = document.getElementById(input.getAttribute('id').slice(0, -5));
     let inputText = input.value;
     hiddenInput.value = -1;
@@ -96,7 +93,6 @@ function submitDelivery() {
       }
     }
   }
-  return true;
 }
 
 function updateFormTotal() {

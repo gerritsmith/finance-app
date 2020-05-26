@@ -61,9 +61,12 @@ public class DeliveryController {
     }
 
     @GetMapping("/delivery/new")
-    public String displayNewDeliveryForm(Model model) {
+    public String displayNewDeliveryForm(Model model,
+                                         @RequestParam(required = false) String updateId) {
         if (!model.containsAttribute("deliveryFormDTO")) {
             model.addAttribute("deliveryFormDTO", new DeliveryFormDTO());
+        } else {
+            model.addAttribute("updateId", updateId);
         }
         return "delivery/form";
     }
@@ -129,11 +132,12 @@ public class DeliveryController {
                                                       @ModelAttribute DeliveryFormDTO deliveryFormDTO,
                                                       @ModelAttribute User user,
                                                       @RequestParam int legIndex,
-                                                      @RequestParam String urlPath) {
+                                                      @RequestParam String updateId) {
+
         if (locationFormDTO.getAddress() == null) {
             model.addAttribute("locationFormDTO", new LocationFormDTO());
             model.addAttribute("legIndex", legIndex);
-            model.addAttribute("urlPath", urlPath);
+            model.addAttribute("updateId", updateId);
             return "location/form";
         } else {
             if (errors.hasErrors()) {
@@ -150,7 +154,7 @@ public class DeliveryController {
                         locationFormDTO.getApt());
                 deliveryFormDTO.getLegs().get(legIndex).setDropoff(existingLocation);
             }
-            return "redirect:/delivery/new";
+            return "redirect:/delivery/new?updateId=" + updateId;
         }
     }
 
