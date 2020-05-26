@@ -138,7 +138,9 @@
                                        th:readonly="${#bools.isFalse(#request.requestURI.endsWith('new'))}"/>
                                 <div class="input-group-append">
                                     <button th:id="legs__${i}__.dropoff-button" class="btn btn-secondary"
-                                            type="button" onclick="addLocation(this);">+</button>
+                                            type="button" onclick="addLocation(this);"
+                                            th:disabled="${#bools.isFalse(#request.requestURI.endsWith('new'))}"
+                                            th:hidden="${#bools.isFalse(#request.requestURI.endsWith('new'))}">+</button>
                                 </div>
                                 <input type="hidden"
                                        th:field="*{legs[__${i}__].dropoff}"/>

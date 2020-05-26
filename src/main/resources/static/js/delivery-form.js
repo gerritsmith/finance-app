@@ -40,6 +40,11 @@ function changeDeliveryEditState() {
   for (let input of selectInputs) {
     input.disabled = !input.disabled;
   }
+  let addDropoffLocationButtons = document.querySelectorAll(".input-group-append button");
+  for (let button of addDropoffLocationButtons) {
+    button.disabled = !button.disabled;
+    button.hidden = !button.hidden;
+  }
   changeEditState();
 }
 

@@ -39,7 +39,6 @@ public class DeliveryController {
         User user = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("pickupLocations", locationService.findAllPickupLocationsByUser(user));
-        model.addAttribute("dropoffLocations", locationService.findAllDropoffLocationsByUser(user));
     }
 
     @GetMapping("/deliveries")
