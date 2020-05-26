@@ -133,7 +133,6 @@ public class DeliveryController {
                                                       @ModelAttribute User user,
                                                       @RequestParam int legIndex,
                                                       @RequestParam String updateId) {
-
         if (locationFormDTO.getAddress() == null) {
             model.addAttribute("locationFormDTO", new LocationFormDTO());
             model.addAttribute("legIndex", legIndex);

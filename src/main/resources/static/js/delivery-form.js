@@ -10,9 +10,9 @@ function addRow() {
   let tipCell = row.insertCell();
   tipCell.innerHTML = `<input id="legs${rowNumber}.tip" class="form-control" type="text" name="legs[${rowNumber}].tip"/>`;
   let pickupCell = row.insertCell();
-  pickupCell.innerHTML = `<select id="legs${rowNumber}.pickup" name="legs[${rowNumber}].pickup" class="form-control">${tbody.rows[0].cells[2].firstElementChild.innerHTML}</select>`;
+  pickupCell.innerHTML = `<input list="pickupOptions" id="legs${rowNumber}.pickup-text" class="form-control" placeholder="Select Pickup Location" required="required"/><input type="hidden" id="legs${rowNumber}.pickup" name="legs[${rowNumber}].pickup"/>`;
   let dropoffCell = row.insertCell();
-  dropoffCell.innerHTML = `<input list="dropoffOptions" id="legs${rowNumber}.dropoff-text" class="form-control" placeholder="Select Dropoff Location"/><input type="hidden" id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff"/>`;
+  dropoffCell.innerHTML = `<div class="input-group"><input type="text" id="legs${rowNumber}.dropoff-text" class="form-control" placeholder="Add Dropoff Location"/><div class="input-group-append"><button id="legs${rowNumber}.dropoff-button" class="btn btn-secondary" type="button" onclick="addLocation(this);">+</button></div><input type="hidden" id="legs${rowNumber}.dropoff" name="legs[${rowNumber}].dropoff"/></div>`;
   let cashCell = row.insertCell();
   cashCell.innerHTML = `<input id="legs${rowNumber}.cash" class="form-control" type="text" name="legs[${rowNumber}].cash"/>`;
   let noteCell = row.insertCell();
