@@ -128,34 +128,28 @@ public class DeliveryController {
                                                       Errors errors,
                                                       @ModelAttribute DeliveryFormDTO deliveryFormDTO,
                                                       @ModelAttribute User user,
-                                                      @RequestParam int legIndex) {
+                                                      @RequestParam int legIndex,
+                                                      @RequestParam String urlPath) {
         if (locationFormDTO.getAddress() == null) {
-            System.out.println("Fresh adding of location to delivery");
-            System.out.println(legIndex);
             model.addAttribute("locationFormDTO", new LocationFormDTO());
             model.addAttribute("legIndex", legIndex);
+            model.addAttribute("urlPath", urlPath);
             return "location/form";
         } else {
-            System.out.println("location submitted");
-            System.out.println(legIndex);
             if (errors.hasErrors()) {
-                System.out.println("errors in submission");
                 return "location/form";
             }
             try {
-                System.out.println("trying to save location");
                 Location newLocation = new Location(user, locationFormDTO);
                 locationService.addLocation(newLocation);
                 deliveryFormDTO.getLegs().get(legIndex).setDropoff(newLocation);
             } catch (LocationExistsException e) {
-                System.out.println("duplicate location");
                 Location existingLocation = locationService.findByUserAndNameAndAddressAndApt(user,
                         locationFormDTO.getName(),
                         locationFormDTO.getAddress(),
                         locationFormDTO.getApt());
                 deliveryFormDTO.getLegs().get(legIndex).setDropoff(existingLocation);
             }
-            System.out.println("location saved returning to delivery form");
             return "redirect:/delivery/new";
         }
     }

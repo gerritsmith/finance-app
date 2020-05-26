@@ -74,26 +74,29 @@ function cancelEdit() {
 
 function addLocation(element) {
   let form = document.querySelector("#deliveryForm");
-  form.setAttribute("action", `/delivery-form/location/new?legIndex=${element.id[4]}`);
+  let urlPath = form.getAttribute("action");
+  console.log(urlPath);
+  form.setAttribute("action", `/delivery-form/location/new?legIndex=${element.id[4]}&urlPath=${urlPath}`);
   console.log(form);
   form.submit();
 }
 
 function submitDelivery() {
-  // let listInputs = document.querySelectorAll('input[list]');
-  // let dropoffOptions = document.querySelectorAll('#dropoffOptions option');
-  // for (let input of listInputs) {
-  //   // let listName = input.getAttribute('list');
-  //   let hiddenInput = document.getElementById(input.getAttribute('id').slice(0, -5));
-  //   let inputText = input.value;
-  //   hiddenInput.value = -1;
-  //   for (let option of dropoffOptions) {
-  //     if (option.innerText === inputText) {
-  //       hiddenInput.value = option.getAttribute('data-value');
-  //     }
-  //   }
-  // }
-  // return false;
+  let listInputs = document.querySelectorAll('input[list]');
+  let pickupOptions = document.querySelectorAll('#pickupOptions option');
+  for (let input of listInputs) {
+    let listName = input.getAttribute('list');
+    console.log(listName);
+    let hiddenInput = document.getElementById(input.getAttribute('id').slice(0, -5));
+    let inputText = input.value;
+    hiddenInput.value = -1;
+    for (let option of pickupOptions) {
+      if (option.innerText === inputText) {
+        hiddenInput.value = option.getAttribute('data-value');
+      }
+    }
+  }
+  return true;
 }
 
 function updateFormTotal() {

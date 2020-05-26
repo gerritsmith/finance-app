@@ -53,6 +53,7 @@
         </div>
 
         <input type="hidden" th:if="${legIndex != null}" th:name="legIndex" th:value="${legIndex}"/>
+        <input type="hidden" th:if="${urlPath != null}" th:name="urlPath" th:value="${urlPath}"/>
 
         <div th:if="${#fields.hasGlobalErrors()}" th:each="error : ${#fields.globalErrors()}">
             <p class="error" th:text="${error}"></p>
