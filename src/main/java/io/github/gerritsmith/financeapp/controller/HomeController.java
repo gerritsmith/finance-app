@@ -86,11 +86,15 @@ public class HomeController {
     @GetMapping("/admin/edit-user/{userId}")
     public String displayEditUserPage(@PathVariable long userId, Model model) {
         User userToEdit = userService.findById(userId);
+        if (userToEdit == null) {
+            return "error/404";
+        }
         model.addAttribute("user", userToEdit);
         return "user/admin-edit-user";
     }
 
     @PostMapping("/admin/edit-user/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String processEditUserSubmission(@PathVariable long userId,
                                             @RequestParam String roles) {
         User userToEdit = userService.findById(userId);
