@@ -8,6 +8,7 @@ import io.github.gerritsmith.financeapp.model.DeliveryLeg;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +72,7 @@ public class DeliveryService {
 
     // Create
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Delivery addDelivery(Delivery delivery) throws DeliveryExistsException,
                                                           DeliveryWithoutShiftException {
         delivery.setShift(findShiftForDelivery(delivery));
@@ -85,6 +87,7 @@ public class DeliveryService {
 
     // Update
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Delivery updateDelivery(long deliveryId,
                                    Delivery updatedDelivery) throws DeliveryExistsException,
                                                                     DeliveryWithoutShiftException {

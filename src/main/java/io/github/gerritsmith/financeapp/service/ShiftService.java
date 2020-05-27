@@ -7,6 +7,7 @@ import io.github.gerritsmith.financeapp.model.Delivery;
 import io.github.gerritsmith.financeapp.model.Shift;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +60,7 @@ public class ShiftService {
 
     // Create
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Shift addShift(Shift shift) throws ShiftExistsException {
         List<Shift> shiftsOnDate = findAllByUserInTemporal(shift.getUser(), shift.getDate());
         if (shiftsOnDate != null) {
@@ -76,6 +78,7 @@ public class ShiftService {
 
     // Update
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Shift updateShift(long shiftId,
                              Shift updatedShift) throws ShiftExistsException,
                                                         DeliveryWithoutShiftException {
