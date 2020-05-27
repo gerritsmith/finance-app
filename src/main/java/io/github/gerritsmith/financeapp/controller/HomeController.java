@@ -1,8 +1,10 @@
 package io.github.gerritsmith.financeapp.controller;
 
+import io.github.gerritsmith.financeapp.dto.form.ChangePasswordFormDTO;
 import io.github.gerritsmith.financeapp.dto.form.LoginFormDTO;
 import io.github.gerritsmith.financeapp.dto.form.RegisterFormDTO;
 import io.github.gerritsmith.financeapp.dto.UserStatsDTO;
+import io.github.gerritsmith.financeapp.exception.UserPasswordIncorrectException;
 import io.github.gerritsmith.financeapp.model.User;
 import io.github.gerritsmith.financeapp.exception.UserExistsException;
 import io.github.gerritsmith.financeapp.service.StatsService;
@@ -40,6 +42,37 @@ public class HomeController {
         model.addAttribute("userStatsDTO", userStatsDTO);
         model.addAttribute("title", "User Home");
         return "user/home";
+    }
+
+    @GetMapping("/user/settings")
+    public String displayUserSettingsPage(Model model) {
+        model.addAttribute("changePasswordFormDTO", new ChangePasswordFormDTO());
+        return "user/settings";
+    }
+
+    @PostMapping("/user/change-password")
+    public String processChangePasswordForm(@ModelAttribute ChangePasswordFormDTO changePasswordFormDTO,
+                                            Errors errors,
+                                            Principal principal) {
+        User user = userService.findUserByUsername(principal.getName());
+        String newPassword = changePasswordFormDTO.getNewPassword();
+        String verifyPassword = changePasswordFormDTO.getVerifyPassword();
+        if (!newPassword.equals(verifyPassword)) {
+            errors.rejectValue("verifyPassword",
+                    "verifyPassword.mismatch",
+                    "passwords do not match");
+        }
+        if (errors.hasErrors()) {
+            return "user/settings";
+        }
+        try {
+            userService.updateUserPassword(user, changePasswordFormDTO);
+        } catch (UserPasswordIncorrectException e) {
+            errors.rejectValue("currentPassword",
+                    "currentPassword.incorrect", e.getMessage());
+            return "user/settings";
+        }
+        return "redirect:/user/settings?update=true";
     }
 
     @GetMapping("/admin")

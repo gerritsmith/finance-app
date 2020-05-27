@@ -1,7 +1,9 @@
 package io.github.gerritsmith.financeapp.service;
 
 import io.github.gerritsmith.financeapp.data.UserRepository;
+import io.github.gerritsmith.financeapp.dto.form.ChangePasswordFormDTO;
 import io.github.gerritsmith.financeapp.exception.UserExistsException;
+import io.github.gerritsmith.financeapp.exception.UserPasswordIncorrectException;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -43,6 +45,16 @@ public class UserService {
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.addRole("USER");
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUserPassword(User user, ChangePasswordFormDTO changePasswordFormDTO)
+            throws UserPasswordIncorrectException {
+        if (!bCryptPasswordEncoder.matches(changePasswordFormDTO.getCurrentPassword(), user.getPassword())) {
+            throw new UserPasswordIncorrectException("Incorrect Password!");
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(changePasswordFormDTO.getNewPassword()));
         return userRepository.save(user);
     }
 
