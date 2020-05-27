@@ -9,10 +9,6 @@
 <div class="container">
     <h1>Welcome <span sec:authentication="name">UserName</span></h1>
 
-    <div sec:authorize="hasAuthority('ADMIN')">
-        <a class="btn btn-info" th:href="@{/admin}">Visit Admin Page</a>
-    </div>
-
     <div class="row" th:object="${userStatsDTO}">
         <div class="col-md-6">
             <table class="table table-dark table-striped">
@@ -47,6 +43,18 @@
             </table>
         </div>
     </div>
+
+
+    <h2>Account Management</h2>
+
+    <div class="mb-3" sec:authorize="hasAuthority('ADMIN')">
+        <a class="btn btn-info" th:href="@{/admin}">Visit Admin Page</a>
+    </div>
+    <div>
+        <a class="btn btn-info" th:href="@{/user/settings}">Settings</a>
+    </div>
+
+
 
 </div>
 

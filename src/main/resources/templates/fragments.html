@@ -32,7 +32,7 @@
             <div class="navbar-nav mr-auto">
                 <a class="nav-item nav-link" th:href="@{/user}"
                    th:classappend="${#request.requestURI.startsWith('/user') ? 'active' : ''}">
-                    Home
+                    User
                     <span th:if="${#request.requestURI.startsWith('/user')}" class="sr-only">(current)</span>
                 </a>
                 <a class="nav-item nav-link" th:href="@{/shifts}"
