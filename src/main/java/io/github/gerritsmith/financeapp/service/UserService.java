@@ -44,7 +44,7 @@ public class UserService {
             throw new UserExistsException("The username " + user.getUsername() + " is already taken!");
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.addRole("USER");
+        user.addRole("DEMO");
         return userRepository.save(user);
     }
 
