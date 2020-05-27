@@ -5,6 +5,7 @@ import io.github.gerritsmith.financeapp.exception.ExpenseExistsException;
 import io.github.gerritsmith.financeapp.model.Expense;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,6 +63,7 @@ public class ExpenseService {
 
     // Create
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Expense addExpense(Expense expense) throws ExpenseExistsException {
         Expense expenseExists = findByUserAndDateAndTimeAndDescription(expense.getUser(), expense.getDate(), expense.getTime(), expense.getDescription());
         if (expenseExists != null) {
@@ -75,6 +77,7 @@ public class ExpenseService {
 
     // Update
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Expense updateExpense(long expenseId, Expense updatedExpense) throws ExpenseExistsException {
         Expense expenseToUpdate = findByIdAsUser(expenseId, updatedExpense.getUser());
         Expense expenseExistsAtDateTime = findByUserAndDateAndTimeAndDescription(updatedExpense.getUser(),

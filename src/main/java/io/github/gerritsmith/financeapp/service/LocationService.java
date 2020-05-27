@@ -6,6 +6,7 @@ import io.github.gerritsmith.financeapp.model.Location;
 import io.github.gerritsmith.financeapp.model.LocationType;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +50,7 @@ public class LocationService {
 
     // Create
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Location addLocation(Location location) throws LocationExistsException {
         String errorMessage;
         Location locationExists;
@@ -72,6 +74,7 @@ public class LocationService {
 
     // Update
     @Transactional
+    @PreAuthorize("hasAuthority('USER')")
     public Location updateLocation(long locationId,
                                    Location updatedLocation) throws LocationExistsException {
         Location locationToUpdate = findByIdAsUser(locationId, updatedLocation.getUser());

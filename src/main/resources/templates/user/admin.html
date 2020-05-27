@@ -17,6 +17,7 @@
                 <th>Username</th>
                 <th>Password</th>
                 <th>Roles</th>
+                <th>Edit</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +25,9 @@
                 <td th:text="*{username}">username</td>
                 <td th:text="*{password}">password</td>
                 <td th:text="*{roles}">[ROLE_1, ROLE_2]</td>
+                <td>
+                    <a class="btn btn-info" th:href="@{/admin/edit-user/{userId}(userId=*{id})}">Edit</a>
+                </td>
             </tr>
         </tbody>
     </table>

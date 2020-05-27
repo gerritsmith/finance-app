@@ -31,6 +31,10 @@ public class User extends AbstractEntity {
         roles.add(role);
     }
 
+    public String getDisplayRoles() {
+        return String.join(", ", roles);
+    }
+
     // Setters
     public void setUsername(String username) {
         this.username = username;

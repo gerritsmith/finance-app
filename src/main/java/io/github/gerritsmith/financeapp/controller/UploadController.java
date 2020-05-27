@@ -14,6 +14,7 @@ import io.github.gerritsmith.financeapp.service.LocationService;
 import io.github.gerritsmith.financeapp.service.ShiftService;
 import io.github.gerritsmith.financeapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +58,7 @@ public class UploadController {
     }
 
     @PostMapping("/upload/shifts")
+    @PreAuthorize("hasAuthority('USER')")
     public String uploadShiftCSVFile(@RequestParam MultipartFile file,
                                      Model model,
                                      @ModelAttribute User user) {
@@ -93,6 +95,7 @@ public class UploadController {
     }
 
     @PostMapping("/upload/deliveries")
+    @PreAuthorize("hasAuthority('USER')")
     public String uploadDeliveryCSVFile(@RequestParam MultipartFile file,
                                         @ModelAttribute User user,
                                         Model model) {
