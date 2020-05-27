@@ -32,6 +32,10 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public User findById(long userId) {
+        return userRepository.findById(userId);
+    }
+
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
@@ -48,6 +52,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // Update
     @Transactional
     public User updateUserPassword(User user, ChangePasswordFormDTO changePasswordFormDTO)
             throws UserPasswordIncorrectException {
@@ -55,6 +60,11 @@ public class UserService {
             throw new UserPasswordIncorrectException("Incorrect Password!");
         }
         user.setPassword(bCryptPasswordEncoder.encode(changePasswordFormDTO.getNewPassword()));
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public User updateUserRoles(User user) {
         return userRepository.save(user);
     }
 

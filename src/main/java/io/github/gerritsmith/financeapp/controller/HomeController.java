@@ -10,15 +10,17 @@ import io.github.gerritsmith.financeapp.exception.UserExistsException;
 import io.github.gerritsmith.financeapp.service.StatsService;
 import io.github.gerritsmith.financeapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class HomeController {
@@ -79,6 +81,23 @@ public class HomeController {
     public String displayAdminPage(Model model) {
         model.addAttribute("users", userService.findAllUsers());
         return "user/admin";
+    }
+
+    @GetMapping("/admin/edit-user/{userId}")
+    public String displayEditUserPage(@PathVariable long userId, Model model) {
+        User userToEdit = userService.findById(userId);
+        model.addAttribute("user", userToEdit);
+        return "user/admin-edit-user";
+    }
+
+    @PostMapping("/admin/edit-user/{userId}")
+    public String processEditUserSubmission(@PathVariable long userId,
+                                            @RequestParam String roles) {
+        User userToEdit = userService.findById(userId);
+        Set<String> rolesSet = new HashSet<>(Arrays.asList(roles.split("\\s*,\\s*")));
+        userToEdit.setRoles(rolesSet);
+        userService.updateUserRoles(userToEdit);
+        return "redirect:/admin";
     }
 
     @GetMapping("/login")
