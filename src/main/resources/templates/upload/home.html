@@ -38,6 +38,54 @@
         </div>
     </div>
 
+    <h2>Upload Instructions</h2>
+
+    <p>All csv files should use comma delimiters.</p>
+
+    <h3>Uploading Shift Data</h3>
+    <p>The csv should contain the following 7 columns:</p>
+    <ol>
+        <li><code>Date</code>: formatted as <code>m/d/yy</code> (required)</li>
+        <li><code>Start Time</code>: formatted as <code>h:mm PM</code> (required)</li>
+        <li><code>Start Mileage</code>: formatted as a positive integer containing only digits</li>
+        <li><code>End Time</code>: formatted as <code>h:mm PM</code> (required)</li>
+        <li><code>End Mileage</code>: formatted as a positive integer containing only digits</li>
+        <li><code>Miles</code>: formatted as a positive decimal number with at most one decimal digit</li>
+        <li><code>MPG</code>: formatted as a positive decimal number with at most one decimal digit</li>
+    </ol>
+
+    <h3>Uploading Delivery Data</h3>
+    <p>The csv should contain the following 18 columns:</p>
+    <ol>
+        <li><code>Date</code>: formatted as <code>m/d/yy</code> (required)</li>
+        <li><code>Accept Time</code>: formatted as <code>h:mm PM</code> (required)</li>
+        <li><code>Food Total</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>Duration (min)</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>Total Miles</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>App Miles</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>App Wait (min)</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>Adjustments</code>: formatted as a decimal number with at most two decimal digits</li>
+        <li><code>Base Pay</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>Tip</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>Total Pay</code>: formatted as a positive decimal number with at most two decimal digits</li>
+        <li><code>Pick Up Location</code>: formatted as a string (required)</li>
+        <li><code>Drop Off Location</code>: formatted like <code>#### STREET_NAME, CITY_NAME, STATE_ABBR</code></li>
+        <li><code>Lat, Long</code>: formatted as two comma separated decimal numbers</li>
+        <li><code>Name</code>: formatted as a string</li>
+        <li><code>Apt #</code>: formatted as a string</li>
+        <li><code>Notes</code>: formatted as a string</li>
+        <li><code>Cash</code>: formatted as a positive decimal number with at most two decimal digits</li>
+    </ol>
+    <p>
+        Delivery groups should be represented in the csv as consecutive rows, with each row corresponding to an individual delivery within the group.
+        The first row of the group should contain data for the whole group in all columns for which data is available.
+        The "Total Pay" column <strong>must be empty</strong> for all other rows in the group, as this is how the group is identified.
+    </p>
+    <p>
+        Columns from which data is loaded in additional rows of the group includes: "Food Total", "Tip", "Drop Off Location", "Lat, Long", "Name", "Apt #", "Notes", "Cash".
+        The columns indicated as 'required' are still required in these addition group rows.
+    </p>
+
 </div>
 
 <footer th:replace="fragments :: footer"></footer>
