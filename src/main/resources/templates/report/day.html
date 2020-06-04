@@ -7,21 +7,21 @@
 <div class="container" th:object="${dayReportDTO}">
     <h1>Report for <span th:text="*{#temporals.format(temporal,'MMM d yyyy')}">MMM d yyyy</span></h1>
 
-    <th:block th:replace="/report/fragments :: temporalReport"></th:block>
+    <th:block th:replace="report/fragments :: temporalReport"></th:block>
 
     <th:block th:if="*{#lists.size(deliveries) > 0}">
         <h2>Deliveries</h2>
-        <table th:replace="/delivery/fragments :: table"></table>
+        <table th:replace="delivery/fragments :: table"></table>
     </th:block>
 
     <th:block th:if="*{#lists.size(shifts) > 0}">
         <h2>Shifts</h2>
-        <table th:replace="/shift/fragments :: table"></table>
+        <table th:replace="shift/fragments :: table"></table>
     </th:block>
 
     <th:block th:if="*{#lists.size(expenses) > 0}">
         <h2>Expenses</h2>
-        <table th:replace="/expense/fragments :: table"></table>
+        <table th:replace="expense/fragments :: table"></table>
     </th:block>
 
 </div>
