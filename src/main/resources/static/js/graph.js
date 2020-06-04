@@ -1,8 +1,3 @@
-if (false) {
-  let d3 = require('./external/d3/d3.js');
-}
-
-
 function checkValidChoices() {
 
   let columnName = document.getElementById("columnName").value;
@@ -54,7 +49,6 @@ function selectDataColumnAndDrawCharts() {
   drawCharts(data);
 
 }
-
 
 
 function drawCharts(data) {
@@ -271,7 +265,6 @@ function drawCharts(data) {
 
 }
 
-
 /** MOUSE INTERACTION
  * Highlight in all charts the data point under the mouse
  */
@@ -310,7 +303,6 @@ function removeHighlight() {
   d3.selectAll("rect")
     .attr("fill", null);
 }
-
 
 /** MOUSE INTERACTION
  * Build or hide the tooltip for the line graph
