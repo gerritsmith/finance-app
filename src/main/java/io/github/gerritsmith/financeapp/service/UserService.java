@@ -68,7 +68,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // TODO: Remove before deployment
+    // TODO: remove
     public void initializeUserDatabase() {
         Map<String, String> users = new HashMap<>();
         users.put("user", "pass");

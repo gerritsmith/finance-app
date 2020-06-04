@@ -127,7 +127,7 @@ public class UploadController {
         boolean inDeliveryGroup = false;
         for (int i = rows.size() - 1; -1 < i; i--) {
             // TODO: speed up this loop and make this 'progress bar' visible on the front
-            System.out.println(i);
+            // System.out.println(i);
 
             DeliveryCSVRow row = rows.get(i);
             if (row.getTotal() != null && !inDeliveryGroup) {
