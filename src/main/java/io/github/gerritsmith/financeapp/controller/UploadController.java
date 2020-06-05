@@ -81,7 +81,7 @@ public class UploadController {
                 model.addAttribute("isSuccessful", false);
             }
         }
-        return "/upload/shifts";
+        return "upload/shifts";
     }
 
     private void processShiftCSVRow(ShiftCSVRow row, User user) {
@@ -119,7 +119,7 @@ public class UploadController {
                 model.addAttribute("isSuccessful", false);
             }
         }
-        return "/upload/deliveries";
+        return "upload/deliveries";
     }
 
     private void processDeliveryCSVUpload(List<DeliveryCSVRow> rows, User user) {
