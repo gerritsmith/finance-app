@@ -1,5 +1,6 @@
 package io.github.gerritsmith.financeapp.service;
 
+import io.github.gerritsmith.financeapp.data.UserRepository;
 import io.github.gerritsmith.financeapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,12 +18,12 @@ import java.util.Set;
 public class UserDetailsBuilderService implements UserDetailsService {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findUserByUsername(username);
+        User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("There is no user with the username: " + username);
         }
