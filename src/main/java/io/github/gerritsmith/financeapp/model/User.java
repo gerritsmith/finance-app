@@ -2,11 +2,13 @@ package io.github.gerritsmith.financeapp.model;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "app_user")
 public class User extends AbstractEntity {
 
     @NotBlank
