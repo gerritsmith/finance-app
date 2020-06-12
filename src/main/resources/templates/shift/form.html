@@ -90,7 +90,7 @@
 
     <th:block th:if="*{deliveries != null && (#lists.size(deliveries) > 0)}">
         <h2>Deliveries During Shift</h2>
-        <table th:replace="/delivery/fragments :: table"></table>
+        <table th:replace="delivery/fragments :: table"></table>
     </th:block>
 
 </div>
